@@ -1,0 +1,8 @@
+source;share/rpicomms/hook/cmake_prefix_path.ps1
+source;share/rpicomms/hook/cmake_prefix_path.dsv
+source;share/rpicomms/hook/cmake_prefix_path.sh
+source;share/rpicomms/local_setup.bash
+source;share/rpicomms/local_setup.dsv
+source;share/rpicomms/local_setup.ps1
+source;share/rpicomms/local_setup.sh
+source;share/rpicomms/local_setup.zsh

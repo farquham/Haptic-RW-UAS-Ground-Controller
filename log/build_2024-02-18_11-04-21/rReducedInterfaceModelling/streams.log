@@ -1,0 +1,43 @@
+[0.116s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling
+[0.177s] -- The C compiler identification is GNU 11.4.0
+[0.235s] -- The CXX compiler identification is GNU 11.4.0
+[0.245s] -- Detecting C compiler ABI info
+[0.311s] -- Detecting C compiler ABI info - done
+[0.318s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.318s] -- Detecting C compile features
+[0.319s] -- Detecting C compile features - done
+[0.322s] -- Detecting CXX compiler ABI info
+[0.387s] -- Detecting CXX compiler ABI info - done
+[0.393s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.393s] -- Detecting CXX compile features
+[0.393s] -- Detecting CXX compile features - done
+[0.399s] -- Found ament_cmake: 1.3.7 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.724s] -- Found Python3: /usr/bin/python3.10 (found version "3.10.12") found components: Interpreter 
+[0.809s] -- Found ament_lint_auto: 0.12.10 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.877s] WARNING: Package name "rReducedInterfaceModelling" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[0.905s] -- Added test 'lint_cmake' to check CMake code style
+[0.906s] -- Added test 'xmllint' to check XML markup files
+[0.908s] -- Configuring done
+[0.911s] -- Generating done
+[0.912s] -- Build files have been written to: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling
+[0.917s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling
+[0.920s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling -- -j16 -l16
+[0.967s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling -- -j16 -l16
+[1.071s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling
+[1.076s] -- Install configuration: ""
+[1.077s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/ament_index/resource_index/package_run_dependencies/rReducedInterfaceModelling
+[1.077s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/ament_index/resource_index/parent_prefix_path/rReducedInterfaceModelling
+[1.078s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/environment/ament_prefix_path.sh
+[1.078s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/environment/ament_prefix_path.dsv
+[1.078s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/environment/path.sh
+[1.079s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/environment/path.dsv
+[1.079s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/local_setup.bash
+[1.079s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/local_setup.sh
+[1.080s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/local_setup.zsh
+[1.080s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/local_setup.dsv
+[1.080s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.dsv
+[1.081s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/ament_index/resource_index/packages/rReducedInterfaceModelling
+[1.081s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/cmake/rReducedInterfaceModellingConfig.cmake
+[1.081s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/cmake/rReducedInterfaceModellingConfig-version.cmake
+[1.082s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.xml
+[1.198s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling

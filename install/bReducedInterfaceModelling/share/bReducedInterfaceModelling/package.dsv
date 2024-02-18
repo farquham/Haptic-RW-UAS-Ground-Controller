@@ -1,0 +1,8 @@
+source;share/bReducedInterfaceModelling/hook/cmake_prefix_path.ps1
+source;share/bReducedInterfaceModelling/hook/cmake_prefix_path.dsv
+source;share/bReducedInterfaceModelling/hook/cmake_prefix_path.sh
+source;share/bReducedInterfaceModelling/local_setup.bash
+source;share/bReducedInterfaceModelling/local_setup.dsv
+source;share/bReducedInterfaceModelling/local_setup.ps1
+source;share/bReducedInterfaceModelling/local_setup.sh
+source;share/bReducedInterfaceModelling/local_setup.zsh

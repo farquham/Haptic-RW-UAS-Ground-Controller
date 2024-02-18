@@ -1,0 +1,43 @@
+[0.134s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging
+[0.200s] -- The C compiler identification is GNU 11.4.0
+[0.263s] -- The CXX compiler identification is GNU 11.4.0
+[0.271s] -- Detecting C compiler ABI info
+[0.327s] -- Detecting C compiler ABI info - done
+[0.334s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.334s] -- Detecting C compile features
+[0.334s] -- Detecting C compile features - done
+[0.337s] -- Detecting CXX compiler ABI info
+[0.404s] -- Detecting CXX compiler ABI info - done
+[0.414s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.415s] -- Detecting CXX compile features
+[0.415s] -- Detecting CXX compile features - done
+[0.421s] -- Found ament_cmake: 1.3.7 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.828s] -- Found Python3: /usr/bin/python3.10 (found version "3.10.12") found components: Interpreter 
+[0.904s] -- Found ament_lint_auto: 0.12.10 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.955s] WARNING: Package name "dataLogging" does not follow the naming conventions. It should start with a lower case letter and only contain lower case letters, digits, underscores, and dashes.
+[0.974s] -- Added test 'lint_cmake' to check CMake code style
+[0.976s] -- Added test 'xmllint' to check XML markup files
+[0.979s] -- Configuring done
+[0.988s] -- Generating done
+[0.988s] -- Build files have been written to: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging
+[1.026s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging
+[1.027s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging -- -j16 -l16
+[1.136s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging -- -j16 -l16
+[1.249s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging
+[1.286s] -- Install configuration: ""
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/ament_index/resource_index/package_run_dependencies/dataLogging
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/ament_index/resource_index/parent_prefix_path/dataLogging
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/environment/ament_prefix_path.sh
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/environment/ament_prefix_path.dsv
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/environment/path.sh
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/environment/path.dsv
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/local_setup.bash
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/local_setup.sh
+[1.287s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/local_setup.zsh
+[1.288s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/local_setup.dsv
+[1.288s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.dsv
+[1.288s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/ament_index/resource_index/packages/dataLogging
+[1.288s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/cmake/dataLoggingConfig.cmake
+[1.288s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/cmake/dataLoggingConfig-version.cmake
+[1.288s] -- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.xml
+[1.351s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging

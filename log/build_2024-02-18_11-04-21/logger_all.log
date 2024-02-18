@@ -1,0 +1,574 @@
+[0.441s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[0.441s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=16, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7f4228335870>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7f42286cd840>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7f42286cd840>>)
+[0.469s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.469s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.469s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.469s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.469s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.469s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.469s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller'
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.469s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.477s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extensions ['ignore', 'ignore_ament_install']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extension 'ignore'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extension 'ignore_ament_install'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extensions ['colcon_pkg']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extension 'colcon_pkg'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extensions ['colcon_meta']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extension 'colcon_meta'
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extensions ['ros']
+[0.478s] Level 1:colcon.colcon_core.package_identification:_identify(src/bReducedInterfaceModelling) by extension 'ros'
+[0.479s] DEBUG:colcon.colcon_core.package_identification:Package 'src/bReducedInterfaceModelling' with type 'ros.ament_cmake' and name 'bReducedInterfaceModelling'
+[0.479s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extensions ['ignore', 'ignore_ament_install']
+[0.479s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extension 'ignore'
+[0.479s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extension 'ignore_ament_install'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extensions ['colcon_pkg']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extension 'colcon_pkg'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extensions ['colcon_meta']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extension 'colcon_meta'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extensions ['ros']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/bubbleMethodNavigation) by extension 'ros'
+[0.480s] DEBUG:colcon.colcon_core.package_identification:Package 'src/bubbleMethodNavigation' with type 'ros.ament_cmake' and name 'bubbleMethodNavigation'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extensions ['ignore', 'ignore_ament_install']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extension 'ignore'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extension 'ignore_ament_install'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extensions ['colcon_pkg']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extension 'colcon_pkg'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extensions ['colcon_meta']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extension 'colcon_meta'
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extensions ['ros']
+[0.480s] Level 1:colcon.colcon_core.package_identification:_identify(src/commsMsgs) by extension 'ros'
+[0.481s] DEBUG:colcon.colcon_core.package_identification:Package 'src/commsMsgs' with type 'ros.ament_cmake' and name 'commsMsgs'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extensions ['ignore', 'ignore_ament_install']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extension 'ignore'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extension 'ignore_ament_install'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extensions ['colcon_pkg']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extension 'colcon_pkg'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extensions ['colcon_meta']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extension 'colcon_meta'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extensions ['ros']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/dataLogging) by extension 'ros'
+[0.481s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dataLogging' with type 'ros.ament_cmake' and name 'dataLogging'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extensions ['ignore', 'ignore_ament_install']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extension 'ignore'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extension 'ignore_ament_install'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extensions ['colcon_pkg']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extension 'colcon_pkg'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extensions ['colcon_meta']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extension 'colcon_meta'
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extensions ['ros']
+[0.481s] Level 1:colcon.colcon_core.package_identification:_identify(src/rReducedInterfaceModelling) by extension 'ros'
+[0.481s] DEBUG:colcon.colcon_core.package_identification:Package 'src/rReducedInterfaceModelling' with type 'ros.ament_cmake' and name 'rReducedInterfaceModelling'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extensions ['ignore', 'ignore_ament_install']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extension 'ignore'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extension 'ignore_ament_install'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extensions ['colcon_pkg']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extension 'colcon_pkg'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extensions ['colcon_meta']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extension 'colcon_meta'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extensions ['ros']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rbQuadSimulation) by extension 'ros'
+[0.482s] DEBUG:colcon.colcon_core.package_identification:Package 'src/rbQuadSimulation' with type 'ros.ament_cmake' and name 'rbQuadSimulation'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extensions ['ignore', 'ignore_ament_install']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extension 'ignore'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extension 'ignore_ament_install'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extensions ['colcon_pkg']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extension 'colcon_pkg'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extensions ['colcon_meta']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extension 'colcon_meta'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extensions ['ros']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/rpicomms) by extension 'ros'
+[0.482s] DEBUG:colcon.colcon_core.package_identification:Package 'src/rpicomms' with type 'ros.ament_cmake' and name 'rpicomms'
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extensions ['ignore', 'ignore_ament_install']
+[0.482s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extension 'ignore'
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extension 'ignore_ament_install'
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extensions ['colcon_pkg']
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extension 'colcon_pkg'
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extensions ['colcon_meta']
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extension 'colcon_meta'
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extensions ['ros']
+[0.483s] Level 1:colcon.colcon_core.package_identification:_identify(src/visualizationInputs) by extension 'ros'
+[0.483s] DEBUG:colcon.colcon_core.package_identification:Package 'src/visualizationInputs' with type 'ros.ament_python' and name 'visualizationInputs'
+[0.483s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.483s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.483s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.483s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.483s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.531s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.531s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.545s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 270 installed packages in /opt/ros/humble
+[0.546s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'cmake_args' from command line to 'None'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'cmake_target' from command line to 'None'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'cmake_clean_cache' from command line to 'False'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'cmake_clean_first' from command line to 'False'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'cmake_force_configure' from command line to 'False'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'ament_cmake_args' from command line to 'None'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'catkin_cmake_args' from command line to 'None'
+[0.581s] Level 5:colcon.colcon_core.verb:set package 'bReducedInterfaceModelling' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.581s] DEBUG:colcon.colcon_core.verb:Building package 'bReducedInterfaceModelling' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bReducedInterfaceModelling', 'symlink_install': False, 'test_result_base': None}
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'cmake_args' from command line to 'None'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'cmake_target' from command line to 'None'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'cmake_clean_cache' from command line to 'False'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'cmake_clean_first' from command line to 'False'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'cmake_force_configure' from command line to 'False'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'ament_cmake_args' from command line to 'None'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'catkin_cmake_args' from command line to 'None'
+[0.588s] Level 5:colcon.colcon_core.verb:set package 'bubbleMethodNavigation' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.588s] DEBUG:colcon.colcon_core.verb:Building package 'bubbleMethodNavigation' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bubbleMethodNavigation', 'symlink_install': False, 'test_result_base': None}
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'cmake_args' from command line to 'None'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'cmake_target' from command line to 'None'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'cmake_clean_cache' from command line to 'False'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'cmake_clean_first' from command line to 'False'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'cmake_force_configure' from command line to 'False'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'ament_cmake_args' from command line to 'None'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'catkin_cmake_args' from command line to 'None'
+[0.594s] Level 5:colcon.colcon_core.verb:set package 'commsMsgs' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.594s] DEBUG:colcon.colcon_core.verb:Building package 'commsMsgs' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/commsMsgs', 'symlink_install': False, 'test_result_base': None}
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'cmake_args' from command line to 'None'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'cmake_target' from command line to 'None'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'cmake_clean_cache' from command line to 'False'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'cmake_clean_first' from command line to 'False'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'cmake_force_configure' from command line to 'False'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'ament_cmake_args' from command line to 'None'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'catkin_cmake_args' from command line to 'None'
+[0.601s] Level 5:colcon.colcon_core.verb:set package 'dataLogging' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.601s] DEBUG:colcon.colcon_core.verb:Building package 'dataLogging' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging', 'symlink_install': False, 'test_result_base': None}
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'cmake_args' from command line to 'None'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'cmake_target' from command line to 'None'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'cmake_clean_cache' from command line to 'False'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'cmake_clean_first' from command line to 'False'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'cmake_force_configure' from command line to 'False'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'ament_cmake_args' from command line to 'None'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'catkin_cmake_args' from command line to 'None'
+[0.613s] Level 5:colcon.colcon_core.verb:set package 'rReducedInterfaceModelling' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.613s] DEBUG:colcon.colcon_core.verb:Building package 'rReducedInterfaceModelling' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling', 'symlink_install': False, 'test_result_base': None}
+[0.619s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'cmake_args' from command line to 'None'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'cmake_target' from command line to 'None'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'cmake_clean_cache' from command line to 'False'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'cmake_clean_first' from command line to 'False'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'cmake_force_configure' from command line to 'False'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'ament_cmake_args' from command line to 'None'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'catkin_cmake_args' from command line to 'None'
+[0.620s] Level 5:colcon.colcon_core.verb:set package 'rbQuadSimulation' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.620s] DEBUG:colcon.colcon_core.verb:Building package 'rbQuadSimulation' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rbQuadSimulation', 'symlink_install': False, 'test_result_base': None}
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'cmake_args' from command line to 'None'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'cmake_target' from command line to 'None'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'cmake_clean_cache' from command line to 'False'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'cmake_clean_first' from command line to 'False'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'cmake_force_configure' from command line to 'False'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'ament_cmake_args' from command line to 'None'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'catkin_cmake_args' from command line to 'None'
+[0.626s] Level 5:colcon.colcon_core.verb:set package 'rpicomms' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.626s] DEBUG:colcon.colcon_core.verb:Building package 'rpicomms' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rpicomms', 'symlink_install': False, 'test_result_base': None}
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'cmake_args' from command line to 'None'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'cmake_target' from command line to 'None'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'cmake_clean_cache' from command line to 'False'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'cmake_clean_first' from command line to 'False'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'cmake_force_configure' from command line to 'False'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'ament_cmake_args' from command line to 'None'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'catkin_cmake_args' from command line to 'None'
+[0.633s] Level 5:colcon.colcon_core.verb:set package 'visualizationInputs' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.633s] DEBUG:colcon.colcon_core.verb:Building package 'visualizationInputs' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs', 'merge_install': False, 'path': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs', 'symlink_install': False, 'test_result_base': None}
+[0.639s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.646s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.646s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bReducedInterfaceModelling' with build type 'ament_cmake'
+[0.646s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bReducedInterfaceModelling'
+[0.655s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.655s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.655s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.670s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bubbleMethodNavigation' with build type 'ament_cmake'
+[0.670s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bubbleMethodNavigation'
+[0.679s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.679s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.694s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/commsMsgs' with build type 'ament_cmake'
+[0.694s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/commsMsgs'
+[0.701s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.701s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.717s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging' with build type 'ament_cmake'
+[0.717s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging'
+[0.724s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.724s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.739s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling' with build type 'ament_cmake'
+[0.739s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling'
+[0.747s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.747s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.762s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rbQuadSimulation' with build type 'ament_cmake'
+[0.762s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rbQuadSimulation'
+[0.769s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.769s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.785s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rpicomms' with build type 'ament_cmake'
+[0.785s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rpicomms'
+[0.792s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.792s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.807s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs' with build type 'ament_python'
+[0.807s] Level 1:colcon.colcon_core.shell:create_environment_hook('visualizationInputs', 'ament_prefix_path')
+[0.815s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/hook/ament_prefix_path.ps1'
+[0.817s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/hook/ament_prefix_path.dsv'
+[0.818s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/hook/ament_prefix_path.sh'
+[0.825s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.825s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.842s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bReducedInterfaceModelling -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling
+[0.846s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bubbleMethodNavigation -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation
+[0.850s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/commsMsgs -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs
+[0.852s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging
+[0.855s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling
+[0.858s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rbQuadSimulation -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation
+[0.860s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rpicomms -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms
+[1.052s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs'
+[1.070s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.070s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.628s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/commsMsgs -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs
+[1.630s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs -- -j16 -l16
+[1.632s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bReducedInterfaceModelling -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling
+[1.635s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling -- -j16 -l16
+[1.635s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bubbleMethodNavigation -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation
+[1.636s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation -- -j16 -l16
+[1.657s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rReducedInterfaceModelling -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling
+[1.659s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling -- -j16 -l16
+[1.663s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs -- -j16 -l16
+[1.665s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling -- -j16 -l16
+[1.667s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rbQuadSimulation -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation
+[1.668s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation -- -j16 -l16
+[1.670s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation -- -j16 -l16
+[1.688s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs
+[1.692s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs': PYTHONPATH=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/prefix_override:/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/visualizationInputs build --build-base /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build install --record /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/install.log --single-version-externally-managed
+[1.693s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling
+[1.695s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rpicomms -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms
+[1.697s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms -- -j16 -l16
+[1.700s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(commsMsgs)
+[1.705s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation
+[1.706s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling -- -j16 -l16
+[1.706s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs
+[1.720s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs' for CMake module files
+[1.720s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs' for CMake config files
+[1.720s] Level 1:colcon.colcon_core.shell:create_environment_hook('commsMsgs', 'cmake_prefix_path')
+[1.728s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/hook/cmake_prefix_path.ps1'
+[1.729s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/hook/cmake_prefix_path.dsv'
+[1.729s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/hook/cmake_prefix_path.sh'
+[1.730s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/bin'
+[1.730s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/lib/pkgconfig/commsMsgs.pc'
+[1.730s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/lib/python3.10/site-packages'
+[1.730s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/bin'
+[1.737s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.ps1'
+[1.738s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.dsv'
+[1.738s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.sh'
+[1.739s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.bash'
+[1.739s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.zsh'
+[1.739s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/colcon-core/packages/commsMsgs)
+[1.743s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/dataLogging -DCMAKE_INSTALL_PREFIX=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging
+[1.744s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging -- -j16 -l16
+[1.745s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation -- -j16 -l16
+[1.746s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bReducedInterfaceModelling)
+[1.746s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bReducedInterfaceModelling
+[1.757s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling' for CMake module files
+[1.758s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling' for CMake config files
+[1.758s] Level 1:colcon.colcon_core.shell:create_environment_hook('bReducedInterfaceModelling', 'cmake_prefix_path')
+[1.766s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/hook/cmake_prefix_path.ps1'
+[1.767s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/hook/cmake_prefix_path.dsv'
+[1.767s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/hook/cmake_prefix_path.sh'
+[1.767s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/bin'
+[1.767s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/lib/pkgconfig/bReducedInterfaceModelling.pc'
+[1.767s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/lib/python3.10/site-packages'
+[1.768s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/bin'
+[1.776s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.ps1'
+[1.776s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.dsv'
+[1.776s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.sh'
+[1.776s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.bash'
+[1.777s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.zsh'
+[1.777s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/colcon-core/packages/bReducedInterfaceModelling)
+[1.778s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bubbleMethodNavigation)
+[1.779s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/bubbleMethodNavigation
+[1.788s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation' for CMake module files
+[1.789s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation' for CMake config files
+[1.789s] Level 1:colcon.colcon_core.shell:create_environment_hook('bubbleMethodNavigation', 'cmake_prefix_path')
+[1.797s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/hook/cmake_prefix_path.ps1'
+[1.797s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/hook/cmake_prefix_path.dsv'
+[1.797s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/hook/cmake_prefix_path.sh'
+[1.798s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/bin'
+[1.798s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/lib/pkgconfig/bubbleMethodNavigation.pc'
+[1.798s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/lib/python3.10/site-packages'
+[1.798s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/bin'
+[1.805s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.ps1'
+[1.805s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.dsv'
+[1.806s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.sh'
+[1.806s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.bash'
+[1.806s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.zsh'
+[1.806s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/colcon-core/packages/bubbleMethodNavigation)
+[1.809s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms -- -j16 -l16
+[1.810s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling
+[1.825s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(commsMsgs)
+[1.832s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs' for CMake module files
+[1.832s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs' for CMake config files
+[1.833s] Level 1:colcon.colcon_core.shell:create_environment_hook('commsMsgs', 'cmake_prefix_path')
+[1.840s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/hook/cmake_prefix_path.ps1'
+[1.841s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/hook/cmake_prefix_path.dsv'
+[1.841s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/hook/cmake_prefix_path.sh'
+[1.841s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/bin'
+[1.841s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/lib/pkgconfig/commsMsgs.pc'
+[1.841s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/lib/python3.10/site-packages'
+[1.841s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/bin'
+[1.850s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.ps1'
+[1.851s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.dsv'
+[1.851s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.sh'
+[1.851s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.bash'
+[1.851s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/commsMsgs/package.zsh'
+[1.852s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsMsgs/share/colcon-core/packages/commsMsgs)
+[1.854s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging -- -j16 -l16
+[1.854s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation
+[1.867s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bReducedInterfaceModelling)
+[1.876s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling' for CMake module files
+[1.877s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling' for CMake config files
+[1.877s] Level 1:colcon.colcon_core.shell:create_environment_hook('bReducedInterfaceModelling', 'cmake_prefix_path')
+[1.886s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/hook/cmake_prefix_path.ps1'
+[1.887s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/hook/cmake_prefix_path.dsv'
+[1.887s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/hook/cmake_prefix_path.sh'
+[1.887s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/bin'
+[1.887s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/lib/pkgconfig/bReducedInterfaceModelling.pc'
+[1.888s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/lib/python3.10/site-packages'
+[1.888s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/bin'
+[1.895s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.ps1'
+[1.896s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.dsv'
+[1.896s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.sh'
+[1.896s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.bash'
+[1.896s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/bReducedInterfaceModelling/package.zsh'
+[1.897s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bReducedInterfaceModelling/share/colcon-core/packages/bReducedInterfaceModelling)
+[1.908s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(bubbleMethodNavigation)
+[1.916s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation' for CMake module files
+[1.916s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation' for CMake config files
+[1.917s] Level 1:colcon.colcon_core.shell:create_environment_hook('bubbleMethodNavigation', 'cmake_prefix_path')
+[1.925s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/hook/cmake_prefix_path.ps1'
+[1.925s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/hook/cmake_prefix_path.dsv'
+[1.925s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/hook/cmake_prefix_path.sh'
+[1.925s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/bin'
+[1.926s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/lib/pkgconfig/bubbleMethodNavigation.pc'
+[1.926s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/lib/python3.10/site-packages'
+[1.926s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/bin'
+[1.933s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.ps1'
+[1.934s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.dsv'
+[1.934s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.sh'
+[1.934s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.bash'
+[1.934s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/bubbleMethodNavigation/package.zsh'
+[1.934s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/bubbleMethodNavigation/share/colcon-core/packages/bubbleMethodNavigation)
+[1.936s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(rReducedInterfaceModelling)
+[1.936s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms
+[1.937s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rReducedInterfaceModelling
+[1.947s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling' for CMake module files
+[1.947s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling' for CMake config files
+[1.947s] Level 1:colcon.colcon_core.shell:create_environment_hook('rReducedInterfaceModelling', 'cmake_prefix_path')
+[1.954s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/hook/cmake_prefix_path.ps1'
+[1.955s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/hook/cmake_prefix_path.dsv'
+[1.955s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/hook/cmake_prefix_path.sh'
+[1.955s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/bin'
+[1.955s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/lib/pkgconfig/rReducedInterfaceModelling.pc'
+[1.955s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/lib/python3.10/site-packages'
+[1.956s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/bin'
+[1.963s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.ps1'
+[1.963s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.dsv'
+[1.963s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.sh'
+[1.964s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.bash'
+[1.964s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.zsh'
+[1.964s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/colcon-core/packages/rReducedInterfaceModelling)
+[1.966s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(rbQuadSimulation)
+[1.967s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging
+[1.967s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rbQuadSimulation
+[1.980s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation' for CMake module files
+[1.980s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation' for CMake config files
+[1.981s] Level 1:colcon.colcon_core.shell:create_environment_hook('rbQuadSimulation', 'cmake_prefix_path')
+[1.990s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/hook/cmake_prefix_path.ps1'
+[1.990s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/hook/cmake_prefix_path.dsv'
+[1.990s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/hook/cmake_prefix_path.sh'
+[1.990s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/bin'
+[1.991s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/lib/pkgconfig/rbQuadSimulation.pc'
+[1.991s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/lib/python3.10/site-packages'
+[1.991s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/bin'
+[2.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.ps1'
+[2.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.dsv'
+[2.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.sh'
+[2.001s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.bash'
+[2.001s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.zsh'
+[2.001s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/colcon-core/packages/rbQuadSimulation)
+[2.003s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(rpicomms)
+[2.003s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/rpicomms
+[2.013s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms' for CMake module files
+[2.013s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms' for CMake config files
+[2.014s] Level 1:colcon.colcon_core.shell:create_environment_hook('rpicomms', 'cmake_prefix_path')
+[2.021s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/hook/cmake_prefix_path.ps1'
+[2.021s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/hook/cmake_prefix_path.dsv'
+[2.021s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/hook/cmake_prefix_path.sh'
+[2.022s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/bin'
+[2.022s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/lib/pkgconfig/rpicomms.pc'
+[2.022s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/lib/python3.10/site-packages'
+[2.022s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/bin'
+[2.035s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.ps1'
+[2.035s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.dsv'
+[2.035s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.sh'
+[2.035s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.bash'
+[2.035s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.zsh'
+[2.036s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/colcon-core/packages/rpicomms)
+[2.044s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(rReducedInterfaceModelling)
+[2.052s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling' for CMake module files
+[2.052s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling' for CMake config files
+[2.052s] Level 1:colcon.colcon_core.shell:create_environment_hook('rReducedInterfaceModelling', 'cmake_prefix_path')
+[2.059s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/hook/cmake_prefix_path.ps1'
+[2.059s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/hook/cmake_prefix_path.dsv'
+[2.059s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/hook/cmake_prefix_path.sh'
+[2.059s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/bin'
+[2.059s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/lib/pkgconfig/rReducedInterfaceModelling.pc'
+[2.059s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/lib/python3.10/site-packages'
+[2.060s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/bin'
+[2.066s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.ps1'
+[2.066s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.dsv'
+[2.067s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.sh'
+[2.067s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.bash'
+[2.067s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/rReducedInterfaceModelling/package.zsh'
+[2.067s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rReducedInterfaceModelling/share/colcon-core/packages/rReducedInterfaceModelling)
+[2.067s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dataLogging)
+[2.068s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/dataLogging
+[2.075s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging' for CMake module files
+[2.075s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging' for CMake config files
+[2.075s] Level 1:colcon.colcon_core.shell:create_environment_hook('dataLogging', 'cmake_prefix_path')
+[2.083s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/hook/cmake_prefix_path.ps1'
+[2.083s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/hook/cmake_prefix_path.dsv'
+[2.083s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/hook/cmake_prefix_path.sh'
+[2.083s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/bin'
+[2.083s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/lib/pkgconfig/dataLogging.pc'
+[2.084s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/lib/python3.10/site-packages'
+[2.084s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/bin'
+[2.090s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.ps1'
+[2.090s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.dsv'
+[2.091s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.sh'
+[2.091s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.bash'
+[2.091s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.zsh'
+[2.091s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/colcon-core/packages/dataLogging)
+[2.092s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs' returned '0': PYTHONPATH=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/prefix_override:/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/visualizationInputs build --build-base /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build install --record /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/install.log --single-version-externally-managed
+[2.101s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs' for CMake module files
+[2.101s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs' for CMake config files
+[2.101s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib'
+[2.101s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/bin'
+[2.101s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/pkgconfig/visualizationInputs.pc'
+[2.101s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages'
+[2.101s] Level 1:colcon.colcon_core.shell:create_environment_hook('visualizationInputs', 'pythonpath')
+[2.109s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/hook/pythonpath.ps1'
+[2.109s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/hook/pythonpath.dsv'
+[2.109s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/hook/pythonpath.sh'
+[2.109s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/bin'
+[2.109s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(visualizationInputs)
+[2.116s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/package.ps1'
+[2.116s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/package.dsv'
+[2.117s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/package.sh'
+[2.117s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/package.bash'
+[2.117s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs/package.zsh'
+[2.117s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/colcon-core/packages/visualizationInputs)
+[2.125s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(rbQuadSimulation)
+[2.131s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation' for CMake module files
+[2.132s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation' for CMake config files
+[2.132s] Level 1:colcon.colcon_core.shell:create_environment_hook('rbQuadSimulation', 'cmake_prefix_path')
+[2.139s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/hook/cmake_prefix_path.ps1'
+[2.139s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/hook/cmake_prefix_path.dsv'
+[2.139s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/hook/cmake_prefix_path.sh'
+[2.140s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/bin'
+[2.140s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/lib/pkgconfig/rbQuadSimulation.pc'
+[2.140s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/lib/python3.10/site-packages'
+[2.140s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/bin'
+[2.148s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.ps1'
+[2.148s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.dsv'
+[2.148s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.sh'
+[2.148s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.bash'
+[2.149s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/rbQuadSimulation/package.zsh'
+[2.149s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rbQuadSimulation/share/colcon-core/packages/rbQuadSimulation)
+[2.157s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(rpicomms)
+[2.163s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms' for CMake module files
+[2.164s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms' for CMake config files
+[2.164s] Level 1:colcon.colcon_core.shell:create_environment_hook('rpicomms', 'cmake_prefix_path')
+[2.170s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/hook/cmake_prefix_path.ps1'
+[2.171s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/hook/cmake_prefix_path.dsv'
+[2.171s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/hook/cmake_prefix_path.sh'
+[2.171s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/bin'
+[2.171s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/lib/pkgconfig/rpicomms.pc'
+[2.171s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/lib/python3.10/site-packages'
+[2.171s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/bin'
+[2.178s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.ps1'
+[2.178s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.dsv'
+[2.179s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.sh'
+[2.179s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.bash'
+[2.179s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/rpicomms/package.zsh'
+[2.179s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/rpicomms/share/colcon-core/packages/rpicomms)
+[2.188s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dataLogging)
+[2.194s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging' for CMake module files
+[2.194s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging' for CMake config files
+[2.194s] Level 1:colcon.colcon_core.shell:create_environment_hook('dataLogging', 'cmake_prefix_path')
+[2.201s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/hook/cmake_prefix_path.ps1'
+[2.201s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/hook/cmake_prefix_path.dsv'
+[2.201s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/hook/cmake_prefix_path.sh'
+[2.202s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/bin'
+[2.202s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/lib/pkgconfig/dataLogging.pc'
+[2.202s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/lib/python3.10/site-packages'
+[2.202s] Level 1:colcon.colcon_core.environment:checking '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/bin'
+[2.209s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.ps1'
+[2.209s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.dsv'
+[2.210s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.sh'
+[2.210s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.bash'
+[2.210s] INFO:colcon.colcon_core.shell:Creating package script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/dataLogging/package.zsh'
+[2.210s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/dataLogging/share/colcon-core/packages/dataLogging)
+[2.210s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[2.210s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[2.210s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[2.211s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[2.223s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[2.223s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[2.223s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[2.238s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[2.249s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/local_setup.ps1'
+[2.249s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/_local_setup_util_ps1.py'
+[2.250s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/setup.ps1'
+[2.259s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/local_setup.sh'
+[2.260s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/_local_setup_util_sh.py'
+[2.260s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/setup.sh'
+[2.269s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/local_setup.bash'
+[2.270s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/setup.bash'
+[2.278s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/local_setup.zsh'
+[2.278s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/setup.zsh'

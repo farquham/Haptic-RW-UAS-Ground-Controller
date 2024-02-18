@@ -1,0 +1,8 @@
+source;share/commsMsgs/hook/cmake_prefix_path.ps1
+source;share/commsMsgs/hook/cmake_prefix_path.dsv
+source;share/commsMsgs/hook/cmake_prefix_path.sh
+source;share/commsMsgs/local_setup.bash
+source;share/commsMsgs/local_setup.dsv
+source;share/commsMsgs/local_setup.ps1
+source;share/commsMsgs/local_setup.sh
+source;share/commsMsgs/local_setup.zsh

@@ -1,0 +1,46 @@
+[0.884s] Invoking command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs': PYTHONPATH=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/prefix_override:/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/visualizationInputs build --build-base /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build install --record /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/install.log --single-version-externally-managed
+[1.028s] running egg_info
+[1.029s] creating ../../build/visualizationInputs/visualizationInputs.egg-info
+[1.036s] writing ../../build/visualizationInputs/visualizationInputs.egg-info/PKG-INFO
+[1.036s] writing dependency_links to ../../build/visualizationInputs/visualizationInputs.egg-info/dependency_links.txt
+[1.037s] writing requirements to ../../build/visualizationInputs/visualizationInputs.egg-info/requires.txt
+[1.037s] writing top-level names to ../../build/visualizationInputs/visualizationInputs.egg-info/top_level.txt
+[1.037s] writing manifest file '../../build/visualizationInputs/visualizationInputs.egg-info/SOURCES.txt'
+[1.055s] reading manifest file '../../build/visualizationInputs/visualizationInputs.egg-info/SOURCES.txt'
+[1.055s] adding license file 'LICENSE'
+[1.055s] writing manifest file '../../build/visualizationInputs/visualizationInputs.egg-info/SOURCES.txt'
+[1.055s] running build
+[1.056s] running build_py
+[1.056s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build
+[1.056s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build/lib
+[1.056s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build/lib/visualizationInputs
+[1.056s] copying visualizationInputs/__init__.py -> /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build/lib/visualizationInputs
+[1.056s] running install
+[1.056s] /home/farquham/.local/lib/python3.10/site-packages/setuptools/_distutils/cmd.py:66: SetuptoolsDeprecationWarning: setup.py install is deprecated.
+[1.057s] !!
+[1.057s] 
+[1.057s]         ********************************************************************************
+[1.057s]         Please avoid running ``setup.py`` directly.
+[1.057s]         Instead, use pypa/build, pypa/installer or other
+[1.057s]         standards-based tools.
+[1.057s] 
+[1.057s]         See https://blog.ganssle.io/articles/2021/10/setup-py-deprecated.html for details.
+[1.057s]         ********************************************************************************
+[1.057s] 
+[1.057s] !!
+[1.057s]   self.initialize_options()
+[1.060s] running install_lib
+[1.069s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages/visualizationInputs
+[1.070s] copying /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build/lib/visualizationInputs/__init__.py -> /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages/visualizationInputs
+[1.070s] byte-compiling /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages/visualizationInputs/__init__.py to __init__.cpython-310.pyc
+[1.071s] running install_data
+[1.079s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/ament_index
+[1.079s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/ament_index/resource_index
+[1.080s] creating /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/ament_index/resource_index/packages
+[1.080s] copying resource/visualizationInputs -> /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/ament_index/resource_index/packages
+[1.080s] copying package.xml -> /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/share/visualizationInputs
+[1.080s] running install_egg_info
+[1.088s] Copying ../../build/visualizationInputs/visualizationInputs.egg-info to /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages/visualizationInputs-0.0.0-py3.10.egg-info
+[1.088s] running install_scripts
+[1.177s] writing list of installed files to '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/install.log'
+[1.285s] Invoked command in '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/visualizationInputs' returned '0': PYTHONPATH=/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/prefix_override:/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../build/visualizationInputs build --build-base /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/build install --record /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/visualizationInputs/install.log --single-version-externally-managed
