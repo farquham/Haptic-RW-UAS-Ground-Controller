@@ -1,0 +1,236 @@
+-- Found ament_cmake: 1.3.7 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found geometry_msgs: 4.2.3 (/opt/ros/humble/share/geometry_msgs/cmake)
+-- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+-- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+-- Using PYTHON_EXECUTABLE: /usr/bin/python3
+-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+-- Found ament_lint_auto: 0.12.10 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Added test 'lint_cmake' to check CMake code style
+-- Added test 'xmllint' to check XML markup files
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsmsgs
+[  2%] [34m[1mGenerating C code for ROS interfaces[0m
+[  5%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[  5%] Built target ament_cmake_python_copy_commsmsgs
+running egg_info
+writing commsmsgs.egg-info/PKG-INFO
+writing dependency_links to commsmsgs.egg-info/dependency_links.txt
+writing top-level names to commsmsgs.egg-info/top_level.txt
+reading manifest file 'commsmsgs.egg-info/SOURCES.txt'
+writing manifest file 'commsmsgs.egg-info/SOURCES.txt'
+[  5%] Built target commsmsgs__cpp
+[  7%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[ 10%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[ 12%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[35m[1mConsolidate compiler generated dependencies of target commsmsgs__rosidl_generator_c[0m
+[ 12%] Built target ament_cmake_python_build_commsmsgs_egg
+[ 15%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_generator_c.dir/rosidl_generator_c/commsmsgs/msg/detail/num__functions.c.o[0m
+[ 17%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_generator_c.dir/rosidl_generator_c/commsmsgs/msg/detail/sphere__functions.c.o[0m
+[ 20%] [32m[1mLinking C shared library libcommsmsgs__rosidl_generator_c.so[0m
+[ 20%] Built target commsmsgs__rosidl_generator_c
+[ 23%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[ 25%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[ 28%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[35m[1mConsolidate compiler generated dependencies of target commsmsgs__rosidl_typesupport_cpp[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/commsmsgs/msg/num__type_support.cpp.o[0m
+[ 33%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/commsmsgs/msg/sphere__type_support.cpp.o[0m
+[35m[1mConsolidate compiler generated dependencies of target commsmsgs__rosidl_typesupport_introspection_cpp[0m
+[ 35%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/commsmsgs/msg/detail/num__type_support.cpp.o[0m
+[ 38%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/commsmsgs/msg/detail/sphere__type_support.cpp.o[0m
+[35m[1mConsolidate compiler generated dependencies of target commsmsgs__rosidl_typesupport_fastrtps_cpp[0m
+[ 43%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/commsmsgs/msg/detail/dds_fastrtps/sphere__type_support.cpp.o[0m
+[ 43%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/commsmsgs/msg/detail/dds_fastrtps/num__type_support.cpp.o[0m
+[ 46%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/commsmsgs/msg/num__type_support.cpp.o[0m
+[ 48%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/commsmsgs/msg/sphere__type_support.cpp.o[0m
+[ 51%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/commsmsgs/msg/detail/num__type_support_c.cpp.o[0m
+[ 53%] [32mBuilding CXX object CMakeFiles/commsmsgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/commsmsgs/msg/detail/sphere__type_support_c.cpp.o[0m
+[ 56%] [32m[1mLinking CXX shared library libcommsmsgs__rosidl_typesupport_c.so[0m
+[ 61%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/commsmsgs/msg/detail/num__type_support.c.o[0m
+[ 61%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/commsmsgs/msg/detail/sphere__type_support.c.o[0m
+[ 61%] Built target commsmsgs__rosidl_typesupport_c
+[ 64%] [32m[1mLinking CXX shared library libcommsmsgs__rosidl_typesupport_cpp.so[0m
+[ 66%] [32m[1mLinking C shared library libcommsmsgs__rosidl_typesupport_introspection_c.so[0m
+[ 66%] Built target commsmsgs__rosidl_typesupport_cpp
+[ 66%] Built target commsmsgs__rosidl_typesupport_introspection_c
+[ 69%] [32m[1mLinking CXX shared library libcommsmsgs__rosidl_typesupport_introspection_cpp.so[0m
+[ 69%] Built target commsmsgs__rosidl_typesupport_introspection_cpp
+[ 71%] [32m[1mLinking CXX shared library libcommsmsgs__rosidl_typesupport_fastrtps_cpp.so[0m
+[ 74%] [32m[1mLinking CXX shared library libcommsmsgs__rosidl_typesupport_fastrtps_c.so[0m
+[ 74%] Built target commsmsgs__rosidl_typesupport_fastrtps_cpp
+[ 74%] Built target commsmsgs__rosidl_typesupport_fastrtps_c
+[ 74%] Built target commsmsgs
+[ 76%] [34m[1mGenerating Python code for ROS interfaces[0m
+[ 76%] Built target commsmsgs__py
+[ 79%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_generator_py.dir/rosidl_generator_py/commsmsgs/msg/_num_s.c.o[0m
+[ 82%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_generator_py.dir/rosidl_generator_py/commsmsgs/msg/_sphere_s.c.o[0m
+[ 84%] [32m[1mLinking C shared library rosidl_generator_py/commsmsgs/libcommsmsgs__rosidl_generator_py.so[0m
+[ 84%] Built target commsmsgs__rosidl_generator_py
+[ 87%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/commsmsgs/_commsmsgs_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[ 89%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/commsmsgs/_commsmsgs_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[ 92%] [32mBuilding C object CMakeFiles/commsmsgs__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/commsmsgs/_commsmsgs_s.ep.rosidl_typesupport_c.c.o[0m
+[100%] [32m[1mLinking C shared library rosidl_generator_py/commsmsgs/commsmsgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so[0m
+[100%] [32m[1mLinking C shared library rosidl_generator_py/commsmsgs/commsmsgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so[0m
+[100%] [32m[1mLinking C shared library rosidl_generator_py/commsmsgs/commsmsgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so[0m
+[100%] Built target commsmsgs__rosidl_typesupport_fastrtps_c__pyext
+[100%] Built target commsmsgs__rosidl_typesupport_introspection_c__pyext
+[100%] Built target commsmsgs__rosidl_typesupport_c__pyext
+-- Install configuration: ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/ament_index/resource_index/rosidl_interfaces/commsmsgs
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/sphere.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__type_support.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__functions.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__functions.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__struct.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__functions.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__type_support.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__functions.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__struct.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/num.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/rosidl_generator_c__visibility_control.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/library_path.sh
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/library_path.dsv
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_generator_c.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_generator_c.so" to ""
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__rosidl_typesupport_fastrtps_c.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__rosidl_typesupport_fastrtps_c.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_fastrtps_c.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_fastrtps_c.so" to ""
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__builder.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__struct.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__builder.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__traits.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__traits.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__struct.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/num.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/sphere.hpp
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__rosidl_typesupport_fastrtps_cpp.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__rosidl_typesupport_fastrtps_cpp.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/dds_fastrtps
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_fastrtps_cpp.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_fastrtps_cpp.so" to ""
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__type_support.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__rosidl_typesupport_introspection_c.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__type_support.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__rosidl_typesupport_introspection_c.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_introspection_c.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_introspection_c.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_c.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_c.so" to ""
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg
+-- Up-to-date: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__rosidl_typesupport_introspection_cpp.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/num__type_support.cpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__rosidl_typesupport_introspection_cpp.hpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/commsmsgs/commsmsgs/msg/detail/sphere__type_support.cpp
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_introspection_cpp.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_introspection_cpp.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_cpp.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_typesupport_cpp.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/pythonpath.sh
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/pythonpath.dsv
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs-0.0.0-py3.10.egg-info
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs-0.0.0-py3.10.egg-info/top_level.txt
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs-0.0.0-py3.10.egg-info/SOURCES.txt
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs-0.0.0-py3.10.egg-info/dependency_links.txt
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs-0.0.0-py3.10.egg-info/PKG-INFO
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/_commsmsgs_s.ep.rosidl_typesupport_introspection_c.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/__init__.py
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/libcommsmsgs__rosidl_generator_py.so
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/_commsmsgs_s.ep.rosidl_typesupport_fastrtps_c.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/_commsmsgs_s.ep.rosidl_typesupport_c.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/_sphere.py
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/_num.py
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/_sphere_s.c
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/__init__.py
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/_num_s.c
+Listing '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs'...
+Compiling '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/__init__.py'...
+Listing '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg'...
+Compiling '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/__init__.py'...
+Compiling '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/_num.py'...
+Compiling '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/msg/_sphere.py'...
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/local/lib/python3.10/dist-packages/commsmsgs/commsmsgs_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_generator_py.so
+-- Set runtime path of "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/lib/libcommsmsgs__rosidl_generator_py.so" to ""
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/msg/Num.idl
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/msg/Sphere.idl
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/msg/Num.msg
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/msg/Sphere.msg
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/ament_index/resource_index/package_run_dependencies/commsmsgs
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/ament_index/resource_index/parent_prefix_path/commsmsgs
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/ament_prefix_path.sh
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/ament_prefix_path.dsv
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/path.sh
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/environment/path.dsv
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/local_setup.bash
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/local_setup.sh
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/local_setup.zsh
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/local_setup.dsv
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/package.dsv
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/ament_index/resource_index/packages/commsmsgs
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_generator_cExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_generator_cExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_typesupport_fastrtps_cExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_generator_cppExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_typesupport_fastrtps_cppExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_introspection_cExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_cExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_cExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_introspection_cppExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_cppExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgs__rosidl_typesupport_cppExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_generator_pyExport.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/export_commsmsgs__rosidl_generator_pyExport-noconfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/rosidl_cmake-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/ament_cmake_export_dependencies-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/ament_cmake_export_include_directories-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/ament_cmake_export_libraries-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/ament_cmake_export_targets-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgsConfig.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/cmake/commsmsgsConfig-version.cmake
+-- Installing: /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/share/commsmsgs/package.xml

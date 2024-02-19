@@ -1,0 +1,72 @@
+[0.000000] (-) TimerEvent: {}
+[0.000234] (-) JobUnselected: {'identifier': 'bReducedInterfaceModelling'}
+[0.000456] (-) JobUnselected: {'identifier': 'bubbleMethodNavigation'}
+[0.000515] (-) JobUnselected: {'identifier': 'dataLogging'}
+[0.000587] (-) JobUnselected: {'identifier': 'rReducedInterfaceModelling'}
+[0.000600] (-) JobUnselected: {'identifier': 'rbQuadSimulation'}
+[0.000615] (-) JobUnselected: {'identifier': 'rpicomms'}
+[0.000625] (-) JobUnselected: {'identifier': 'system_launcher'}
+[0.000635] (-) JobUnselected: {'identifier': 'visualizationInputs'}
+[0.000647] (commsMsgs) JobQueued: {'identifier': 'commsMsgs', 'dependencies': OrderedDict()}
+[0.000660] (commsMsgs) JobStarted: {'identifier': 'commsMsgs'}
+[0.037395] (commsMsgs) JobProgress: {'identifier': 'commsMsgs', 'progress': 'cmake'}
+[0.038234] (commsMsgs) JobProgress: {'identifier': 'commsMsgs', 'progress': 'build'}
+[0.038271] (commsMsgs) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs', '--', '-j16', '-l16'], 'cwd': '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('LANGUAGE', 'en_CA:en'), ('USER', 'farquham'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/farquham'), ('OLDPWD', '/home/farquham/Desktop/GC_ros2_ws'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '2328'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'farquham'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'farquham'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/opt/ros/humble/bin:/opt/gcc-arm-none-eabi-9-2020-q2-update/bin:/home/farquham/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/ASUS-TUF-31415:@/tmp/.ICE-unix/2309,unix/ASUS-TUF-31415:/tmp/.ICE-unix/2309'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/3d787904_e8e5_44e8_a4a4_fef1e9c3ea44'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.515'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.054179] (commsMsgs) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.7 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099624] (-) TimerEvent: {}
+[0.143271] (commsMsgs) StdoutLine: {'line': b'-- Found geometry_msgs: 4.2.3 (/opt/ros/humble/share/geometry_msgs/cmake)\n'}
+[0.171878] (commsMsgs) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.174973] (commsMsgs) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.180526] (commsMsgs) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.191239] (commsMsgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.199795] (-) TimerEvent: {}
+[0.203467] (commsMsgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.275354] (commsMsgs) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[0.299979] (-) TimerEvent: {}
+[0.381164] (commsMsgs) StderrLine: {'line': b'\x1b[31mCMake Error at /opt/ros/humble/share/rosidl_adapter/cmake/rosidl_adapt_interfaces.cmake:59 (message):\n'}
+[0.381351] (commsMsgs) StderrLine: {'line': b'  execute_process(/usr/bin/python3.10 -m rosidl_adapter --package-name\n'}
+[0.381406] (commsMsgs) StderrLine: {'line': b'  commsMsgs --arguments-file\n'}
+[0.381443] (commsMsgs) StderrLine: {'line': b'  /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs/rosidl_adapter__arguments__commsMsgs.json\n'}
+[0.381476] (commsMsgs) StderrLine: {'line': b'  --output-dir\n'}
+[0.381506] (commsMsgs) StderrLine: {'line': b'  /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs/rosidl_adapter/commsMsgs\n'}
+[0.381535] (commsMsgs) StderrLine: {'line': b'  --output-file\n'}
+[0.381563] (commsMsgs) StderrLine: {'line': b'  /home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs/rosidl_adapter/commsMsgs.idls)\n'}
+[0.381591] (commsMsgs) StderrLine: {'line': b'  returned error code 1:\n'}
+[0.381616] (commsMsgs) StderrLine: {'line': b'\n'}
+[0.381644] (commsMsgs) StderrLine: {'line': b'  Traceback (most recent call last):\n'}
+[0.381670] (commsMsgs) StderrLine: {'line': b'\n'}
+[0.381697] (commsMsgs) StderrLine: {'line': b'    File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main\n'}
+[0.381724] (commsMsgs) StderrLine: {'line': b'      return _run_code(code, main_globals, None,\n'}
+[0.381754] (commsMsgs) StderrLine: {'line': b'    File "/usr/lib/python3.10/runpy.py", line 86, in _run_code\n'}
+[0.381781] (commsMsgs) StderrLine: {'line': b'      exec(code, run_globals)\n'}
+[0.381807] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/__main__.py", line 19, in <module>\n'}
+[0.381837] (commsMsgs) StderrLine: {'line': b'      sys.exit(main())\n'}
+[0.381864] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/main.py", line 53, in main\n'}
+[0.381892] (commsMsgs) StderrLine: {'line': b'      abs_idl_file = convert_to_idl(\n'}
+[0.381918] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/__init__.py", line 19, in convert_to_idl\n'}
+[0.381944] (commsMsgs) StderrLine: {'line': b'      return convert_msg_to_idl(\n'}
+[0.381971] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/msg/__init__.py", line 28, in convert_msg_to_idl\n'}
+[0.381997] (commsMsgs) StderrLine: {'line': b'      msg = parse_message_string(package_name, input_file.stem, content)\n'}
+[0.382025] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/parser.py", line 544, in parse_message_string\n'}
+[0.382051] (commsMsgs) StderrLine: {'line': b'      msg = MessageSpecification(pkg_name, msg_name, fields, constants)\n'}
+[0.382076] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/parser.py", line 388, in __init__\n'}
+[0.382101] (commsMsgs) StderrLine: {'line': b'      self.base_type = BaseType(\n'}
+[0.382125] (commsMsgs) StderrLine: {'line': b'    File "/opt/ros/humble/local/lib/python3.10/dist-packages/rosidl_adapter/parser.py", line 201, in __init__\n'}
+[0.382151] (commsMsgs) StderrLine: {'line': b'      raise InvalidResourceName(\n'}
+[0.382175] (commsMsgs) StderrLine: {'line': b'\n'}
+[0.382201] (commsMsgs) StderrLine: {'line': b"  rosidl_adapter.parser.InvalidResourceName: 'commsMsgs' is an invalid\n"}
+[0.382225] (commsMsgs) StderrLine: {'line': b'  package name.  It should have the pattern\n'}
+[0.382250] (commsMsgs) StderrLine: {'line': b"  '^(?!.*__)(?!.*_$)[a-z][a-z0-9_]*$'\n"}
+[0.382275] (commsMsgs) StderrLine: {'line': b'\n'}
+[0.382300] (commsMsgs) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[0.382325] (commsMsgs) StderrLine: {'line': b'  /opt/ros/humble/share/rosidl_cmake/cmake/rosidl_generate_interfaces.cmake:130 (rosidl_adapt_interfaces)\n'}
+[0.382350] (commsMsgs) StderrLine: {'line': b'  CMakeLists.txt:16 (rosidl_generate_interfaces)\n'}
+[0.382374] (commsMsgs) StderrLine: {'line': b'\n'}
+[0.382398] (commsMsgs) StderrLine: {'line': b'\x1b[0m\n'}
+[0.382424] (commsMsgs) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[0.382455] (commsMsgs) StdoutLine: {'line': b'See also "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/build/commsMsgs/CMakeFiles/CMakeOutput.log".\n'}
+[0.384800] (commsMsgs) StderrLine: {'line': b'gmake: *** [Makefile:226: cmake_check_build_system] Error 1\n'}
+[0.386464] (commsMsgs) CommandEnded: {'returncode': 2}
+[0.400226] (-) TimerEvent: {}
+[0.434836] (commsMsgs) JobEnded: {'identifier': 'commsMsgs', 'rc': 2}
+[0.445424] (-) EventReactorShutdown: {}
