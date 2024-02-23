@@ -3,9 +3,8 @@
 
 // include eigen dense and sparse and alse the quadcopter classes
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-// #include <Eigen/Dense>
-// #include <Eigen/Sparse>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include <chrono>
 #include <cstdio>
 #include <mutex>
@@ -14,7 +13,6 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <stdint.h>
-#include "BubbleMethod.h"
 
 // some nanespace stuff
 using namespace std::chrono;

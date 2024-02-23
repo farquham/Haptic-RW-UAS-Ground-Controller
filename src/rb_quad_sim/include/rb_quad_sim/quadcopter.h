@@ -2,12 +2,9 @@
 #define Quadcopter_H
 
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Geometry>
-// #include <Eigen/Dense>
-// #include <Eigen/Geometry>
-#include "BubbleMethod.h"
-#include "Q_helpers.h"
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+#include "quad_helpers.h"
 
 namespace Quadcopter {
 	// struct to export the drones drag and gravity data

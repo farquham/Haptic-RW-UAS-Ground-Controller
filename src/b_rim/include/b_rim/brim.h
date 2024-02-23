@@ -1,19 +1,16 @@
 #ifndef BRIM_H
 #define BRIM_H
 
-// include eigen dense and sparse and alse the quadcopter and haply stuff
+// includes
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Sparse>
-#include <../../deps/Eigen3/Eigen/QR>
-// #include <Eigen/Dense>
-// #include <Eigen/Sparse>
-// #include <Eigen/QR>
 #include <chrono>
 #include <cstdio>
 #include <mutex>
-#include "../../deps/HardwareAPI/include/HardwareAPI.h"
-#include "BubbleMethod.h"
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <Eigen/QR>
+#include <rclcpp/rclcpp.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
 
 namespace BRIM {
 	class BRIM {

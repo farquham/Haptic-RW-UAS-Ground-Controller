@@ -1,4 +1,4 @@
-#include <BRIM.h>
+#include <../include/b_rim/brim.h>
 
 using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;

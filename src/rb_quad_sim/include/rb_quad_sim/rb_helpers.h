@@ -3,17 +3,13 @@
 
 // include eigen dense and sparse and alse the quadcopter class
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Sparse>
-#include <../../deps/Eigen3/Eigen/SparseQR>
-// #include <Eigen/Dense>
-// #include <Eigen/Sparse>
-// #include <Eigen/SparseQR>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <Eigen/SparseQR>
 #include <chrono>
 #include <cstdio>
 #include <mutex>
-#include "Quadcopter.h"
-#include "BubbleMethod.h"
+#include "quadcopter.h"
 
 namespace RBH {
 	// struct for defining the state of a plane

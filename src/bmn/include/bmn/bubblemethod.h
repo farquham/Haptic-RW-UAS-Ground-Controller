@@ -3,13 +3,11 @@
 
 // include eigen dense and sparse and alse the quadcopter and haply stuff
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Sparse>
-// #include <Eigen/Dense>
-// #include <Eigen/Sparse>
 #include <chrono>
 #include <cstdio>
 #include <mutex>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 #include "../../deps/HardwareAPI/include/HardwareAPI.h"
 
 namespace BMN {

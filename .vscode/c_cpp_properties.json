@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/commsmsgs/include/**",
+                "/opt/ros/humble/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/b_rim/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/bmn/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/commsmsgs/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/datalogging/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/r_rim/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rb_quad_sim/include/**",
+                "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/src/rpicomms/include/**",
+                "/usr/include/**",
+                "/usr/include/eigen3"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
+}

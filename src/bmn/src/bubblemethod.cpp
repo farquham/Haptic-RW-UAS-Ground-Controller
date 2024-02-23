@@ -1,4 +1,4 @@
-#include "BubbleMethod.h"
+#include <../include/bmn/bubblemethod.h>
 
 namespace API = Haply::HardwareAPI;
 using namespace std::chrono_literals;

@@ -3,18 +3,14 @@
 
 // include eigen dense and sparse and alse the quadcopter class
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Sparse>
-#include <../../deps/Eigen3/Eigen/SparseQR>
-// #include <Eigen/Dense>
-// #include <Eigen/Sparse>
-// #include <Eigen/SparseQR>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <Eigen/SparseQR>
 #include <chrono>
 #include <cstdio>
 #include <mutex>
-#include "Quadcopter.h"
-#include "BubbleMethod.h"
-#include "RB_helpers.h"
+#include "quadcopter.h"
+#include "rb_helpers.h"
 
 namespace RBsystem {		
 	class RBsystem {

@@ -3,16 +3,12 @@
 
 // include eigen dense and sparse and alse the quadcopter classes
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Sparse>
-#include <../../deps/Eigen3/Eigen/QR>
-// #include <Eigen/Dense>
-// #include <Eigen/Sparse>
-// #include <Eigen/QR>
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
+#include <Eigen/QR>
 #include <chrono>
 #include <cstdio>
 #include <mutex>
-#include "BubbleMethod.h"
 
 namespace PRIM {
 	class PRIM {

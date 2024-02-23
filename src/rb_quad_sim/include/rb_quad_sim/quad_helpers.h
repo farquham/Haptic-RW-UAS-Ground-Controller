@@ -3,10 +3,8 @@
 
 // only really need eigen for the matrix math
 #include <iostream>
-#include <../../deps/Eigen3/Eigen/Dense>
-#include <../../deps/Eigen3/Eigen/Geometry>
-// #include <Eigen/Dense>
-// #include <Eigen/Geometry>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 namespace QH{
     // struct to hold all the attitude setpoint info
