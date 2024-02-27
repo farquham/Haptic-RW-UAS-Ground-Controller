@@ -17,68 +17,68 @@ namespace BMN {
 		//helper bools
 		bool mats_ready;
 		bool running;
-		bool contact_check;
-		bool pre_contact_check;
-		bool post_contact_check;
-		bool no_contact_check;
+		// bool contact_check;
+		// bool pre_contact_check;
+		// bool post_contact_check;
+		// bool no_contact_check;
 
 		// data logging variables
-		double fsim_real;
-		double fbrim_real;
-		double fbmn_real;
-		double fprim_real;
-		double fpx4_real;
-		Eigen::Vector2d brim_time;
-		Eigen::Vector2d prim_time;
+		// double fsim_real;
+		// double fbrim_real;
+		// double fbmn_real;
+		// double fprim_real;
+		// double fpx4_real;
+		// Eigen::Vector2d brim_time;
+		// Eigen::Vector2d prim_time;
 
 		//RBsystem stuff
 		//outputs
 		Eigen::SparseMatrix <double> M_inv;
 		Eigen::SparseMatrix <double> Ac;
 		Eigen::SparseMatrix <double> vb;
-		Eigen::Vector3d Drag;
-		Eigen::Vector3d Gravity;
-		Eigen::Vector3d Interaction;
-		Eigen::Vector3d d_pos;
-		Eigen::Vector3d d_vel;
-		Eigen::Vector3d d_acc;
-		Eigen::Matrix3d d_RM;
-		//inputs
-		Eigen::Vector3d DDC;
+		// Eigen::Vector3d Drag;
+		// Eigen::Vector3d Gravity;
+		// Eigen::Vector3d Interaction;
+		// Eigen::Vector3d d_pos;
+		// Eigen::Vector3d d_vel;
+		// Eigen::Vector3d d_acc;
+		// Eigen::Matrix3d d_RM;
+		// //inputs
+		// Eigen::Vector3d DDC;
 
-		//BRIM stuff
-		//out
-		Eigen::Vector3d BPDP;
-		//brim_phin_list
-		//brim_dot_phin_list
+		// //BRIM stuff
+		// //out
+		// Eigen::Vector3d BPDP;
+		// //brim_phin_list
+		// //brim_dot_phin_list
 
-		//in
-		//B_DDC
-		//bint_force_list
+		// //in
+		// //B_DDC
+		// //bint_force_list
 
-		//BMN stuff
-		//out
-		Eigen::Matrix <double, 3, 1> bint_force_list;
-		Eigen::Vector3d B_DDC;
-		//in
-		Eigen::Matrix <double, 3, 1> brim_phin_list;
-		Eigen::Matrix <double, 3, 1> brim_dot_phin_list;
+		// //BMN stuff
+		// //out
+		// Eigen::Matrix <double, 3, 1> bint_force_list;
+		// Eigen::Vector3d B_DDC;
+		// //in
+		// Eigen::Matrix <double, 3, 1> brim_phin_list;
+		// Eigen::Matrix <double, 3, 1> brim_dot_phin_list;
 
-		//PRIM stuff
-		//out
-		Eigen::Vector3d PPDP;
+		// //PRIM stuff
+		// //out
+		// Eigen::Vector3d PPDP;
 
-		//in
-		//P_DDC
-		//d_pos
+		// //in
+		// //P_DDC
+		// //d_pos
 
-		//PX4 stuff
-		//out
-		Eigen::Vector3d P_DDC;
-		Eigen::Vector3d P_DV;
-		Eigen::Vector3d P_DA;
-		//in
-		//PPDP
+		// //PX4 stuff
+		// //out
+		// Eigen::Vector3d P_DDC;
+		// Eigen::Vector3d P_DV;
+		// Eigen::Vector3d P_DA;
+		// //in
+		// //PPDP
 
 		// controller debugging
 		Eigen::Vector3d vel_sp;

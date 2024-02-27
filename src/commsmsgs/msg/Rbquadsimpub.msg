@@ -1,0 +1,30 @@
+# msg for all data the main quadcopter/rigidbody sim has to publish or output
+# to the rest of the system
+
+# timestamp
+std_msgs/Header header
+
+# drone state data
+geometry_msgs/Vector3 position
+geometry_msgs/Vector3 velocity
+geometry_msgs/Vector3 acceleration
+
+# drone state data other
+geometry_msgs/Vector3 drag
+geometry_msgs/Vector3 gravity
+geometry_msgs/Vector3 interaction
+Matrixthreef rotation_matrix
+
+# sparse matrices
+# Eigen::SparseMatrix <double> M_inv;
+# Eigen::SparseMatrix <double> Ac;
+# Eigen::SparseMatrix <double> vb;
+
+# contact state data
+bool contact
+bool pre_contact
+bool post_contact
+bool no_contact
+
+# frequency data
+float64 sim_freq
