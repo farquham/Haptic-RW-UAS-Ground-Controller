@@ -43,6 +43,7 @@ def generate_launch_description():
       PythonLaunchDescriptionSource([os.path.join(
          get_package_share_directory('system_layncher'), 'launch'),
          '/rpicomms.launch.py'])
+      )
 
    return LaunchDescription([
       visualization_node,

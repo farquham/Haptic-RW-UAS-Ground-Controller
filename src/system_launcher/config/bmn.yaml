@@ -1,0 +1,4 @@
+/bmn/sim:
+  ros__parameters:
+    stiffness: 0.0
+    damping: 0.0
