@@ -17,7 +17,7 @@ def generate_launch_description():
       Node(
          package='bmn',
          executable='bmn_node',
-         namespace='bmn',
+         namespace='BMN',
          name='sim',
          parameters=[config]
       )

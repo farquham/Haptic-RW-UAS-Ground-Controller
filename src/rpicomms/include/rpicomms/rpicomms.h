@@ -13,16 +13,19 @@
 #include <geometry_msgs/msg/point.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <stdint.h>
+#include "commsmsgs/msg/Rpicommspub.hpp"
+#include "commsmsgs/msg/Brimpub.hpp"
+#include "commsmsgs/msg/Rbquadsimpub.hpp"
 
 // some nanespace stuff
 using namespace std::chrono;
 using namespace std::chrono_literals;
 
-namespace PX4C {
+namespace RPI {
 	// class for offboard control which starts a ROS2 node
-	class OffboardControl : public rclcpp::Node {
+	class rpicomms : public rclcpp::Node {
 	public:
-		OffboardControl(BMN::Var_Transfer* ptr, std::mutex* lock) : Node("offboard_control")
+		rpicomms() : Node("rpi_comms")
 		{
 			// publishers for picking offboard mode, sending trajectory setpoints and sending vehicle commands
 			setpoint_publisher_ = this->create_publisher<geometry_msgs::msgs::point>("/rpi/in/ext_cmdPoint", 10);
@@ -48,20 +51,22 @@ namespace PX4C {
 				this->publish_trajectory_setpoint(ptr, lock);
 
 			};
-			timer_ = this->create_wall_timer(100ms, timer_callback);
+			timer_ = this->create_wall_timer(1ms, timer_callback);
 		}
 
 	private:
 		// needed rclcpp ptr stuff
-		rclcpp::TimerBase::SharedPtr timer_;
-
 		rclcpp::Publisher<geometry::msgs::point>::SharedPtr setpoint_publisher_;
 		rclcpp::Subscription<geometry::msgs::point>::SharedPtr vehicle_state_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::brimpub>::SharedPtr brim_subscriber_;
+		//rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquad_subscriber_;
+
+		rclcpp::TimerBase::SharedPtr timer_;
 
 		std::atomic<uint64_t> timestamp_;   //!< common synced timestamped
 
 		// series of functions needed to operate the publishers
-		void publish_trajectory_setpoint(BMN::Var_Transfer* ptr, std::mutex* lock);
+		void publish_trajectory_setpoint();
 	};
 }
 

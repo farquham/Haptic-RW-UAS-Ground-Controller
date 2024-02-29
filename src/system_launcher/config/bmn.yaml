@@ -1,4 +1,20 @@
 /bmn/sim:
   ros__parameters:
-    stiffness: 0.0
-    damping: 0.0
+    freqbmn: 1000.0  # refresh rate of bubble method nav loop
+    k_b: 30.0        # stiffness of the bubble
+    k_i: 100.0       # stiffness of the interface
+    d_i: 10.0        # damping of the interface
+    v_s: 3.0         # velocity scaling
+    p_s: 2.0         # position scaling
+    b_r: 0.05        # bubble radius
+    c_r: 0.5         # contact radius
+    a_d: 0.2         # activation distance
+    v_l: 1.2         # velocity limit
+    f_s: 1.0         # force scaling
+    flimx: 6.0       # force limit
+    flimy: 6.0       # force limit
+    flimz: 6.0       # force limit
+    phin_max: 0.4    # max phin before adjusting vmax
+    vmaxchange: 10.0 # max change in vmax
+    PSchange: 0.2    # change spring constants in position region
+    VSchange: 0.1    # change spring constants in velocity region

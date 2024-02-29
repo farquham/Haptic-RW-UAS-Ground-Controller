@@ -4,6 +4,235 @@ namespace API = Haply::HardwareAPI;
 using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;
 
+// starts up the bmn class
+void initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange){
+    // loop var init
+    raw_positions.setZero();
+	velocities.setZero();
+    positions.setZero();
+	abs_positions.setZero();
+	forces.setZero();
+	Va.setZero();
+    D_D_C = { 0, 0, 1.0 };
+    V_B_C = { 0, 0, 1.0 };
+    A_D_C = { 0, 0, 1.0 };
+	phins.setZero();
+	dot_phins.setZero();
+	rforces.setZero();
+	iforces.setZero();
+	iforce_list.setZero();
+
+    // loop param init
+    count = 0;
+    i = 1;
+    magVa = 0.0;
+    freq = 0.0;
+
+    stiff_k = k_i;
+    stiff_ki = k_i;
+    damp_b = d_i;
+    damp_bi = d_i;
+    stiff_kb = k_b;
+    bub_rad = b_r;
+    con_rad = c_r;
+    act_dis = a_d;
+    act_dis_in = a_d;
+    maxVa = v_l;
+    maxVai = v_l;
+    phinmax = phin_max;
+    vachange = vmaxchange;
+    posspringadj = PSchange;
+    velspringadj = VSchange;
+    flims = flims;
+    fscale = f_s;
+    p_scale = p_s;
+	v_scale = v_s;
+
+    run = true;
+    boundary = true;
+    ncon = false;
+    con = false;
+    precon = false;
+    postcon = false;
+
+    // inverse startup
+    comm = BMN::inverse3_setup();
+    API::IO::SerialStream stream{ comm.c_str() };
+    Inverse_object = API::Devices::Inverse3{&stream};
+    h = 1/fbmn;
+    w_c = { -0.02, -0.15, 0.1 };
+    rest = 0.025;
+    BMN::centerDevice()
+}
+
+// fetches the port the inverse is connected too
+std::string BMN::inverse3_setup() {
+    // find the port the inverse is connected too
+    std::string portreturn;
+    auto list = API::Devices::DeviceDetection::DetectInverse3s();
+    for (const auto& port : list) {
+        std::fprintf(stdout, "inverse3: %s\n", port.c_str());
+        portreturn = port.c_str();
+    }
+    if (list.empty()) {
+        fprintf(stderr, "no inverse3 detected\n");
+    }
+    // return it
+    return portreturn;
+}
+
+// helper function that runs at the beginning to guide the user to the center of the workspace region before starting the simulation
+void BMN::centerDevice() {
+    // wake up the inverse and fetch info
+    auto info = Inverse_object.DeviceWakeup();
+    std::fprintf(stdout,
+        "info: id=%u, model=%u, version={hardware:%u, firmware:%u}\n",
+        info.device_id, info.device_model_number,
+        info.hardware_version, info.firmware_version);
+
+    // var initializations and declarations
+    auto start_time = clocky::now();
+    int count = 0;
+    double rad = 0.01;
+    double stiffy = 30;
+    Eigen::Vector3d raw_positions;
+    raw_positions.setZero();
+    Eigen::Vector3d forces;
+    forces.setZero();
+    // checks if the end effector is within the deadzone of the center of the workspace
+    bool flag = start_check(w_c, &raw_positions, rest);
+    Eigen::Vector3d velocities;
+    Eigen::Vector3d positions;
+    API::Devices::Inverse3::EndEffectorStateResponse state;
+    API::Devices::Inverse3::EndEffectorForceRequest requested;
+    // loops until the end effector is within the deadzone of the center of the workspace
+    while (flag) {
+        // calculates the force to apply to the end effector to guide it to the center of the workspace
+        count += 1;
+        requested.force[0] = forces[0];
+        requested.force[1] = forces[1];
+        requested.force[2] = forces[2];
+        state = Inverse_object.EndEffectorForce(requested);
+        raw_positions = { state.position[0], state.position[1], state.position[2] };
+        velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
+        force_restitution(w_c, &raw_positions, &rad, &stiffy, &forces);
+        flag = start_check(w_c, &raw_positions, rest);
+
+        // frequency limiter
+        std::chrono::duration<double> dt = clocky::now() - start_time;
+        double freq = 1 / dt.count();
+        while (freq > 2000)
+        {
+			dt = clocky::now() - start_time;
+			freq = 1 / dt.count();
+		}
+        start_time = clocky::now();
+
+        //// outputs the current state to the user
+        if (count % 1000 == 0) {
+            std::cout << "Not yet within position control region" << std::endl;
+        }
+    }
+}
+
+// takes a step in the simulation updating the position of the drone and the velocity ball then returns the sims current state
+void BMN::BMNstep() {
+    if ((phins.norm() > phinmax)) {
+        maxVa = vachange * maxVai;
+    } else {
+        maxVa = maxVai;
+    }
+
+    // inverse 3 interfacing accounting
+    requested.force[0] = forces[0];
+    requested.force[1] = forces[1];
+    requested.force[2] = forces[2];
+    state = Inverse_object.EndEffectorForce(requested);
+    raw_positions = { state.position[0], state.position[1], state.position[2] };
+    velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
+
+    positions = p_scale * (raw_positions - (w_c));
+    abs_positions = positions + V_B_C;
+
+    // Force calculations
+    BMN::force_restitution(w_c, &raw_positions, &bub_rad, &stiff_bk, &rforces);
+    BMN::force_interface(&stiff_k, &damp_b, &con_rad, &phins, &dot_phins, &iforces, &iforce_list);
+    forces = rforces + iforces;
+    BMN::force_scaling(&forces, &flims, &fscale);
+    BMN::force_scaling(&iforce_list, &flims, &fscale);
+
+    // bubble method region checking and handling
+    boundary = BMN::pos_check(w_c, &raw_positions, &bub_rad);
+    double temp = h * v_scale;
+    if (boundary == false) {
+        BMN::velocity_applied(w_c, &raw_positions, &bub_rad, 100, &Va);
+        magVa = Va.norm();
+        if (magVa > maxVa) {
+            Va = { (maxVa / magVa) * Va[0], (maxVa / magVa) * Va[1] , (maxVa / magVa) * Va[2] };
+            BMN::RK4_vec_update(&V_B_C, Va, temp);
+        }
+        else {
+            BMN::RK4_vec_update(&V_B_C, Va, temp);
+        }
+    }
+
+    // adjust the stiffness and damping of the interface based on the current location of the bubble
+    // if the full simulation says the drone is near the wall
+    // then the activation distance is set to the bubble radius
+    if (precon || con || postcon) {
+        //V_B_C = A_D_C - positions;
+        stiff_k = stiff_ki;
+        damp_b = damp_bi;
+        act_dis = 0.0;
+    }
+    // if the bubble is in the postion control region then
+    // the activation distance is set to standard
+    else if (boundary && ncon) {
+        stiff_k = posspringadj * stiff_ki
+        damp_b = posspringadj * damp_bi;
+        act_dis = bub_rad;
+    }
+    // if the bubble is in the velocity control region and we are not near a wall in the full simulation
+    // then the activation distance is set
+    else if (ncon) {
+        stiff_k = velspringadj * stiff_ki;
+        damp_b = velspringadj * damp_bi;
+        act_dis = act_dis_in;
+    }
+
+    // calculates the change in drone and velocity ball position
+    // adds the position of the virtual velocity ball to the relative posiiton of the drone
+    D_D_C = V_B_C + positions;
+
+    commsmsgs::msg::bmnpub msg{};
+    msg.interface_force_list.x = iforce_list[0];
+    msg.interface_force_list.y = iforce_list[1];
+    msg.interface_force_list.z = iforce_list[2];
+    msg.desired_drone_position.x = D_D_C[0];
+    msg.desired_drone_position.y = D_D_C[1];
+    msg.desired_drone_position.z = D_D_C[2];
+    msg.bmn_freq = freq;
+    bmn_publisher_->publish(msg);
+bmn_publisher_
+    while (freq > (1/h))
+    {
+        dt = clocky::now() - start_time;
+        freq = 1 / dt.count();
+    }
+    start_time = clocky::now();
+
+    // if (count % 100 == 0) {
+    //     // std::cout << "phins: " << phins[0] << ", " << phins[1] << ", " << phins[2] << std::endl;
+    //     // std::cout << "dot phins: " << dot_phins[0] << ", " << dot_phins[1] << ", " << dot_phins[2] << std::endl;
+    //     std::cout << "interface force: " << iforces[0] << ", " << iforces[1] << ", " << iforces[2] << std::endl;
+    //     std::cout << "bubble force: " << rforces[0] << ", " << rforces[1] << ", " << rforces[2] << std::endl;
+    //     std::cout << "total force: " << forces[0] << ", " << forces[1] << ", " << forces[2] << std::endl;
+    // }
+
+    //count += 1;
+    //i += 1;
+}
+
 // function to calculate the force of contact using RIM
 void BMN::force_interface(double* stiff, double* damp, double* act_dis, Eigen::Matrix<double, 3, 1>* phins, Eigen::Matrix<double, 3, 1>* dot_phins, Eigen::Vector3d* force, Eigen::Vector3d* force_list) {
     double diff = 0;
@@ -109,251 +338,6 @@ bool BMN::pos_check(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double
     }
     else {
         return false;
-    }
-}
-
-// fetches the port the inverse is connected too
-std::string BMN::inverse3_setup() {
-    // find the port the inverse is connected too
-    std::string portreturn;
-    auto list = API::Devices::DeviceDetection::DetectInverse3s();
-    for (const auto& port : list) {
-        std::fprintf(stdout, "inverse3: %s\n", port.c_str());
-        portreturn = port.c_str();
-    }
-    if (list.empty()) {
-        fprintf(stderr, "no inverse3 detected\n");
-    }
-    // return it
-    return portreturn;
-}
-
-// helper function that runs at the beginning to guide the user to the center of the workspace region before starting the simulation
-void BMN::centerDevice(API::Devices::Inverse3 Inverse_object, Eigen::Vector3d* workspace_center, double* rest) {
-    // wake up the inverse and fetch info
-    auto info = Inverse_object.DeviceWakeup();
-    std::fprintf(stdout,
-        "info: id=%u, model=%u, version={hardware:%u, firmware:%u}\n",
-        info.device_id, info.device_model_number,
-        info.hardware_version, info.firmware_version);
-
-    // var initializations and declarations
-    auto start_time = clocky::now();
-    int count = 0;
-    double rad = 0.01;
-    double stiffy = 30;
-    Eigen::Vector3d raw_positions;
-    raw_positions.setZero();
-    Eigen::Vector3d forces;
-    forces.setZero();
-    // checks if the end effector is within the deadzone of the center of the workspace
-    bool flag = start_check(workspace_center, &raw_positions, rest);
-    Eigen::Vector3d velocities;
-    Eigen::Vector3d positions;
-    API::Devices::Inverse3::EndEffectorStateResponse state;
-    API::Devices::Inverse3::EndEffectorForceRequest requested;
-    // loops until the end effector is within the deadzone of the center of the workspace
-    while (flag) {
-        // calculates the force to apply to the end effector to guide it to the center of the workspace
-        count += 1;
-        requested.force[0] = forces[0];
-        requested.force[1] = forces[1];
-        requested.force[2] = forces[2];
-        state = Inverse_object.EndEffectorForce(requested);
-        raw_positions = { state.position[0], state.position[1], state.position[2] };
-        velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
-        force_restitution(workspace_center, &raw_positions, &rad, &stiffy, &forces);
-        flag = start_check(workspace_center, &raw_positions, rest);
-
-        // frequency limiter
-        std::chrono::duration<double> dt = clocky::now() - start_time;
-        double freq = 1 / dt.count();
-        while (freq > 2000)
-        {
-			dt = clocky::now() - start_time;
-			freq = 1 / dt.count();
-		}
-        start_time = clocky::now();
-
-        //// outputs the current state to the user
-        if (count % 1000 == 0) {
-            std::cout << "Not yet within position control region" << std::endl;
-        }
-    }
-}
-
-// takes a step in the simulation updating the position of the drone and the velocity ball then returns the sims current state
-void BMN::BMNLoop(API::Devices::Inverse3 Inverse_object, Eigen::Vector3d* workspace_center, BMN::Var_Transfer* ptr, std::mutex* lock, setup_parameters* params) {
-    // sets up some local vector variables
-    Eigen::Vector3d raw_positions;
-    raw_positions.setZero();
-    Eigen::Vector3d velocities;
-    velocities.setZero();
-    Eigen::Vector3d positions;
-    positions.setZero();
-    Eigen::Vector3d abs_positions;
-    abs_positions.setZero();
-    Eigen::Vector3d forces;
-    forces.setZero();
-    Eigen::Vector3d Va;
-    Va.setZero();
-    Eigen::Vector3d D_D_C = { 0, 0, 1.0 };
-    Eigen::Vector3d V_B_C = { 0, 0, 1.0 };
-    Eigen::Vector3d A_D_C = { 0, 0, 1.0 };
-    Eigen::Vector3d phins;
-    phins.setZero();
-    Eigen::Vector3d dot_phins;
-    dot_phins.setZero();
-    Eigen::Vector3d rforces;
-    rforces.setZero();
-    Eigen::Vector3d iforces;
-    iforces.setZero();
-    Eigen::Vector3d iforce_list;
-    iforce_list.setZero();
-
-    int count = 0;
-    int i = 1;
-    double magVa = 0.0;
-    double freq = 0.0;
-
-    double stiff_k = params->k_i;
-    double damp_b = params->d_i;
-    double act_dis = params->a_d;
-    double v_scale = params->v_s;
-    double maxVa = params->v_l;
-    double phinmax = params->phin_max;
-    double vachange = params->vmaxchange;
-    double posspringadj = params->PSchange;
-    double velspringadj = params->VSchange;
-
-    bool run = true;
-    bool boundary = true;
-    bool ncon = false;
-    bool con = false;
-    bool precon = false;
-    bool postcon = false;
-
-    Eigen::Vector3d flims = params->flims;
-    double fscale = params->f_s;
-
-    // inverse data fetching and handling
-    API::Devices::Inverse3::EndEffectorStateResponse state;
-    API::Devices::Inverse3::EndEffectorForceRequest requested;
-    auto start_time = clocky::now();
-
-    //main loop that runs until the program is stopped
-    while (run) {
-        // fetching inputs for the loop
-        if (i * params->s_s >= (1 / params->f_com)) {
-            lock->lock();
-            phins = ptr->brim_phin_list;
-            dot_phins = ptr->brim_dot_phin_list;
-            run = ptr->running;
-            ncon = ptr->no_contact_check;
-            con = ptr->contact_check;
-            precon = ptr->pre_contact_check;
-            postcon = ptr->post_contact_check;
-            A_D_C = ptr->d_pos;
-            lock->unlock();
-        }
-
-        if ((phins.norm() > phinmax)) {
-            maxVa = vachange * params->v_l;
-        } else {
-            maxVa = params->v_l;
-        }
-
-        // inverse 3 interfacing accounting
-        requested.force[0] = forces[0];
-        requested.force[1] = forces[1];
-        requested.force[2] = forces[2];
-        state = Inverse_object.EndEffectorForce(requested);
-        raw_positions = { state.position[0], state.position[1], state.position[2] };
-        velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
-
-        positions = params->p_s * (raw_positions - (*workspace_center));
-        abs_positions = positions + V_B_C;
-
-        // Force calculations
-        BMN::force_restitution(workspace_center, &raw_positions, &(params->b_r), &(params->k_b), &rforces);
-        BMN::force_interface(&stiff_k, &damp_b, &(params->c_r), &phins, &dot_phins, &iforces, &iforce_list);
-        forces = rforces + iforces;
-        BMN::force_scaling(&forces, &flims, &fscale);
-        BMN::force_scaling(&iforce_list, &flims, &fscale);
-
-        // bubble method region checking and handling
-        boundary = BMN::pos_check(workspace_center, &raw_positions, &(params->b_r));
-        double temp = params->s_s * v_scale;
-        if (boundary == false) {
-            BMN::velocity_applied(workspace_center, &raw_positions, &(params->b_r), 100, &Va);
-            magVa = Va.norm();
-            if (magVa > maxVa) {
-                Va = { (maxVa / magVa) * Va[0], (maxVa / magVa) * Va[1] , (maxVa / magVa) * Va[2] };
-                BMN::RK4_vec_update(&V_B_C, Va, temp);
-            }
-            else {
-                BMN::RK4_vec_update(&V_B_C, Va, temp);
-            }
-        }
-
-        // adjust the stiffness and damping of the interface based on the current location of the bubble
-        // if the full simulation says the drone is near the wall
-        // then the activation distance is set to the bubble radius
-        if (precon || con || postcon) {
-            //V_B_C = A_D_C - positions;
-            stiff_k = params->k_i;
-            damp_b = params->d_i;
-            act_dis = 0.0;
-        }
-        // if the bubble is in the postion control region then
-        // the activation distance is set to standard
-        else if (boundary && ncon) {
-            stiff_k = posspringadj * params->k_i;
-            damp_b = posspringadj * params->d_i;
-            act_dis = params->b_r;
-        }
-        // if the bubble is in the velocity control region and we are not near a wall in the full simulation
-        // then the activation distance is set
-        else if (ncon) {
-            stiff_k = velspringadj * params->k_i;
-            damp_b = velspringadj * params->d_i;
-            act_dis = params->a_d;
-        }
-
-        // calculates the change in drone and velocity ball position
-        // adds the position of the virtual velocity ball to the relative posiiton of the drone
-        D_D_C = V_B_C + positions;
-
-        // pushing outputs from the loop
-        if (i * params->s_s >= (1 / params->f_com)) {
-            lock->lock();
-            ptr->bint_force_list = iforce_list;
-            ptr->B_DDC = D_D_C;
-            ptr->fbmn_real = freq;
-            lock->unlock();
-            i = 1;
-        }
-
-        // frequency limiter
-        std::chrono::duration<double> dt = clocky::now() - start_time;
-        freq = 1 / dt.count();
-        while (freq > (1/params->s_s))
-        {
-            dt = clocky::now() - start_time;
-            freq = 1 / dt.count();
-        }
-        start_time = clocky::now();
-
-        // if (count % 100 == 0) {
-        //     // std::cout << "phins: " << phins[0] << ", " << phins[1] << ", " << phins[2] << std::endl;
-        //     // std::cout << "dot phins: " << dot_phins[0] << ", " << dot_phins[1] << ", " << dot_phins[2] << std::endl;
-        //     std::cout << "interface force: " << iforces[0] << ", " << iforces[1] << ", " << iforces[2] << std::endl;
-        //     std::cout << "bubble force: " << rforces[0] << ", " << rforces[1] << ", " << rforces[2] << std::endl;
-        //     std::cout << "total force: " << forces[0] << ", " << forces[1] << ", " << forces[2] << std::endl;
-        // }
-
-        count += 1;
-        //i += 1;
     }
 }
 
