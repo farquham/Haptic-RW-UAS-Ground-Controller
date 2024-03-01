@@ -27,30 +27,26 @@ namespace RPI {
 	public:
 		rpicomms() : Node("rpi_comms")
 		{
-			// publishers for picking offboard mode, sending trajectory setpoints and sending vehicle commands
+			// subscribers for recieving ddc from bmn comp
+			brim_subscriber_ = this->create_subscription<commsmsgs::msg::brimpub>("/GC/out/brim", 10, std::bind(&rpicomms::brim_callback, [this], std::placeholders::_1));
+
+			// publishers for send ddc to rpi companion comp
 			setpoint_publisher_ = this->create_publisher<geometry_msgs::msgs::point>("/rpi/in/ext_cmdPoint", 10);
 
-			// state subscriber for recieving IRL drone position, velocity and acceleration
-			rmw_qos_profile_t qos_profile = rmw_qos_profile_sensor_data;
-			auto qos = rclcpp::QoS(rclcpp::QoSInitialization(qos_profile.history, 5), qos_profile);
-			vehicle_state_subscriber_ = this->create_subscription<geometry_msgs::msgs::point>("/rpi/out/localPoint", qos, [this, ptr, lock](const geometry::msgs::point::UniquePtr msg) {
-				//subscribe_vehicle_state(ptr, lock, msg);
-				Eigen::Vector3d actual_position;
-				actual_position[0] = msg->y;
-				actual_position[1] = msg->x;
-				actual_position[2] = -msg->z;
-				lock->lock();
-				ptr->P_DDC = actual_position;
-				lock->unlock();
-			});
-
+			// state subscriber for recieving IRL drone position, velocity and acceleration from rpi companion comp
+			vehicle_state_subscriber_ = this->create_subscription<geometry_msgs::msgs::point>("/rpi/out/localPoint", 10, std::bind(&rpicomms::vehicle_state_callback, [this], std::placeholders::_1));
+			
 			// timer is called every 100ms to send trajectory setpoints and associated info
-			auto timer_callback = [this, ptr, lock]() -> void {
+			auto timer_callback = [this]() -> void {
 
 				// offboard_control_mode needs to be paired with trajectory_setpoint
-				this->publish_trajectory_setpoint(ptr, lock);
+				this->publish_trajectory_setpoint();
 
 			};
+
+			// init node vars
+			// initrpicomms();
+
 			timer_ = this->create_wall_timer(1ms, timer_callback);
 		}
 
@@ -65,8 +61,13 @@ namespace RPI {
 
 		std::atomic<uint64_t> timestamp_;   //!< common synced timestamped
 
-		// series of functions needed to operate the publishers
+		// series of functions needed to operate the publisher
 		void publish_trajectory_setpoint();
+		void vehicle_state_callback(const geometry::msgs::point::UniquePtr & msg);
+		void brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg);
+
+		Eigen::Vector3d drone_position_cmd;
+		Eigen::Vector3d drone_position_actual;
 	};
 }
 

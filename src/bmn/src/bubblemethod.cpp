@@ -213,7 +213,7 @@ void BMN::BMNstep() {
     msg.desired_drone_position.z = D_D_C[2];
     msg.bmn_freq = freq;
     bmn_publisher_->publish(msg);
-bmn_publisher_
+    
     while (freq > (1/h))
     {
         dt = clocky::now() - start_time;
@@ -231,6 +231,21 @@ bmn_publisher_
 
     //count += 1;
     //i += 1;
+}
+
+// brim callback processing
+void BMN::brim_callback(const commsmsgs::msg::brimpub::SharedPtr & msg) {
+    phins = { msg->phin_list->x, msg->phin_list->y, msg->phin_list->z };
+    dot_phins = { msg->phin_dot_list->x, msg->phin_dot_list->y, msg->phin_dot_list->z };
+}
+
+// rbquadsim callback processing
+void BMN::rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::SharedPtr & msg) {
+    con = msg->contact;
+    precon = msg->precontact;
+    postcon = msg->postcontact;
+    ncon = msg->nocontact;
+    A_D_C = { msg->position->x, msg->position->y, msg->position->z };
 }
 
 // function to calculate the force of contact using RIM

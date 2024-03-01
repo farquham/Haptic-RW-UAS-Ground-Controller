@@ -21,6 +21,7 @@ namespace BMN {
 			bmnav(float freqbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange) : Node("bm_nav")
 			{
 				brim_subscriber_ = this->create_subscription<commsmsgs::msg::brimpub>("/GC/out/brim", 10, std::bind(&bmnav::brim_callback, [this], std::placeholders::_1));
+				rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&bmnav::rbquadsim_callback, [this], std::placeholders::_1));
 
 				bmn_publisher_ = this->create_publisher<commsmsgs::msg::bmnpub>("/GC/out/bmn", 10);
 
@@ -40,6 +41,7 @@ namespace BMN {
 		private:
 			// subscibers and publishers
 			rclcpp::Subscription<commsmsgs::msg::brimpub>::SharedPtr brim_subscriber_;
+			rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
 			rclcpp::Publisher<commsmsgs::msg::bmnpub>::SharedPtr bmn_publisher_;
 
 			rclcpp::TimerBase::SharedPtr timer_pub_;
@@ -54,6 +56,11 @@ namespace BMN {
 			void centerDevice();
 			// the main function for the bmn simulation which loops until the user stops it
 			void BMNstep(setup_parameters* params);
+
+			// callback for the brim subscriber
+			void brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg);
+			// callback for the rbquadsim subscriber
+			void rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg);
 
 			// helper functions
 			// function to calculate the interface force for given phins and dot_phins
