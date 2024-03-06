@@ -1,0 +1,12 @@
+/r_rim/sim:
+  ros__parameters:
+    freqrim: 1000.0  # refresh rate of brim loop
+    fcom1: 100.0     # communication rate with sim loop
+    fcom2: 100.0     # communication rate with bmn loop
+    rim_type: 2      # rim type (0: ZOH, 1: FOH, 2: RIM)
+    xlim: 5.0        # x limit
+    ylim: 5.0        # y limit
+    zlim: 5.0        # z limit
+    dxlim: 12.0      # dx limit
+    dylim: 12.0      # dy limit
+    dzlim: 3.0       # dz limit

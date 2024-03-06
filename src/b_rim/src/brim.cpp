@@ -4,7 +4,7 @@ using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;
 
 // BRIM constructor
-BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type) {
+BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) {
 	const int size = 42;
 	const int dim = 3;
 	// initialize the sparse matrices
@@ -41,103 +41,45 @@ BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type) {
 
 	count = 0;
 	i = 0;
-	j = 0;
 	freq = 0.0;
 
-	lims = Eigen::Vector3d::Zero();
-	dlims = Eigen::Vector3d::Zero();
+	lims = {xlim, ylim, zlim};
+	dlims = {dxlim, dylim, dzlim};
 
 	// fill the sparse matrices
 	init_mats();
 }
 
 // Main BRIM loop that updates the state of the RIM during the program run
-void BRIM::brim::BRIMstep(BMN::Var_Transfer* ptr, std::mutex* lock, int fcom1, int fcom2, int rim_type) {
-	//#######################################################
-	// outdated datapipe handling
-	Eigen::Vector3d temp_DDP = Eigen::Vector3d::Zero();
-	temp_DDP = ptr->B_DDC;
-	// sparse stuff
-	Ac = ptr->Ac;
-	M_hat_inv = ptr->M_inv;
-	tempvb = ptr->vb;
-	v_g(0, 0) = tempvb(0, 0);
-	v_g(1, 0) = tempvb(0, 1);
-	v_g(2, 0) = tempvb(0, 2);
-	v_g(3, 0) = tempvb(0, 3);
-	v_g(4, 0) = tempvb(0, 4);
-	v_g(5, 0) = tempvb(0, 5);
-	v_g_old = v_g;
-	// start flag
-	run = ptr->running;
-	//mystery
-	ptr->DDC = temp_DDP;
+void BRIM::brim::BRIMstep() {
+	// start flag?
+	// run = ptr->running;
+	// mystery
+	// ptr->DDC = temp_DDP;
 	// params
-	lims = ptr->BRIM_lims;
-	dlims = ptr->BRIM_dlims;
 
+	auto loop_start = clocky::now();
 
-	// setup all the RB stuff and get first time estimate
-	rb_setup(&Ac, &M_hat_inv, &Pc_hat, &I, &IPMi, &M_temp_offset);
-	std::chrono::duration<double> loop_time = clocky::now() - start_time;
-
-
-	// fetching data for the loop from RBS loop and running rb_updates 
-	if (i * h >= (h_com1)) {
-		// import all the data pipe struct vars
-		lock->lock();
-		Ac = ptr->Ac;
-		M_hat_inv = ptr->M_inv;
-		tempvb = ptr->vb;
-		lock->unlock();
-		v_g(0, 0) = tempvb(0, 0);
-		v_g(1, 0) = tempvb(0, 1);
-		v_g(2, 0) = tempvb(0, 2);
-		v_g(3, 0) = tempvb(0, 3);
-		v_g(4, 0) = tempvb(0, 4);
-		v_g(5, 0) = tempvb(0, 5);
-
-		if (r_type == 2) {
-			// update the rigidbody system matrices
-			rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
-		}
-		else {
-			// for ZOH and FOH
-			dot_phin_list = Ai * v_g;
-			R_vec = DP - DDP;
-			phin_list[0] = R_vec[0];
-			phin_list[1] = R_vec[1];
-			phin_list[2] = R_vec[2];
-		}
+	// setup all the RB stuff and get first time estimate run first 100 loops to ensure all the data was imported properly
+	if (i < 100) {
+		rb_setup(&Ac, &M_hat_inv, &Pc_hat, &I, &IPMi, &M_temp_offset);
 	}
 
 	// runs the main update function every loop which updates the BMN system vectors
 	bmn_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h, &dlims, &lims);
 
+	// publishs the BRIM data
+	commsmsgs::msg::brimpub msg{};
+	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
+	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};
+	msg.desired_drone_position = {DDP[0], DDP[1], DDP[2]};
+	msg.brim_freq = freq;
+	msg.brim_count = count;
+	msg.brim_time = loop_time.count();
 
-	//pushing the data from the loop to the BMN loop
-	if (j * h >= (1. / fcom2)) {
-		lock->lock();
-		ptr->brim_phin_list = phin_list;
-		ptr->brim_dot_phin_list = dot_phin_list;
-		ptr->fbrim_real = freq;
-		ptr->brim_time[0] = count;
-		ptr->brim_time[1] = loop_time.count();
-		lock->unlock();
-		j = 0;
-	}
-
-	// pushing the data from the loop to the RBS loop
-	if (i * h >= (1. / fcom1)) {
-		lock->lock();
-		ptr->DDC = DDP;
-		lock->unlock();
-		i = 0;
-	}
-
+	// calculates loop time
 	auto loop_end = clocky::now();
 	loop_time = loop_end - loop_start;
-	//#######################################################
 
 	// no more sim stuff below this line //
 	// frequency limiter
@@ -162,7 +104,6 @@ void BRIM::brim::BRIMstep(BMN::Var_Transfer* ptr, std::mutex* lock, int fcom1, i
 
 	count += 1;
 	i += 1;
-	j += 1;
 }
 
 // callback for the bmn subscriber
@@ -177,6 +118,30 @@ void rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg) {
 	fd = {msg->drag->x, msg->drag->y, msg->drag->z};
 	fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
 	fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
+
+	// sparse stuff
+	// Ac = ptr->Ac;
+	// M_hat_inv = ptr->M_inv;
+	// tempvb = ptr->vb;
+	// v_g(0, 0) = tempvb(0, 0);
+	// v_g(1, 0) = tempvb(0, 1);
+	// v_g(2, 0) = tempvb(0, 2);
+	// v_g(3, 0) = tempvb(0, 3);
+	// v_g(4, 0) = tempvb(0, 4);
+	// v_g(5, 0) = tempvb(0, 5);
+
+	if (r_type == 2) {
+		// update the rigidbody system matrices
+		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
+	}
+	else {
+		// for ZOH and FOH
+		dot_phin_list = Ai * v_g;
+		R_vec = DP - DDP;
+		phin_list[0] = R_vec[0];
+		phin_list[1] = R_vec[1];
+		phin_list[2] = R_vec[2];
+	}
 }
 
 // initializes and fills all the sparsematrices with temp values

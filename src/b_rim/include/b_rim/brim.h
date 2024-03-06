@@ -19,7 +19,7 @@
 namespace BRIM {
 	class brim : public rclcpp:Node {
 	public:
-		brim(float freqrim, int fcom1, int fcom2, int rim_type) : Node("brim")
+		brim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("brim")
 		{
 			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, [this], std::placeholders::_1));
 			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
@@ -32,13 +32,14 @@ namespace BRIM {
 			}
 
 			// add params
-			initbrim(freqrim, fcom1, fcom2, rim_type);
+			initbrim(freqrim, fcom1, fcom2, rim_type, xlim, ylim, zlim, dxlim, dylim, dzlim);
 
 			// wait for a few ms for variables to finish initializing
 			// I dont know for some reason we need a pause here
 			for (int i = 0; i < 100; i++) {}
 
 			start_time = clocky::now();
+			loop_time = clocky::now();
 
 			timer_pub_ = this->create_wall_timer(1ms, timer_callback);
 		}
@@ -53,7 +54,7 @@ namespace BRIM {
 		std::atomic<uint64_t> timestamp_;
 
 		// BRIM constructor
-		initbrim(float frim, int fcom1, int fcom2, int rim_type);
+		initbrim(float frim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim);
 		// BRIM loop starter
 		void BRIMstep();
 
@@ -128,10 +129,13 @@ namespace BRIM {
 		double h_com1;
 		double r_type;
 
-		int count, i, j;
+		int count, i;
 		double freq;
 
 		Eigen::Matrix<double, 1, 42> tempvb;
+
+		std::chrono::duration<double> start_time;
+		std::chrono::duration<double> loop_time;
 	};
 }
 
