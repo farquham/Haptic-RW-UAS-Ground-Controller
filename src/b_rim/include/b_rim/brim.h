@@ -9,17 +9,59 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/QR>
+
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
+#include "commsmsgs/msg/Brimpub.hpp"
+#include "commsmsgs/msg/Bmnpub.hpp"
+#include "commsmsgs/msg/Rbquadsimpub.hpp"
 
 namespace BRIM {
-	class BRIM {
+	class brim : public rclcpp:Node {
 	public:
-		// BRIM constructor
-		BRIM(int frim);
-		// BRIM loop starter
-		void BRIMLoop(BMN::Var_Transfer* ptr, std::mutex* lock, int fcom1, int fcom2, int rim_type);
+		brim(float freqrim, int fcom1, int fcom2, int rim_type) : Node("brim")
+		{
+			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, [this], std::placeholders::_1));
+			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
+
+			brim_publisher_ = this->create_publisher<commsmsgs::msg::brimpub>("/GC/out/brim", 10);
+
+			auto timer_callback = [this]() -> void {
+				// what ever code to run every timer iteration
+				this->BRIMstep();
+			}
+
+			// add params
+			initbrim(freqrim, fcom1, fcom2, rim_type);
+
+			// wait for a few ms for variables to finish initializing
+			// I dont know for some reason we need a pause here
+			for (int i = 0; i < 100; i++) {}
+
+			start_time = clocky::now();
+
+			timer_pub_ = this->create_wall_timer(1ms, timer_callback);
+		}
 	private:
+		// subscibers and publishers
+		rclcpp::Subscription<commsmsgs::msg::bmnpub>::SharedPtr bmn_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
+		rclcpp::Publisher<commsmsgs::msg::brimpub>::SharedPtr brim_publisher_;
+
+		rclcpp::TimerBase::SharedPtr timer_pub_;
+
+		std::atomic<uint64_t> timestamp_;
+
+		// BRIM constructor
+		initbrim(float frim, int fcom1, int fcom2, int rim_type);
+		// BRIM loop starter
+		void BRIMstep();
+
+		// callback for the bmn subscriber
+		void bmn_callback(const commsmsgs::msg::bmnpub::UniquePtr & msg);
+		// callback for the rbquadsim subscriber
+		void rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg);
+
 		// helper methods for BRIM
 		// starts all the matrices
 		void init_mats();
@@ -36,6 +78,11 @@ namespace BRIM {
 		void sparse_replace(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix3d* t_replace, int row, int col);
 		// lim helper
 		void Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim);
+		// runge kutta 4th order integrator for use throughout simulation
+		void RK4_update(double* xn, double* xn_dot, double* h);
+		void RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h);	
+		
+		
 		// RIM variables
 		// sparse matrices used for rigidbody projection calculations
 		Eigen::SparseMatrix <double> Ac;
@@ -80,12 +127,12 @@ namespace BRIM {
 		double h;
 		double h_com1;
 		double r_type;
-		
-		// runge kutta 4th order integrator for use throughout simulation
-		void RK4_update(double* xn, double* xn_dot, double* h);
-		void RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h);	
-	};
 
+		int count, i, j;
+		double freq;
+
+		Eigen::Matrix<double, 1, 42> tempvb;
+	};
 }
 
 #endif

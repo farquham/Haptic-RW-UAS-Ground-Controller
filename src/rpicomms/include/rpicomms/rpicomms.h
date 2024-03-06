@@ -35,12 +35,17 @@ namespace RPI {
 
 			// state subscriber for recieving IRL drone position, velocity and acceleration from rpi companion comp
 			vehicle_state_subscriber_ = this->create_subscription<geometry_msgs::msgs::point>("/rpi/out/localPoint", 10, std::bind(&rpicomms::vehicle_state_callback, [this], std::placeholders::_1));
+
+			// publisher for sending IRL drone position, velocity and acceleration to the rest of the system
+			rpicomms_publisher_ = this->create_publisher<commsmsgs::msg::rpicommspub>("/GC/out/rpicomms", 10);
 			
 			// timer is called every 100ms to send trajectory setpoints and associated info
 			auto timer_callback = [this]() -> void {
 
-				// offboard_control_mode needs to be paired with trajectory_setpoint
+				// trajectory_setpoint
 				this->publish_trajectory_setpoint();
+				// vehicle_state
+				this->publish_vehicle_state();
 
 			};
 
@@ -56,6 +61,7 @@ namespace RPI {
 		rclcpp::Subscription<geometry::msgs::point>::SharedPtr vehicle_state_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::brimpub>::SharedPtr brim_subscriber_;
 		//rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquad_subscriber_;
+		rclcpp::Publisher<commsmsgs::msg::rpicommspub>::SharedPtr rpicomms_publisher_;
 
 		rclcpp::TimerBase::SharedPtr timer_;
 
@@ -65,6 +71,7 @@ namespace RPI {
 		void publish_trajectory_setpoint();
 		void vehicle_state_callback(const geometry::msgs::point::UniquePtr & msg);
 		void brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg);
+		void publish_vehicle_state();
 
 		Eigen::Vector3d drone_position_cmd;
 		Eigen::Vector3d drone_position_actual;

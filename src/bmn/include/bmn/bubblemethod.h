@@ -55,7 +55,7 @@ namespace BMN {
 			// safety function to center the end effector
 			void centerDevice();
 			// the main function for the bmn simulation which loops until the user stops it
-			void BMNstep(setup_parameters* params);
+			void BMNstep();
 
 			// callback for the brim subscriber
 			void brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg);
