@@ -301,3 +301,85 @@ void RBH::sparse_replace4(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matri
 		(*tb_replaced).coeffRef(row + i, col + 3) = (*t_replace)(i, 3);
 	}
 }
+
+// BASIC
+// function to convert a ros msg to a sparse matrix
+// void RBH::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
+// 	int rows = min.layout.dim[0].size;
+// 	int cols = min.layout.dim[1].size;
+// 	float data = 0.0;
+// 	std::vector< Eigen::Triplet<double> > tripletList;
+// 	tripletList.reserve(64);
+// 	for (int i = 0; i < rows; i++) {
+// 		for (int j = 0; j < cols; j++) {
+// 			data = min.data[i * cols + j];
+// 			if (data != 0) {
+// 				tripletList.push_back(Eigen::Triplet<double>(i, j, data));
+// 			}
+// 		}
+// 	}
+// 	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
+// }
+
+// function to convert from a sparse matrix to a ros msg
+// void matrix_to_msg(Eigen::SparseMatrix<double>* min, std_msgs::msg::Float64MultiArray* mout) {
+// 	int rows = min->rows();
+// 	int cols = min->cols();
+// 	float data = 0.0;
+// 	mout->layout.dim[0].size = min->rows();
+// 	mout->layout.dim[1].size = min->cols();
+// 	mout->data.resize(min->rows() * min->cols());
+// 	for (int i = 0; i < rows; i++) {
+// 		for (int j = 0; j < cols; j++) {+
+// 			data = min->coeff(i, j);
+// 			if (data != 0) {
+// 				mout->data[i * cols + j] = data;
+// 			}
+// 		}
+// 	}
+// }
+
+// ADVANCED
+// function to convert a ros msg to a sparse matrix
+void RBH::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
+	int rows = min.data[0];
+	int cols = min.data[1];
+	int size = min.data[2];
+	float data = 0.0;
+	int i,j = 0;
+	std::vector< Eigen::Triplet<double> > tripletList;
+	tripletList.reserve(size-1);
+	for (int k = 1; k < size; k++) {
+		data = min.data[k * 3 + 2];
+		i = min.data[k * 3 + 0];
+		j = min.data[k * 3 + 1];
+		if (data != 0) {
+			tripletList.push_back(Eigen::Triplet<double>(i, j, data));
+		}
+	}
+	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
+}
+
+// function to convert from a sparse matrix to a ros msg
+void matrix_to_msg(Eigen::SparseMatrix<double>* min, std_msgs::msg::Float64MultiArray* mout) {
+	float data = 0.0;
+	int i,j = 0;
+	int size = min->nonZeros() + 1;
+	mout->layout.dim[0].size = size;
+	mout->layout.dim[1].size = 3;
+	mout->data.resize(3 * size);
+	auto values = min->valuePtr();
+	auto inner = min->innerIndexPtr();
+	auto outer = min->outerIndexPtr();
+	mout->data[0] = min->rows();
+	mout->data[1] = min->cols();
+	mout->data[2] = size;
+	for (size_t k = 1; k < size; k++) {
+		data = values[k];
+		i = inner[k];
+		j = outer[k];
+		mout->data[k * 3 + 0] = i;
+		mout->data[k * 3 + 1] = j;
+		mout->data[k * 3 + 2] = data;
+	}
+}

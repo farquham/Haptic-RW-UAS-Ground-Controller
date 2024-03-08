@@ -11,6 +11,9 @@
 #include <mutex>
 #include "quadcopter.h"
 
+// include the ros2 stuff
+#include <std_msgs/msg/float64_multi_array.hpp>
+
 namespace RBH {
 	// struct for defining the state of a plane
 	struct planes {
@@ -49,6 +52,8 @@ namespace RBH {
 	void sparse_replace(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix3d* t_replace, int row, int col);
 	void sparse_fill4(Eigen::SparseMatrix<double>* tb_filled, Eigen::Matrix4d* t_fill, int row, int col);
 	void sparse_replace4(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix4d* t_replace, int row, int col);
+
+	void matrix_to_msg(Eigen::SparseMatrix<double>* min, std_msgs::msg::Float64MultiArray* mout);
 }
 
 #endif
