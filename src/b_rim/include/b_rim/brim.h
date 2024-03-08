@@ -20,7 +20,7 @@
 namespace BRIM {
 	class brim : public rclcpp:Node {
 	public:
-		brim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("brim")
+		brim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("brim_node")
 		{
 			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, [this], std::placeholders::_1));
 			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));

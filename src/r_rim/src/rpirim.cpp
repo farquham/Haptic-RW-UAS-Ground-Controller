@@ -1,10 +1,10 @@
-#include "PRIM.h"
+#include <../include/p_rim/rpirim.h>
 
 using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;
 
-// PRIM constructor
-PRIM::PRIM::PRIM(int fr) {
+// BRIM constructor
+void PRIM::prim::initprim(float fr, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) {
 	const int size = 42;
 	const int dim = 3;
 	// initialize the sparse matrices
@@ -30,155 +30,120 @@ PRIM::PRIM::PRIM(int fr) {
 	R_vec = Eigen::Vector3d::Zero();
 	R_vec_est = Eigen::Vector3d::Zero();
 	R_tilde_mat = Eigen::Matrix3d::Zero();
-	DDP = Eigen::Vector3d::Zero();
-	DP = Eigen::Vector3d::Zero();
+	ADP = {0,0,1.0};
+	DP = {0,0,1.0};
 	M_temp_offset = Eigen::Matrix3d::Zero();
+
+	fg = Eigen::Vector3d::Zero();
+	fd = Eigen::Vector3d::Zero();
+	fi = Eigen::Vector3d::Zero();
 
 	frim = fr;
 	h = 1. / fr;
-	h_com1 = h;
+	h_com1 = 1. / fcom1;
+	r_type = rim_type;
+
+	count = 0;
+	i = 0;
+	freq = 0.0;
+
+	lims = {xlim, ylim, zlim};
+	dlims = {dxlim, dylim, dzlim};
 
 	// fill the sparse matrices
 	init_mats();
 }
 
-// Main PRIM loop that updates the state of the RIM during the program run
-void PRIM::PRIM::PRIMLoop(BMN::Var_Transfer* ptr, std::mutex* lock, int fcom_slow, int fcom_fast, int rim_type) {
-	// local var initialization
-	auto start_time = clocky::now();
-	int count = 0;
-	int i = 0;
-	int j = 0;
-	bool run = true;
-	double freq = 0.0;
-	h_com1 = 1. / fcom_slow;
-	r_type = rim_type;
-	Eigen::Vector3d temp_DDP = Eigen::Vector3d::Zero();
+// Main BRIM loop that updates the state of the RIM during the program run
+void PRIM::prim::PRIMstep() {
+	// start flag?
+	// run = ptr->running;
+	// mystery
+	// ptr->DDC = temp_ADP;
+	// params
 
-	//copy all the data initially
-	lock->lock();
-	//from rbsystem
-	temp_DDP = ptr->P_DDC;
-	Ac = ptr->Ac;
-	M_hat_inv = ptr->M_inv;
-	Eigen::Vector3d fd = ptr->Drag;
-	Eigen::Vector3d fg = ptr->Gravity;
-	dot_phin_list = Ai * v_g;
-	Eigen::Matrix<double, 1, 42> tempvb;
-	tempvb = ptr->vb;
-	v_g(0, 0) = tempvb(0, 0);
-	v_g(1, 0) = tempvb(0, 1);
-	v_g(2, 0) = tempvb(0, 2);
-	v_g(3, 0) = tempvb(0, 3);
-	v_g(4, 0) = tempvb(0, 4);
-	v_g(5, 0) = tempvb(0, 5);
-	v_g_old = v_g;
-	//from bmn
-	lambda_i = Eigen::Vector3d::Zero();  //!!!
-	run = ptr->running;
-	lock->unlock();
+	auto loop_start = clocky::now();
 
-	// setup all the RB stuff and get first time estimate
-	rb_setup(&Ac, &M_hat_inv, &Pc_hat, &I, &IPMi, &M_temp_offset);
-	std::chrono::duration<double> loop_time = clocky::now() - start_time;
+	// setup all the RB stuff and get first time estimate run first 100 loops to ensure all the data was imported properly
+	if (i < 100) {
+		rb_setup(&Ac, &M_hat_inv, &Pc_hat, &I, &IPMi, &M_temp_offset);
+	}
 
-	// main loop
-	while (run) {
-		auto loop_start = clocky::now();
-		// fetching data for the loop from px4 coms loop
-		if (j * h >= (1. / fcom_slow)) {
-			lock->lock();
-			//lambda_i = ptr->pint_force_list;
-			DDP = ptr->P_DDC;
-			run = ptr->running;
-			lock->unlock();
-		} else {
-			DDP = DP - R_vec_est;
-		}
+	// runs the main update function every loop which updates the BMN system vectors
+	fast_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h, &dlims, &lims);
 
-		// fetching data for the loop from RBS loop and running rb_updates 
-		if (i * h >= (1. / fcom_fast)) {
-			if (r_type == 2) {
-				// import all the data pipe struct vars
-				lock->lock();
-				Ac = ptr->Ac;
-				M_hat_inv = ptr->M_inv;
-				fd = ptr->Drag;
-				fg = ptr->Gravity;
-				tempvb = ptr->vb;
-				DP = ptr->d_pos;
-				lock->unlock();
-				v_g(0, 0) = tempvb(0, 0);
-				v_g(1, 0) = tempvb(0, 1);
-				v_g(2, 0) = tempvb(0, 2);
-				v_g(3, 0) = tempvb(0, 3);
-				v_g(4, 0) = tempvb(0, 4);
-				v_g(5, 0) = tempvb(0, 5);
-				// update the rb system matrices
-				rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1);
-			}
-			else {
-				// import all the data pipe struct vars
-				lock->lock();
-				DP = ptr->d_pos;
-				tempvb = ptr->vb;
-				lock->unlock();
-				v_g(0, 0) = tempvb(0, 0);
-				v_g(1, 0) = tempvb(0, 1);
-				v_g(2, 0) = tempvb(0, 2);
-				v_g(3, 0) = tempvb(0, 3);
-				v_g(4, 0) = tempvb(0, 4);
-				v_g(5, 0) = tempvb(0, 5);
-				// update the rb system matrices
-				dot_phin_list = Ai * v_g;
-				R_vec = DP - DDP;
-				phin_list[0] = R_vec[0];
-				phin_list[1] = R_vec[1];
-				phin_list[2] = R_vec[2];
-			}
-			temp_DDP = DDP;
-		}
+	// publishs the PRIM data
+	commsmsgs::msg::primpub msg{};
+	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
+	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};
+	msg.actual_drone_position = {ADP[0], ADP[1], ADP[2]};
+	msg.rrim_freq = freq;
+	msg.rrim_count = count;
+	msg.rrim_time = loop_time.count();
 
-		// runs the main update function every loop which updates the BMN system vectors
-		px4_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h);
+	// calculates loop time
+	auto loop_end = clocky::now();
+	loop_time = loop_end - loop_start;
 
-
-		//pushing the data from the loop to the px4 comms loop
-		if (j * h >= (1. / fcom_slow)) {
-			lock->lock();
-			ptr->PPDP = DP;
-			ptr->fprim_real = freq;
-			ptr->prim_time[0] = count;
-			ptr->prim_time[1] = loop_time.count();
-			lock->unlock();
-			j = 0;
-		}
-
-		auto loop_end = clocky::now();
-		loop_time = loop_end - loop_start;
-
-		// no more sim stuff below this line //
-		// frequency limiter
-		std::chrono::duration<double> dt = clocky::now() - start_time;
+	// no more sim stuff below this line //
+	// frequency limiter
+	std::chrono::duration<double> dt = clocky::now() - start_time;
+	freq = 1 / dt.count();
+	while (freq > frim)
+	{
+		dt = clocky::now() - start_time;
 		freq = 1 / dt.count();
-		while (freq > frim)
-		{
-			dt = clocky::now() - start_time;
-			freq = 1 / dt.count();
-		}
-		start_time = clocky::now();
+	}
+	start_time = clocky::now();
 
-		/*if (count % 1000 == 0) {
-			std::cout << "RIM Frequency: " << freq << std::endl;
-		}*/
-		count += 1;
-		i += 1;
-		j += 1;
+	// if (count % 100 == 0) {
+	// 	std::cout << "Simulated Drone Position: " << DP[0] << ", " << DP[1] << ", " << DP[2] << std::endl;
+	// 	std::cout << "Desired Drone Position: " << ADP[0] << ", " << ADP[1] << ", " << ADP[2] << std::endl;
+	// 	std::cout << "phins: " << phin_list[0] << ", " << phin_list[1] << ", " << phin_list[2] << std::endl;
+	// 	std::cout << "dot_phins: " << dot_phin_list[0] << ", " << dot_phin_list[1] << ", " << dot_phin_list[2] << std::endl;
+	// 	std::cout << "lambda_i: " << lambda_i[0] << ", " << lambda_i[1] << ", " << lambda_i[2] << std::endl;
+	// 	std::cout << "lambda_tilde: " << lambda_tilde[0] << ", " << lambda_tilde[1] << ", " << lambda_tilde[2] << std::endl;
+	// 	// std::cout << "RIM Frequency: " << freq << std::endl;
+	// }
+
+	count += 1;
+	i += 1;
+}
+
+// callback for the bmn subscriber
+void PRIM::prim::rpi_callback(const commsmsgs::msg::rpicommspub::UniquePtr & msg) {
+	ADP = {msg->actual_drone_position->x, msg->actual_drone_position->y, msg->actual_drone_position->z};
+}
+
+// callback for the rbquadsim subscriber
+void PRIM::prim::rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg) {
+	DP = {msg->position->x, msg->position->y, msg->position->z};
+	Eigen::SparseMatrix<double> vgtemp;
+	PRIM::prim::msg_to_matrix(msg->vg, &vgtemp);
+	v_g = vgtemp.toDense();
+
+	if (r_type == 2) {
+		fd = {msg->drag->x, msg->drag->y, msg->drag->z};
+		fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
+		fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
+		// sparse stuff
+		PRIM::prim::msg_to_matrix(msg->Ac, &Ac);
+		PRIM::prim::msg_to_matrix(msg->M_inv, &M_hat_inv);
+		// update the rigidbody system matrices
+		rb_update(&DP, &ADP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
+	}
+	else {
+		// for ZOH and FOH
+		dot_phin_list = Ai * v_g;
+		R_vec = DP - ADP;
+		phin_list[0] = R_vec[0];
+		phin_list[1] = R_vec[1];
+		phin_list[2] = R_vec[2];
 	}
 }
 
 // initializes and fills all the sparsematrices with temp values
-void PRIM::PRIM::init_mats() {
+void PRIM::prim::init_mats() {
 	Eigen::Matrix3d place_holder = Eigen::Matrix3d::Zero();
 	const int size = 42;
 	// Ac
@@ -219,9 +184,9 @@ void PRIM::PRIM::init_mats() {
 }
 
 // calculates the current interface jacobian using the r vector
-void PRIM::PRIM::Interface_Jacobian(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, double h) {
-	// first calculate the interface vector between the actual position and the simulated position
-	(*R_vec) = (*DP) - (*DDP);
+void PRIM::prim::Interface_Jacobian(Eigen::Vector3d* DP, Eigen::Vector3d* ADP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, double h) {
+	// first calculate the interface vector between the desired position and the actual position
+	(*R_vec) = (*DP) - (*ADP);
 	(*phin_list)[0] = (*R_vec)[0];
 	(*phin_list)[1] = (*R_vec)[1];
 	(*phin_list)[2] = (*R_vec)[2];
@@ -240,24 +205,30 @@ void PRIM::PRIM::Interface_Jacobian(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, E
 }
 
 // calculates Pc_hat which doesn't change during the simulation
-void PRIM::PRIM::rb_setup(Eigen::SparseMatrix<double>* Ac, Eigen::SparseMatrix<double>* M_hat_inv, Eigen::SparseMatrix<double>* Pc_hat, Eigen::SparseMatrix<double>* I, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix3d* M_temp_offset) {
+void PRIM::prim::rb_setup(Eigen::SparseMatrix<double>* Ac, Eigen::SparseMatrix<double>* M_hat_inv, Eigen::SparseMatrix<double>* Pc_hat, Eigen::SparseMatrix<double>* I, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix3d* M_temp_offset) {
 	// find projected version of the inverse mass matrix
+	//std::cout << "Ac: " << (*Ac).block(0,0,6,42) << std::endl;
+	//std::cout << "M_hat_inv: " << (*M_hat_inv).block(0,0,42,42) << std::endl;
 	Eigen::Matrix<double, 6, 6> temp = (*Ac) * (*M_hat_inv) * (*Ac).transpose();
 	Eigen::Matrix<double, 6, 6> temp_inv = temp.inverse();
 	Eigen::SparseMatrix <double> ts;
 	ts = Eigen::SparseMatrix <double>(6, 6);
 	ts = temp_inv.sparseView();
-	// use it to calculate hte porjection matrix
+	//std::cout << "ts: " << ts.block(0,0,6,6) << std::endl;
+	// use it to calculate the projection matrix
 	(*Pc_hat) = (*M_hat_inv) * (*Ac).transpose() * ts * (*Ac);
 	// find the inverse of the projection matrix
 	(*IPMi) = ((*I) - (*Pc_hat)) * (*M_hat_inv);
 	(*M_temp_offset) = Eigen::MatrixXd::Identity(3, 3) * 1e-08;
+
+	//std::cout << "Pc_hat: " << (*Pc_hat).block(0,0,42,42) << std::endl;
+	//std::cout << "IPMi: " << (*IPMi).block(0,0,42,42) << std::endl;
 }
 
 // updates all the matrices that change when the interface jacobian changes
-void PRIM::PRIM::rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix<double, 42, 1>* v_g, double h, Eigen::Vector3d* Drag, Eigen::Vector3d* Gravity, Eigen::Matrix3d* M_temp_offset, Eigen::Matrix3d* M_tilde, Eigen::Matrix3d* M_tilde_inv, Eigen::Matrix<double, 42, 1>* f_ext, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::SparseMatrix<double>* Pc_hat, Eigen::Matrix<double, 42, 1>* v_g_old, double h_com1) {
+void PRIM::prim::rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* ADP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix<double, 42, 1>* v_g, double h, Eigen::Vector3d* Drag, Eigen::Vector3d* Gravity, Eigen::Matrix3d* M_temp_offset, Eigen::Matrix3d* M_tilde, Eigen::Matrix3d* M_tilde_inv, Eigen::Matrix<double, 42, 1>* f_ext, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::SparseMatrix<double>* Pc_hat, Eigen::Matrix<double, 42, 1>* v_g_old, double h_com1, Eigen::Vector3d* Drone_Interaction) {
 	// updates the interface jacobian
-	Interface_Jacobian(DP, DDP, R_vec, R_tilde_mat, phin_list, Ai, Ai_old, Ai_dot, h);
+	Interface_Jacobian(DP, ADP, R_vec, R_tilde_mat, phin_list, Ai, Ai_old, Ai_dot, h);
 	(*dot_phin_list) = (*Ai) * (*v_g);
 	// updates the effective mass matrix
 	(*M_tilde_inv) = (*Ai) * (*IPMi) * (*Ai).transpose();
@@ -266,28 +237,36 @@ void PRIM::PRIM::rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vec
 	(*M_tilde_inv) -= (*M_temp_offset);
 
 	// updates the external force vector
-	(*f_ext)(0,0) = (*Drag)(0,0) + (*Gravity)(0,0);
-	(*f_ext)(1,0) = (*Drag)(1,0) + (*Gravity)(1,0);
-	(*f_ext)(2,0) = (*Drag)(2,0) + (*Gravity)(2,0);
+	(*f_ext)(0,0) = (*Drag)(0,0) + (*Gravity)(0,0) + (*Drone_Interaction)(0,0);
+	(*f_ext)(1,0) = (*Drag)(1,0) + (*Gravity)(1,0) + (*Drone_Interaction)(1,0);
+	(*f_ext)(2,0) = (*Drag)(2,0) + (*Gravity)(2,0) + (*Drone_Interaction)(2,0);
 	(*lambda_tilde) = (*M_tilde) * ((*Ai) * (*IPMi) * (*f_ext) + (*Ai_dot) * (*v_g) + (*Ai) * (*Pc_hat) * (((*v_g) - (*v_g_old)) / h_com1));
 	(*v_g_old) = (*v_g);
 }
 
 // updates the interface velocities and positions
-void PRIM::PRIM::px4_update(double* r_type, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::Vector3d* R_vec_est, Eigen::Matrix3d* M_tilde_inv, double h) {
+void PRIM::prim::fast_update(double* r_type, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::Vector3d* R_vec_est, Eigen::Matrix3d* M_tilde_inv, double h, Eigen::Vector3d* dx_lims, Eigen::Vector3d* x_lims) {
 	// if using ZOH then do nothing
 	if ((*r_type) == 0) {
 		// nothing
 	}
 	// if using FOH then update the phin with the dot_phin
 	else if ((*r_type) == 1) {
-		PRIM::PRIM::RK4_vec_update(phin_list, *dot_phin_list, h);
+		PRIM::prim::RK4_vec_update(phin_list, *dot_phin_list, h);
 	}
 	// if using RIM then use the projected matrices to update the dot_phin and then phin
 	else if ((*r_type) == 2) {
-		Eigen::Vector3d temp = (*M_tilde_inv) * ((*lambda_tilde) + (*lambda_i));
-		PRIM::PRIM::RK4_vec_update(dot_phin_list, temp, h);
-		PRIM::PRIM::RK4_vec_update(phin_list, *dot_phin_list, h);
+		Eigen::Vector3d temp = Eigen::Vector3d::Zero();
+		//std::cout << "lambda_tilde: " << (*lambda_tilde)[0] << ", " << (*lambda_tilde)[1] << ", " << (*lambda_tilde)[2] << std::endl;
+		//std::cout << "lambda_i: " << (*lambda_i)[0] << ", " << (*lambda_i)[1] << ", " << (*lambda_i)[2] << std::endl;
+		//std::cout << "M_tilde_inv: " << (*M_tilde_inv)(0,0) << ", " << (*M_tilde_inv)(0,1) << ", " << (*M_tilde_inv)(0,2) << std::endl;
+		temp = (*M_tilde_inv) * ((*lambda_tilde) + (*lambda_i));
+		//temp = (*M_tilde_inv) * ((*lambda_tilde));
+		//std::cout << "temp: " << temp[0] << ", " << temp[1] << ", " << temp[2] << std::endl;
+		PRIM::prim::RK4_vec_update(dot_phin_list, temp, h);
+		PRIM::prim::Vec3Lim(dot_phin_list, dx_lims);
+		PRIM::prim::RK4_vec_update(phin_list, *dot_phin_list, h);
+		PRIM::prim::Vec3Lim(phin_list, x_lims);
 	}
 	// R_vec is equivalent to the phin
 	(*R_vec_est)[0] = (*phin_list)[0];
@@ -296,7 +275,7 @@ void PRIM::PRIM::px4_update(double* r_type, Eigen::Vector3d* phin_list, Eigen::V
 }
 
 // helper function to fill values in a sparse matrix with a given 3by3 denses matrix
-void PRIM::PRIM::sparse_fill(Eigen::SparseMatrix<double>* tb_filled, Eigen::Matrix3d* t_fill, int row, int col) {
+void PRIM::prim::sparse_fill(Eigen::SparseMatrix<double>* tb_filled, Eigen::Matrix3d* t_fill, int row, int col) {
 	for (int i = 0; i < (*t_fill).rows(); i++) {
 		(*tb_filled).insert(row + i, col) = (*t_fill)(i, 0);
 		(*tb_filled).insert(row + i, col + 1) = (*t_fill)(i, 1);
@@ -305,7 +284,7 @@ void PRIM::PRIM::sparse_fill(Eigen::SparseMatrix<double>* tb_filled, Eigen::Matr
 }
 
 // helper function to replace values in a sparse matrix with a given 3by3 denses matrix
-void PRIM::PRIM::sparse_replace(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix3d* t_replace, int row, int col) {
+void PRIM::prim::sparse_replace(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix3d* t_replace, int row, int col) {
 	for (int i = 0; i < (*t_replace).rows(); i++) {
 		(*tb_replaced).coeffRef(row + i, col) = (*t_replace)(i, 0);
 		(*tb_replaced).coeffRef(row + i, col + 1) = (*t_replace)(i, 1);
@@ -314,7 +293,7 @@ void PRIM::PRIM::sparse_replace(Eigen::SparseMatrix<double>* tb_replaced, Eigen:
 }
 
 // helper function for RK4_vec_update
-void PRIM::PRIM::RK4_update(double* xn, double* xn_dot, double* h) {
+void PRIM::prim::RK4_update(double* xn, double* xn_dot, double* h) {
     // k1
     double k1 = (*xn_dot);
 
@@ -335,7 +314,7 @@ void PRIM::PRIM::RK4_update(double* xn, double* xn_dot, double* h) {
 }
 
 // function that entire system can use to do Runge Kutta 4 integration updates on 3 vecs
-void PRIM::PRIM::RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h) {
+void PRIM::prim::RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h) {
 	int len = (*xn).rows();
 	double cur_out = 0.0;
 	double cur_xn_dot = 0.0;
@@ -346,4 +325,34 @@ void PRIM::PRIM::RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, dou
     	RK4_update(&cur_out, &cur_xn_dot, &h);
 		(*xn)(i) = cur_out;
 	}
+}
+
+// function to limit phin or dot phin vector with given limits
+void PRIM::prim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
+	for (int i = 0; i < (*vec).rows(); i++) {
+		if ((*vec)(i) > (*lim)(i)) {
+			(*vec)(i) = (*lim)(i);
+		}
+		else if ((*vec)(i) < -(*lim)(i)) {
+			(*vec)(i) = -(*lim)(i);
+		}
+	}
+}
+
+// function to convert a ros msg to a sparse matrix
+void PRIM::prim::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
+	int rows = min.layout.dim[0].size;
+	int cols = min.layout.dim[1].size;
+	float data = 0.0;
+	std::vector< Eigen::Triplet<double> > tripletList;
+	tripletList.reserve(64);
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			data = min.data[i * cols + j];
+			if (data != 0) {
+				tripletList.push_back(Eigen::Triplet<double>(i, j, data));
+			}
+		}
+	}
+	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
 }
