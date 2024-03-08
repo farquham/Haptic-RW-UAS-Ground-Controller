@@ -4,7 +4,7 @@ using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;
 
 // BRIM constructor
-BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) {
+void BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) {
 	const int size = 42;
 	const int dim = 3;
 	// initialize the sparse matrices
@@ -33,6 +33,10 @@ BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type, float xlim, f
 	DDP = {0,0,1.0};
 	DP = {0,0,1.0};
 	M_temp_offset = Eigen::Matrix3d::Zero();
+
+	fg = Eigen::Vector3d::Zero();
+	fd = Eigen::Vector3d::Zero();
+	fi = Eigen::Vector3d::Zero();
 
 	frim = fr;
 	h = 1. / fr;
@@ -107,30 +111,25 @@ void BRIM::brim::BRIMstep() {
 }
 
 // callback for the bmn subscriber
-void bmn_callback(const commsmsgs::msg::bmnpub::UniquePtr & msg) {
+void BRIM::brim::bmn_callback(const commsmsgs::msg::bmnpub::UniquePtr & msg) {
 	lambda_i = {msg->interface_force_list->x, msg->interface_force_list->y, msg->interface_force_list->z};
 	DDP = {msg->desired_drone_position->x, msg->desired_drone_position->y, msg->desired_drone_position->z};
 }
 
 // callback for the rbquadsim subscriber
-void rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg) {
+void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg) {
 	DP = {msg->position->x, msg->position->y, msg->position->z};
-	fd = {msg->drag->x, msg->drag->y, msg->drag->z};
-	fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
-	fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
-
-	// sparse stuff
-	// Ac = ptr->Ac;
-	// M_hat_inv = ptr->M_inv;
-	// tempvb = ptr->vb;
-	// v_g(0, 0) = tempvb(0, 0);
-	// v_g(1, 0) = tempvb(0, 1);
-	// v_g(2, 0) = tempvb(0, 2);
-	// v_g(3, 0) = tempvb(0, 3);
-	// v_g(4, 0) = tempvb(0, 4);
-	// v_g(5, 0) = tempvb(0, 5);
+	Eigen::SparseMatrix<double> vgtemp;
+	BRIM::brim::msg_to_matrix(msg->vg, &vgtemp);
+	v_g = vgtemp.toDense();
 
 	if (r_type == 2) {
+		fd = {msg->drag->x, msg->drag->y, msg->drag->z};
+		fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
+		fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
+		// sparse stuff
+		BRIM::brim::msg_to_matrix(msg->Ac, &Ac);
+		BRIM::brim::msg_to_matrix(msg->M_inv, &M_hat_inv);
 		// update the rigidbody system matrices
 		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
 	}
@@ -339,4 +338,22 @@ void BRIM::brim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 			(*vec)(i) = -(*lim)(i);
 		}
 	}
+}
+
+// function to convert a ros msg to a sparse matrix
+void BRIM::brim::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
+	int rows = min.layout.dim[0].size;
+	int cols = min.layout.dim[1].size;
+	float data = 0.0;
+	std::vector< Eigen::Triplet<double> > tripletList;
+	tripletList.reserve(64);
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			data = min.data[i * cols + j];
+			if (data != 0) {
+				tripletList.push_back(Eigen::Triplet<double>(i, j, data));
+			}
+		}
+	}
+	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
 }

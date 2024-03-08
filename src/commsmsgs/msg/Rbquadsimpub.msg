@@ -16,9 +16,9 @@ geometry_msgs/Vector3 interaction
 Matrixthreef rotation_matrix
 
 # sparse matrices
-# Eigen::SparseMatrix <double> M_inv;
-# Eigen::SparseMatrix <double> Ac;
-# Eigen::SparseMatrix <double> vb;
+std_msgs/Float64MultiArray M_inv
+std_msgs/Float64MultiArray Ac
+std_msgs/Float64MultiArray vg
 
 # contact state data
 bool contact

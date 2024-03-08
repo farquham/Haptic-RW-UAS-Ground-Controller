@@ -12,6 +12,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
+#include <std_msgs/msg/float64_multi_array.hpp>
 #include "commsmsgs/msg/Brimpub.hpp"
 #include "commsmsgs/msg/Bmnpub.hpp"
 #include "commsmsgs/msg/Rbquadsimpub.hpp"
@@ -82,6 +83,9 @@ namespace BRIM {
 		// runge kutta 4th order integrator for use throughout simulation
 		void RK4_update(double* xn, double* xn_dot, double* h);
 		void RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h);	
+
+		// ros msg translation helpers
+		void msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout);
 		
 		
 		// RIM variables
@@ -122,6 +126,10 @@ namespace BRIM {
 		// limit vars
 		Eigen::Vector3d lims;
 		Eigen::Vector3d dlims;
+
+		Eigen::Vector3d fd;
+		Eigen::Vector3d fg;
+		Eigen::Vector3d fi;
 
 		// helper vars for system setup
 		double frim;
