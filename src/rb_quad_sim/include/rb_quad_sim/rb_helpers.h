@@ -53,6 +53,7 @@ namespace RBH {
 	void sparse_fill4(Eigen::SparseMatrix<double>* tb_filled, Eigen::Matrix4d* t_fill, int row, int col);
 	void sparse_replace4(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix4d* t_replace, int row, int col);
 
+	void msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout);
 	void matrix_to_msg(Eigen::SparseMatrix<double>* min, std_msgs::msg::Float64MultiArray* mout);
 }
 

@@ -361,7 +361,7 @@ void RBH::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatri
 }
 
 // function to convert from a sparse matrix to a ros msg
-void matrix_to_msg(Eigen::SparseMatrix<double>* min, std_msgs::msg::Float64MultiArray* mout) {
+void RBH::matrix_to_msg(Eigen::SparseMatrix<double>* min, std_msgs::msg::Float64MultiArray* mout) {
 	float data = 0.0;
 	int i,j = 0;
 	int size = min->nonZeros() + 1;
