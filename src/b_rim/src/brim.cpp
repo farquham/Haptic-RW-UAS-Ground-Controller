@@ -80,6 +80,7 @@ void BRIM::brim::BRIMstep() {
 	msg.brim_freq = freq;
 	msg.brim_count = count;
 	msg.brim_time = loop_time.count();
+	brim_publisher_->publish(msg);
 
 	// calculates loop time
 	auto loop_end = clocky::now();

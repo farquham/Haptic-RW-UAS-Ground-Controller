@@ -3,7 +3,7 @@
 typedef std::chrono::high_resolution_clock clocky;
 
 // constructor for initializing a rigid body system given a drone and obstacle as well as 6 planes
-RBsystem::RBsystem::RBsystem(Quadcopter::dr_prop* drone_props, RBH::planes* planes, double h, double stiff, double damp) {
+void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props, RBH::planes* planes, double h, double stiff, double damp) {
 	// initialize the drone and planes
 	drone = Quadcopter::UAS(drone_props, h);
 	plane_eqns = *planes;
@@ -53,11 +53,28 @@ RBsystem::RBsystem::RBsystem(Quadcopter::dr_prop* drone_props, RBH::planes* plan
 	post_contact = false;
 	no_contact = true;
 
+	mats_r = false;
+
+	// numerical variables
+	count = 0;
+	i = 0;
+	freq = 0.0;
+	pos_norm = 0;
+
+	DDP = { 0.0,0.0,1.0 };
+	Wvv = { 0,0,0 };
+	Fid = { 0,0,0 };
+	Int_for = { 0,0,0 };
+	droneCrvel = { 0,0,0,0,0,0 };
+	pos_diff = { 0,0,0 };
+
 	// fills the sparse matrices with zeros where there will be values
 	fill_matrices();
 	// fills the mass matrix as it doesn't change during the simulation
 	RBH::massMatrix(&M_mat, &M_mat_star, &M_mat_inv, &M_mat_dot, &M_mat_pre, &N_mat, &drone, step_size);
 
+	//set up mass matrices
+	plane_interaction(&imposed_vel, &Int_for, &drphins, &drdphins, &Lambda_i, &An_mat, &An_mat_dot, &M_mat, &M_mat_inv, &M_mat_dot, &M_mat_star, &O_mat, &O_mat_star, &N_mat, &N_mat_dot, &global_vel, &plane_eqns, &drone, stiffness, damping, step_size, &contact, &pre_contact, &post_contact, &no_contact);
 }
 
 // fills all the objects sparse matrices with zeros where there will eventually be values
@@ -137,166 +154,114 @@ void RBsystem::RBsystem::fill_matrices() {
 }
 
 // update the state of the system
-void RBsystem::RBsystem::RBLoop(BMN::Var_Transfer* ptr, std::mutex* lock, double fcom) {
-	// setup local variables
-	// conditional variables
-	bool over = false;
-	bool run = true;
-	bool mats_r = false;
-
-	// numerical variables
-	int count = 0;
-	int i = 0;
-	double freq = 0.0;
-	double pos_norm = 0;
-
-	// structs
-	Quadcopter::draggrav dgout;
-
-	// vectors
-	Eigen::Vector3d DDP = { 0.0,0.0,1.0 };
-	Eigen::Vector3d Wvv = { 0,0,0 };
-	Eigen::Vector3d Fid = { 0,0,0 };
-	Eigen::Vector3d Int_for = { 0,0,0 };
-	Eigen::Matrix <double, 1, 6> droneCrvel = { 0,0,0,0,0,0 };
-	Eigen::Vector3d pos_diff = { 0,0,0 };
-	Eigen::MatrixXd velimp;
-
-	//set up mass matrices
+void RBsystem::RBsystem::RBstep() {
+	// system dynamics update for plane contact
 	plane_interaction(&imposed_vel, &Int_for, &drphins, &drdphins, &Lambda_i, &An_mat, &An_mat_dot, &M_mat, &M_mat_inv, &M_mat_dot, &M_mat_star, &O_mat, &O_mat_star, &N_mat, &N_mat_dot, &global_vel, &plane_eqns, &drone, stiffness, damping, step_size, &contact, &pre_contact, &post_contact, &no_contact);
+	// std::cout << "DDP Raw: " << DDP[0] << ", " << DDP[1] << ", " << DDP[2] << std::endl;
+	// std::cout << "Phins: " << drphins.transpose() << std::endl;
+	// std::cout << "DPhins: " << drdphins.transpose() << std::endl;
+	// std::cout << "Pre Contact: " << pre_contact << " Contact: " << contact << " Post Contact: " << post_contact << " No Contact: " << no_contact << std::endl;
+	// if there was plane contact than apply the calculated velocity to the drone
+	if ((abs(imposed_vel.sum())) > 0.01) {
+		velimp = Eigen::MatrixXd(imposed_vel);
+		droneCrvel[0] = velimp(0);
+		droneCrvel[1] = velimp(1);
+		droneCrvel[2] = velimp(2);
+		droneCrvel[0] = std::min(droneCrvel[0], dr_vel_lims[0]);
+		droneCrvel[0] = std::max(droneCrvel[0], -1 * dr_vel_lims[0]);
+		droneCrvel[1] = std::min(droneCrvel[1], dr_vel_lims[0]);
+		droneCrvel[1] = std::max(droneCrvel[1], -1 * dr_vel_lims[0]);
+		droneCrvel[2] = std::min(droneCrvel[2], dr_vel_lims[1]);
+		droneCrvel[2] = std::max(droneCrvel[2], -1 * dr_vel_lims[2]);
+		droneCrvel = droneCrvel * -1;
+		drone.CR_update(&droneCrvel);
+		//reset imposed vel
+		// for (int i = 0; i < 42; i++) {
+		// 	imposed_vel.coeffRef(0, i) = 0;
+		// }
+		for (int i=0; i<imposed_vel.outerSize(); ++i)
+			for (Eigen::SparseMatrix<double>::InnerIterator it(imposed_vel,i); it; ++it) {
+				it.valueRef() = 0;
+			}
+		velimp = Eigen::MatrixXd(imposed_vel);
+		droneCrvel[0] = velimp(0);
+		droneCrvel[1] = velimp(1);
+		droneCrvel[2] = velimp(2);
+		// tell the drone to stay still until ddp is close again
+		drone.set_DDP();
+	} else {
+		//drone control update
+		drone.Controller(&DDP, &contact, &pre_contact, &post_contact, &no_contact);
+		drone.Mixer();
+		// drone dynamics update
+		Fid = drone.wind_force(&Wvv);
+		dgout = drone.Accelerator(&Fid);
+		// drone state update
+		drone.update_state();
+		Lambda_i = dgout.F_internal;
+	}
 
-	//std::cout << "M mat ready?: " << M_mat_inv.nonZeros() << std::endl;
+	// outputs the drones body frame velocities
+	global_vel.coeffRef(0, 0) = drone.get_state().g_vel[0];
+	global_vel.coeffRef(0, 1) = drone.get_state().g_vel[1];
+	global_vel.coeffRef(0, 2) = drone.get_state().g_vel[2];
+	global_vel.coeffRef(0, 3) = drone.get_state().g_avel[0];
+	global_vel.coeffRef(0, 4) = drone.get_state().g_avel[1];
+	global_vel.coeffRef(0, 5) = drone.get_state().g_avel[2];
 
-	// export the needed data
-	lock->lock();
-	ptr->Ac = An_mat;
-	ptr->M_inv = M_mat_inv;
-	ptr->mats_ready = mats_r;
-	DDP = ptr->DDC;
-	lock->unlock();
+	// pushing outputs from the loop
+	commsmsgs::msg::Rbquadsimpub msg{};
+	msg.position = {drone.get_state().g_pos[0], drone.get_state().g_pos[1], drone.get_state().g_pos[2]};
+	msg.velocity = {drone.get_state().g_vel[0], drone.get_state().g_vel[1], drone.get_state().g_vel[2]};
+	msg.acceleration = {drone.get_state().g_acc[0], drone.get_state().g_acc[1], drone.get_state().g_acc[2]};
+	// pose / orientation ???
+	msg.drag = {dgout.Fd[0], dgout.Fd[1], dgout.Fd[2]};
+	msg.gravity = {dgout.Fg[0], dgout.Fg[1], dgout.Fg[2]};
+	msg.interaction = {Int_for[0], Int_for[1], Int_for[2]};
+	msg.rotation_matrix.m11 = drone.get_state().r_mat(0, 0);
+	msg.rotation_matrix.m12 = drone.get_state().r_mat(0, 1);
+	msg.rotation_matrix.m13 = drone.get_state().r_mat(0, 2);
+	msg.rotation_matrix.m21 = drone.get_state().r_mat(1, 0);
+	msg.rotation_matrix.m22 = drone.get_state().r_mat(1, 1);
+	msg.rotation_matrix.m23 = drone.get_state().r_mat(1, 2);
+	msg.rotation_matrix.m31 = drone.get_state().r_mat(2, 0);
+	msg.rotation_matrix.m32 = drone.get_state().r_mat(2, 1);
+	msg.rotation_matrix.m33 = drone.get_state().r_mat(2, 2);
 
-	auto start_time = clocky::now();
+	RBH::matrix_to_msg(&M_mat_inv, &msg.M_inv);
+	RBH::matrix_to_msg(&An_mat, &msg.Ac);
+	RBH::matrix_to_msg(&global_vel, &msg.vg);
 
-	// run the main sim loop fetching the desired drone position from the global variable DDP
-	while ((over == false) && (run)) {
+	msg.contact = contact;
+	msg.pre_contact = pre_contact;
+	msg.post_contact = post_contact;
+	msg.no_contact = no_contact;
+	msg.sim_freq = freq;
 
-		// fetching inputs for the loop
-		if (i * step_size >= (1 / fcom)) {
-			lock->lock();
-			DDP = ptr->DDC;
-			run = ptr->running;
-			lock->unlock();
-		}
+	// publish the message
+	rbquadsim_publisher_->publish(msg);
 
-		// system dynamics update for plane contact
-		plane_interaction(&imposed_vel, &Int_for, &drphins, &drdphins, &Lambda_i, &An_mat, &An_mat_dot, &M_mat, &M_mat_inv, &M_mat_dot, &M_mat_star, &O_mat, &O_mat_star, &N_mat, &N_mat_dot, &global_vel, &plane_eqns, &drone, stiffness, damping, step_size, &contact, &pre_contact, &post_contact, &no_contact);
-		// std::cout << "DDP Raw: " << DDP[0] << ", " << DDP[1] << ", " << DDP[2] << std::endl;
-		// std::cout << "Phins: " << drphins.transpose() << std::endl;
-		// std::cout << "DPhins: " << drdphins.transpose() << std::endl;
-		// std::cout << "Pre Contact: " << pre_contact << " Contact: " << contact << " Post Contact: " << post_contact << " No Contact: " << no_contact << std::endl;
-		// if there was plane contact than apply the calculated velocity to the drone
-		if ((abs(imposed_vel.sum())) > 0.01) {
-			velimp = Eigen::MatrixXd(imposed_vel);
-			droneCrvel[0] = velimp(0);
-			droneCrvel[1] = velimp(1);
-			droneCrvel[2] = velimp(2);
-			droneCrvel[0] = std::min(droneCrvel[0], dr_vel_lims[0]);
-			droneCrvel[0] = std::max(droneCrvel[0], -1 * dr_vel_lims[0]);
-			droneCrvel[1] = std::min(droneCrvel[1], dr_vel_lims[0]);
-			droneCrvel[1] = std::max(droneCrvel[1], -1 * dr_vel_lims[0]);
-			droneCrvel[2] = std::min(droneCrvel[2], dr_vel_lims[1]);
-			droneCrvel[2] = std::max(droneCrvel[2], -1 * dr_vel_lims[2]);
-			droneCrvel = droneCrvel * -1;
-			drone.CR_update(&droneCrvel);
-			//reset imposed vel
-			// for (int i = 0; i < 42; i++) {
-			// 	imposed_vel.coeffRef(0, i) = 0;
-			// }
-			for (int i=0; i<imposed_vel.outerSize(); ++i)
-				for (Eigen::SparseMatrix<double>::InnerIterator it(imposed_vel,i); it; ++it) {
-					it.valueRef() = 0;
-				}
-			velimp = Eigen::MatrixXd(imposed_vel);
-			droneCrvel[0] = velimp(0);
-			droneCrvel[1] = velimp(1);
-			droneCrvel[2] = velimp(2);
-			// tell the drone to stay still until ddp is close again
-			drone.set_DDP();
-		} else {
-			//drone control update
-			drone.Controller(&DDP, &contact, &pre_contact, &post_contact, &no_contact);
-			drone.Mixer();
-			// drone dynamics update
-			Fid = drone.wind_force(&Wvv);
-			dgout = drone.Accelerator(&Fid);
-			// drone state update
-			drone.update_state();
-			Lambda_i = dgout.F_internal;
-		}
-
-		// outputs the drones body frame velocities
-		global_vel.coeffRef(0, 0) = drone.get_state().g_vel[0];
-		global_vel.coeffRef(0, 1) = drone.get_state().g_vel[1];
-		global_vel.coeffRef(0, 2) = drone.get_state().g_vel[2];
-		global_vel.coeffRef(0, 3) = drone.get_state().g_avel[0];
-		global_vel.coeffRef(0, 4) = drone.get_state().g_avel[1];
-		global_vel.coeffRef(0, 5) = drone.get_state().g_avel[2];
-
-		// pushing outputs from the loop
-		if (i * step_size >= (1 / fcom)) {
-			lock->lock();
-			ptr->mats_ready = mats_r;
-			ptr->Ac = An_mat;
-			ptr->M_inv = M_mat_inv;
-			ptr->Drag = dgout.Fd;
-			ptr->Gravity = dgout.Fg;
-			ptr->Interaction = Int_for;
-			ptr->vb = global_vel;
-			ptr->d_pos = drone.get_state().g_pos;
-			ptr->d_vel = drone.get_state().g_vel;
-			ptr->d_acc = drone.get_state().g_acc;
-			ptr->d_RM = drone.get_state().r_mat;
-			ptr->d_apos = drone.get_state().g_apos;
-			ptr->fsim_real = freq;
-			ptr->contact_check = contact;
-			ptr->pre_contact_check = pre_contact;
-			ptr->post_contact_check = post_contact;
-			ptr->no_contact_check = no_contact;
-			// debugging controller stuff
-			ptr->vel_sp = drone.get_state().vel_sp;
-			ptr->vel_err = drone.get_state().vel_err;
-			ptr->vel_int = drone.get_state().vel_int;
-			ptr->vel_dot = drone.get_state().vel_dot;
-			ptr->acc_sp = drone.get_state().acc_sp;
-			lock->unlock();
-			i = 0;
-		}
-
-		//contact = false;
-
-		// frequency limiter
-		std::chrono::duration<double> dt = clocky::now() - start_time;
+	std::chrono::duration<double> dt = clocky::now() - start_time;
+	freq = 1 / dt.count();
+	while (freq > frim)
+	{
+		dt = clocky::now() - start_time;
 		freq = 1 / dt.count();
-		while (freq > (1/step_size))
-		{
-			dt = clocky::now() - start_time;
-			freq = 1 / dt.count();
-		}
-		start_time = clocky::now();
+	}
+	start_time = clocky::now();
 
-		if (count % 10 == 0) {
-			//std::cout << "M mat ready?: " << M_mat_inv.nonZeros() << std::endl;
-			//std::cout << "SIM Frequency: " << freq << std::endl;
-			std::cout << "Desired Drone Position: " << DDP[0] << ", " << DDP[1] << ", " << DDP[2] << std::endl;
-			//std::cout << "Drone Position SIM: " << drone.get_state().g_pos[0] << ", " << drone.get_state().g_pos[1] << ", " << drone.get_state().g_pos[2] << std::endl;
-		}
-		count += 1;
-		i += 1;
+	// if (count % 10 == 0) {
+	// 	//std::cout << "M mat ready?: " << M_mat_inv.nonZeros() << std::endl;
+	// 	//std::cout << "SIM Frequency: " << freq << std::endl;
+	// 	std::cout << "Desired Drone Position: " << DDP[0] << ", " << DDP[1] << ", " << DDP[2] << std::endl;
+	// 	//std::cout << "Drone Position SIM: " << drone.get_state().g_pos[0] << ", " << drone.get_state().g_pos[1] << ", " << drone.get_state().g_pos[2] << std::endl;
+	// }
+	count += 1;
+	i += 1;
 
-		// check if the matrices are ready
-		if (M_mat_inv.nonZeros() > 0) {
-			mats_r = true;
-		}
+	// check if the matrices are ready
+	if (M_mat_inv.nonZeros() > 0) {
+		mats_r = true;
 	}
 }
 
@@ -469,4 +434,16 @@ void RBsystem::RBsystem::interface_solution_CR(Eigen::Matrix <double, 6, 1>* nla
 	//std::cout << "success" << std::endl;
 
 	//std::cout << "V: " << Vlocal << std::endl;
+}
+
+// brim callback
+void RBsystem::RBsystem::brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg) {
+	DDP[0] = msg->desired_drone_position[0];
+	DDP[1] = msg->desired_drone_position[1];
+	DDP[2] = msg->desired_drone_position[2];
+}
+
+// prim callback
+void RBsystem::RBsystem::prim_callback(const commsmsgs::msg::primpub::UniquePtr & msg) {
+	//do nothing for now
 }
