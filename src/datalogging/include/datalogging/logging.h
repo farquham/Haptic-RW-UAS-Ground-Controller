@@ -12,13 +12,13 @@
 // ros2 msgs
 #include <rclcpp/rclcpp.hpp>
 #include <stdint.h>
-#include "commsmsgs/msg/brimpub.hpp"
-#include "commsmsgs/msg/bmnpub.hpp"
-#include "commsmsgs/msg/rbquadsimpub.hpp"
-#include "commsmsgs/msg/rrimpub.hpp"
-#include "commsmsgs/msg/rpicommspub.hpp"
-#include "commsmsgs/msg/logsetup.hpp"
-#include "commsmsgs/msg/logctrlbools.hpp"
+#include "commsmsgs/msg/Brimpub.hpp"
+#include "commsmsgs/msg/Bmnpub.hpp"
+#include "commsmsgs/msg/Rbquadsimpub.hpp"
+#include "commsmsgs/msg/Rrimpub.hpp"
+#include "commsmsgs/msg/Rpicommspub.hpp"
+#include "commsmsgs/msg/Logsetup.hpp"
+#include "commsmsgs/msg/Logctrlbools.hpp"
 
 namespace datalogging {
 	// class for offboard control which starts a ROS2 node
@@ -36,8 +36,8 @@ namespace datalogging {
             brim_subscriber_ = this->create_subscription<commsmsgs::msg::brimPub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
             bmn_subscriber_ = this->create_subscription<commsmsgs::msg::bmnPub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
             rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimPub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, [this, rbquadsim_log_file], std::placeholders::_1));
-            rrim_subscriber_ = this->create_subscription<commsmsgs::msg::rrimPub>("/GC/out/rrim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
-            rpi_subscriber_ = this->create_subscription<commsmsgs::msg::rpicommsPub>("/GC/out/rpi", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
+            rrim_subscriber_ = this->create_subscription<commsmsgs::msg::rrimPub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
+            rpi_subscriber_ = this->create_subscription<commsmsgs::msg::rpicommsPub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
 		}
 
 	private:

@@ -23,7 +23,7 @@ void datalogging::logging::rrim_callback(const commsmsgs::msg::rrimPub::UniquePt
 
 void datalogging::logging::rpi_callback(const commsmsgs::msg::rpicommsPub::UniquePtr & msg) {
     // write data to file
-    log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->actual_drone_position->x << "," << msg->actual_drone_position->y << "," << msg->actual_drone_position->z << "," << msg->actual_drone_velocity->x << "," << msg->actual_drone_velocity->y << "," << msg->actual_drone_velocity->z << "," << msg->actual_drone_acceleration->x << "," << msg->actual_drone_acceleration->y << "," << msg->actual_drone_acceleration->z << "," << msg->rpi_freq << "\n";
+    log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->actual_drone_position->x << "," << msg->actual_drone_position->y << "," << msg->actual_drone_position->z << "," << msg->actual_drone_orientation->w << "," << msg->actual_drone_orientation->x << "," << msg->actual_drone_orientation->y << "," << msg->actual_drone_orientation->z << "," << msg->actual_drone_velocity->x << "," << msg->actual_drone_velocity->y << "," << msg->actual_drone_velocity->z << "," << msg->actual_drone_acceleration->x << "," << msg->actual_drone_acceleration->y << "," << msg->actual_drone_acceleration->z << "," << msg->rpi_freq << "\n";
 }
 
 // logging files helpers

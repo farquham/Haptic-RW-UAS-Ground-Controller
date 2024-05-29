@@ -22,10 +22,10 @@ namespace PRIM {
 	public:
 		prim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("prim_node")
 		{
-			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&brim::rpi_callback, [this], std::placeholders::_1));
+			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::rpicommspub>("/GC/out/rpicomms", 10, std::bind(&brim::rpi_callback, [this], std::placeholders::_1));
 			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
 
-			prim_publisher_ = this->create_publisher<commsmsgs::msg::primpub>("/GC/out/prim", 10);
+			prim_publisher_ = this->create_publisher<commsmsgs::msg::rrimpub>("/GC/out/prim", 10);
 
 			auto timer_callback = [this]() -> void {
 				// what ever code to run every timer iteration
