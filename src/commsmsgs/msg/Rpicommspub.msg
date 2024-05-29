@@ -7,6 +7,7 @@ std_msgs/Header header
 # position data
 # subbed by rbsim node
 geometry_msgs/Point actual_drone_position
+geometry_msgs/Quaternion actual_drone_orientation
 geometry_msgs/Point actual_drone_velocity
 geometry_msgs/Point actual_drone_acceleration
 

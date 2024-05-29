@@ -10,6 +10,7 @@ import time
 # needed for mocap data
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Point
+from commsmsgs.msg import Rpicommspub
 
 
 class vis(Node):
@@ -59,46 +60,34 @@ class vis(Node):
         
         # ros2 stuff
         # node inputs: sim, drone pos and drone rm;
-        # node outputs: test_num, direction, other user inputs
+        self.drone_state_msg = Rpicommspub()
+        self.drone_state_subscription = self.create_subscription(Rpicommspub, '/GC/out/rpicomms', self.drone_state_callback, 10)
+        self.drone_state_subscription
         
-        # reference ros2 stuff
-        # class vars
-        self.mocapoptimsg = PoseStamped()
-        # create mocap system subscriber
-        self.qos = rclpy.qos.QoSProfile(depth=5,reliability=rclpy.qos.ReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_BEST_EFFORT,avoid_ros_namespace_conventions=False)
-        self.opti_subscription = self.create_subscription(PoseStamped, '/vrpn_mocap/baby_michael/pose', self.mocap_callback, self.qos)
-        self.opti_subscription
-
-        ob_timer_period = 0.01 #seconds
-        self.offboardtimer = self.create_timer(ob_timer_period, self.offboard_timer_callback)
-        self.offboard_setpoint_counter = 0
-        
-        # ground control computer comms publishing current drone state and subbing to external setpoint
-        self.ext_setpoint = {0, 0, 0}
-        self.ext_cmd_subscription = self.create_subscription(Point, '/rpi/in/ext_cmdPoint', self.ext_cmd_callback, 10)
-        self.gcc_local_position_pub = self.create_publisher(Point, '/rpi/out/localPoint', 10)
-        self.ground_control_timer = self.create_timer(ob_timer_period, self.gcc_timer_callback)
+        # # node outputs: test_num, direction, other user inputs
+        # ob_timer_period = 0.01 #seconds
+        # self.offboardtimer = self.create_timer(ob_timer_period, self.offboard_timer_callback)
+        # self.offboard_setpoint_counter = 0
+        # # ground control computer comms publishing current drone state and subbing to external setpoint
+        # self.ext_setpoint = {0, 0, 0}
+        # self.ext_cmd_subscription = self.create_subscription(Point, '/rpi/in/ext_cmdPoint', self.ext_cmd_callback, 10)
+        # self.gcc_local_position_pub = self.create_publisher(Point, '/rpi/out/localPoint', 10)
+        # self.ground_control_timer = self.create_timer(ob_timer_period, self.gcc_timer_callback)
 
     # handle the mocap data
-    def mocap_callback(self, msg):
+    def drone_state_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg)
-        self.mocapoptimsg = msg
-        self.px4msg.position = [self.optimsg.pose.position.x, self.optimsg.pose.position.z, -1*self.optimsg.pose.position.y]
-        self.px4msg.q = [self.optimsg.pose.orientation.x, self.optimsg.pose.orientation.z, -1*self.optimsg.pose.orientation.y, self.optimsg.pose.orientation.w]        
-        
-    # handle the external setpoint
-    def ext_cmd_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
-        self.ext_setpoint = {msg.x, msg.y, msg.z}
-            
+        self.drone_state_msg = msg
+        self.Drone_pos = [self.drone_state_msg.actual_drone_position.x, self.drone_state_msg.actual_drone_position.y, self.drone_state_msg.actual_drone_position.z]
+    
     # publish the current state of the drone to the ground control computer
-    def gcc_timer_callback(self):
-        msg = Point()
-        msg.x = self.statepx4msg.x
-        msg.y = self.statepx4msg.y
-        msg.z = self.statepx4msg.z
-        self.gcc_local_position_pub.publish(msg)
-        self.get_logger().info('Sending to gcc: "%s"' % msg)
+    # def gcc_timer_callback(self):
+    #     msg = Point()
+    #     msg.x = self.statepx4msg.x
+    #     msg.y = self.statepx4msg.y
+    #     msg.z = self.statepx4msg.z
+    #     self.gcc_local_position_pub.publish(msg)
+    #     self.get_logger().info('Sending to gcc: "%s"' % msg)
        
         
     def vis_callback(self):
