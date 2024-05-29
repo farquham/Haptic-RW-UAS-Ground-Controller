@@ -13,8 +13,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
-#include "commsmsgs/msg/Brimpub.hpp"
-#include "commsmsgs/msg/Bmnpub.hpp"
+#include "commsmsgs/msg/Rrimpub.hpp"
+#include "commsmsgs/msg/Rpicommspub.hpp"
 #include "commsmsgs/msg/Rbquadsimpub.hpp"
 
 namespace PRIM {
@@ -22,7 +22,7 @@ namespace PRIM {
 	public:
 		prim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("prim_node")
 		{
-			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::bmnpub>("/GC/out/rpicomms", 10, std::bind(&brim::rpi_callback, [this], std::placeholders::_1));
+			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&brim::rpi_callback, [this], std::placeholders::_1));
 			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
 
 			prim_publisher_ = this->create_publisher<commsmsgs::msg::primpub>("/GC/out/prim", 10);
@@ -60,7 +60,7 @@ namespace PRIM {
 		void PRIMstep();
 
 		// callback for the bmn subscriber
-		void rpi_callback(const commsmsgs::msg::bmnpub::UniquePtr & msg);
+		void rpi_callback(const commsmsgs::msg::rpicommspub::UniquePtr & msg);
 		// callback for the rbquadsim subscriber
 		void rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg);
 

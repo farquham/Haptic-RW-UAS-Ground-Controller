@@ -343,17 +343,19 @@ void BRIM::brim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 
 // function to convert a ros msg to a sparse matrix
 void BRIM::brim::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
-	int rows = min.layout.dim[0].size;
-	int cols = min.layout.dim[1].size;
+	int rows = min.data[0];
+	int cols = min.data[1];
+	int size = min.data[2];
 	float data = 0.0;
+	int i,j = 0;
 	std::vector< Eigen::Triplet<double> > tripletList;
-	tripletList.reserve(64);
-	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			data = min.data[i * cols + j];
-			if (data != 0) {
-				tripletList.push_back(Eigen::Triplet<double>(i, j, data));
-			}
+	tripletList.reserve(size-1);
+	for (int k = 1; k < size; k++) {
+		data = min.data[k * 3 + 2];
+		i = min.data[k * 3 + 0];
+		j = min.data[k * 3 + 1];
+		if (data != 0) {
+			tripletList.push_back(Eigen::Triplet<double>(i, j, data));
 		}
 	}
 	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
