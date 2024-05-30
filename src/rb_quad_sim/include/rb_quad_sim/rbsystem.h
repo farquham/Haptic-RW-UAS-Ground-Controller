@@ -45,7 +45,7 @@ namespace RBsystem {
 			start_time = clocky::now();
 			loop_time = clocky::now();
 
-			timer_pub_ = this->create_wall_timer(1ms, timer_callback);
+			timer_pub_ = this->create_wall_timer(10ms, timer_callback);
 		
 		}
 	private:
