@@ -73,7 +73,7 @@ void PRIM::prim::PRIMstep() {
 	fast_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h, &dlims, &lims);
 
 	// publishs the PRIM data
-	commsmsgs::msg::primpub msg{};
+	commsmsgs::msg::Rrimpub msg{};
 	msg.header.stamp = this->now();
 	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
 	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};

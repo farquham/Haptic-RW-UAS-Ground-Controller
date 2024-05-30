@@ -49,7 +49,7 @@ void RPI::rpicomms::brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg
 // publisher to send the drone position, velocity and acceleration to the rest of the system
 void RPI::rpicomms::publish_vehicle_state()
 {
-	commsmsgs::msg::rpicommspub msg{};
+	commsmsgs::msg::Rpicommspub msg{};
 	msg.header.stamp = this->now();
 	msg->actual_drone_position->x = drone_position_actual[0];
 	msg->actual_drone_position->y = drone_position_actual[1];

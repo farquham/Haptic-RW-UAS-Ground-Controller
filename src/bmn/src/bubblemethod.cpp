@@ -204,7 +204,7 @@ void BMN::bmnav::BMNstep() {
     // adds the position of the virtual velocity ball to the relative posiiton of the drone
     D_D_C = V_B_C + positions;
 
-    commsmsgs::msg::bmnpub msg{};
+    commsmsgs::msg::Bmnpub msg{};
     msg.header.stamp = this->now();
     msg.interface_force_list.x = iforce_list[0];
     msg.interface_force_list.y = iforce_list[1];

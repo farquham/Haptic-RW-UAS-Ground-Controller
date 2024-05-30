@@ -12,13 +12,13 @@
 // ros2 msgs
 #include <rclcpp/rclcpp.hpp>
 #include <stdint.h>
-#include "commsmsgs/msg/Brimpub.hpp"
-#include "commsmsgs/msg/Bmnpub.hpp"
-#include "commsmsgs/msg/Rbquadsimpub.hpp"
-#include "commsmsgs/msg/Rrimpub.hpp"
-#include "commsmsgs/msg/Rpicommspub.hpp"
-#include "commsmsgs/msg/Logsetup.hpp"
-#include "commsmsgs/msg/Logctrlbools.hpp"
+#include "commsmsgs/msg/brimpub.hpp"
+#include "commsmsgs/msg/bmnpub.hpp"
+#include "commsmsgs/msg/rbquadsimpub.hpp"
+#include "commsmsgs/msg/rrimpub.hpp"
+#include "commsmsgs/msg/rpicommspub.hpp"
+#include "commsmsgs/msg/logsetup.hpp"
+#include "commsmsgs/msg/logctrlbools.hpp"
 
 namespace datalogging {
 	// class for offboard control which starts a ROS2 node
@@ -33,22 +33,22 @@ namespace datalogging {
             ctrl_logs_subscriber_ = this->create_subscription<commsmsgs::msg::Logctrlbools>("/GC/internal/logctrl", 10, std::bind(&logging::ctrl_logs_callback, [this, brim_file, brim_log_file, bmn_file, bmn_log_file, rbquadsim_file, rbquadsim_log_file, rrim_file, rrim_log_file, rpi_file, rpi_log_file], std::placeholders::_1));
 
 			// state subscriber for recieving IRL drone position, velocity and acceleration
-            brim_subscriber_ = this->create_subscription<commsmsgs::msg::brimPub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
-            bmn_subscriber_ = this->create_subscription<commsmsgs::msg::bmnPub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
-            rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimPub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, [this, rbquadsim_log_file], std::placeholders::_1));
-            rrim_subscriber_ = this->create_subscription<commsmsgs::msg::rrimPub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
-            rpi_subscriber_ = this->create_subscription<commsmsgs::msg::rpicommsPub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
+            brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
+            bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
+            rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, [this, rbquadsim_log_file], std::placeholders::_1));
+            rrim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
+            rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
 		}
 
 	private:
         rclcpp::Subscription<commsmsgs::msg::Logsetup>::SharedPtr name_logs_subscriber_;
         rclcpp::Subscription<commsmsgs::msg::Logctrlbools>::SharedPtr ctrl_logs_subscriber_;
 
-        rclcpp::Subscription<commsmsgs::msg::brimPub>::SharedPtr brim_subscriber_;
-        rclcpp::Subscription<commsmsgs::msg::bmnPub>::SharedPtr bmn_subscriber_;
-        rclcpp::Subscription<commsmsgs::msg::rbquadsimPub>::SharedPtr rbquadsim_subscriber_;
-        rclcpp::Subscription<commsmsgs::msg::rrimPub>::SharedPtr rrim_subscriber_;
-        rclcpp::Subscription<commsmsgs::msg::rpicommsPub>::SharedPtr rpi_subscriber_;
+        rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
+        rclcpp::Subscription<commsmsgs::msg::Bmnpub>::SharedPtr bmn_subscriber_;
+        rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
+        rclcpp::Subscription<commsmsgs::msg::Rrimpub>::SharedPtr rrim_subscriber_;
+        rclcpp::Subscription<commsmsgs::msg::Rpicommspub>::SharedPtr rpi_subscriber_;
 
 		std::atomic<uint64_t> timestamp_;   //!< common synced timestamped
 
@@ -64,11 +64,11 @@ namespace datalogging {
         std::ofstream rpi_log_file;
 
 		// series of functions needed to operate the subscribers
-		void brim_callback(const commsmsgs::msg::brimPub::UniquePtr & msg, std::ofstream & log_file);
-        void bmn_callback(const commsmsgs::msg::bmnPub::UniquePtr & msg, std::ofstream & log_file);
-        void rbquadsim_callback(const commsmsgs::msg::rbquadsimPub::UniquePtr & msg, std::ofstream & log_file);
-        void rrim_callback(const commsmsgs::msg::rrimPub::UniquePtr & msg, std::ofstream & log_file);
-        void rpi_callback(const commsmsgs::msg::rpicommsPub::UniquePtr & msg, std::ofstream & log_file);
+		void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg, std::ofstream & log_file);
+        void bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg, std::ofstream & log_file);
+        void rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg, std::ofstream & log_file);
+        void rrim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg, std::ofstream & log_file);
+        void rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg, std::ofstream & log_file);
 
         // logging files helpers
         void name_log_file(std::string & file_name, int Part_ID, int exp_num, std::string type, int r_type, std::string file_type);

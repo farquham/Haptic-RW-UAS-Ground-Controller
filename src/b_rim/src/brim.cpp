@@ -73,7 +73,7 @@ void BRIM::brim::BRIMstep() {
 	bmn_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h, &dlims, &lims);
 
 	// publishs the BRIM data
-	commsmsgs::msg::brimpub msg{};
+	commsmsgs::msg::Brimpub msg{};
 	msg.header.stamp = this->now();
 	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
 	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};

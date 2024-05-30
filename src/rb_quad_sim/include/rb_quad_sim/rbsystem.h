@@ -16,9 +16,9 @@
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
-#include "commsmsgs/msg/Brimpub.hpp"
-#include "commsmsgs/msg/Primpub.hpp"
-#include "commsmsgs/msg/Rbquadsimpub.hpp"
+#include "commsmsgs/msg/brimpub.hpp"
+#include "commsmsgs/msg/rrimpub.hpp"
+#include "commsmsgs/msg/rbquadsimpub.hpp"
 
 namespace RBsystem {		
 	class RBsystem : public rclcpp::Node {
@@ -26,10 +26,10 @@ namespace RBsystem {
 		// constructor for the rigid body system
 		RBsystem(float freqsim, Quadcopter::dr_prop* dr, RBH::planes* planes, double h, double stiff, double damp)
 		{
-			brim_subscriber_ = this->create_subscription<commsmsgs::msg::brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, [this], std::placeholders::_1));
-			prim_subscriber_ = this->create_subscription<commsmsgs::msg::primpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, [this], std::placeholders::_1));
+			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, [this], std::placeholders::_1));
+			prim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, [this], std::placeholders::_1));
 			
-			rbquadsim_publisher_ = this->create_publisher<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10);
+			rbquadsim_publisher_ = this->create_publisher<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10);
 
 			auto timer_callback = [this]() -> void {
 				// what ever code to run every timer iteration
@@ -50,9 +50,9 @@ namespace RBsystem {
 		}
 	private:
 		// subscibers and publishers
-		rclcpp::Subscription<commsmsgs::msg::brimpub>::SharedPtr brim_subscriber_;
-		rclcpp::Subscription<commsmsgs::msg::primpub>::SharedPtr prim_subscriber_;
-		rclcpp::Publisher<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquadsim_publisher_;
+		rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::Rrimpub>::SharedPtr prim_subscriber_;
+		rclcpp::Publisher<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_publisher_;
 
 		rclcpp::TimerBase::SharedPtr timer_pub_;
 
@@ -65,9 +65,9 @@ namespace RBsystem {
 		void RBstep();
 
 		// callback for the brim subscriber
-		void brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg);
+		void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
 		// callback for the prim subscriber
-		void prim_callback(const commsmsgs::msg::primpub::UniquePtr & msg);
+		void prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg);
 
 		// fill the sparse matrices to avoid errors
 		void fill_matrices();

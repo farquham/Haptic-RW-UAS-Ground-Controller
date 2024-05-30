@@ -16,9 +16,9 @@
 #include <geometry_msgs/msgs/accel_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <stdint.h>
-#include "commsmsgs/msg/Rpicommspub.hpp"
-#include "commsmsgs/msg/Brimpub.hpp"
-#include "commsmsgs/msg/Rbquadsimpub.hpp"
+#include "commsmsgs/msg/rpicommspub.hpp"
+#include "commsmsgs/msg/brimpub.hpp"
+#include "commsmsgs/msg/rbquadsimpub.hpp"
 
 // some nanespace stuff
 using namespace std::chrono;
@@ -31,7 +31,7 @@ namespace RPI {
 		rpicomms() : Node("rpi_comms")
 		{
 			// subscribers for recieving ddc from bmn comp
-			brim_subscriber_ = this->create_subscription<commsmsgs::msg::brimpub>("/GC/out/brim", 10, std::bind(&rpicomms::brim_callback, [this], std::placeholders::_1));
+			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&rpicomms::brim_callback, [this], std::placeholders::_1));
 
 			// publishers for send ddc to rpi companion comp
 			setpoint_publisher_ = this->create_publisher<geometry_msgs::msgs::point>("/rpi/in/ext_cmdPoint", 10);
@@ -42,7 +42,7 @@ namespace RPI {
 			vehicle_accel_subscriber_ = this->create_subscription<geometry_msgs::msgs::accel_stamped>("/rpi/out/vehicle_acceleration", 10, std::bind(&rpicomms::vehicle_accel_callback, [this], std::placeholders::_1));
 
 			// publisher for sending IRL drone position, velocity and acceleration to the rest of the system
-			rpicomms_publisher_ = this->create_publisher<commsmsgs::msg::rpicommspub>("/GC/out/rpicomms", 10);
+			rpicomms_publisher_ = this->create_publisher<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10);
 			
 			// timer is called every 100ms to send trajectory setpoints and associated info
 			auto timer_callback = [this]() -> void {
@@ -66,9 +66,9 @@ namespace RPI {
 		rclcpp::Subscription<geometry::msgs::pose_stamped>::SharedPtr vehicle_pose_subscriber_;
 		rclcpp::Subscription<geometry::msgs::twist_stamped>::SharedPtr vehicle_twist_subscriber_;
 		rclcpp::Subscription<geometry::msgs::accel_stamped>::SharedPtr vehicle_accel_subscriber_;
-		rclcpp::Subscription<commsmsgs::msg::brimpub>::SharedPtr brim_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
 		//rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquad_subscriber_;
-		rclcpp::Publisher<commsmsgs::msg::rpicommspub>::SharedPtr rpicomms_publisher_;
+		rclcpp::Publisher<commsmsgs::msg::Rpicommspub>::SharedPtr rpicomms_publisher_;
 
 		rclcpp::TimerBase::SharedPtr timer_;
 
@@ -79,7 +79,7 @@ namespace RPI {
 		void vehicle_pose_callback(const geometry::msgs::pose_stamped::UniquePtr & msg);
 		void vehicle_twist_callback(const geometry::msgs::twist_stamped::UniquePtr & msg);
 		void vehicle_accel_callback(const geometry::msgs::accel_stamped::UniquePtr & msg);
-		void brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg);
+		void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
 		void publish_vehicle_state();
 
 		Eigen::Vector3d drone_position_cmd;

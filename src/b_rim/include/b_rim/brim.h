@@ -13,19 +13,19 @@
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
-#include "commsmsgs/msg/Brimpub.hpp"
-#include "commsmsgs/msg/Bmnpub.hpp"
-#include "commsmsgs/msg/Rbquadsimpub.hpp"
+#include "commsmsgs/msg/brimpub.hpp"
+#include "commsmsgs/msg/bmnpub.hpp"
+#include "commsmsgs/msg/rbquadsimpub.hpp"
 
 namespace BRIM {
 	class brim : public rclcpp:Node {
 	public:
 		brim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("brim_node")
 		{
-			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, [this], std::placeholders::_1));
-			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
+			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, [this], std::placeholders::_1));
+			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
 
-			brim_publisher_ = this->create_publisher<commsmsgs::msg::brimpub>("/GC/out/brim", 10);
+			brim_publisher_ = this->create_publisher<commsmsgs::msg::Brimpub>("/GC/out/brim", 10);
 
 			auto timer_callback = [this]() -> void {
 				// what ever code to run every timer iteration
@@ -46,9 +46,9 @@ namespace BRIM {
 		}
 	private:
 		// subscibers and publishers
-		rclcpp::Subscription<commsmsgs::msg::bmnpub>::SharedPtr bmn_subscriber_;
-		rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
-		rclcpp::Publisher<commsmsgs::msg::brimpub>::SharedPtr brim_publisher_;
+		rclcpp::Subscription<commsmsgs::msg::Bmnpub>::SharedPtr bmn_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
+		rclcpp::Publisher<commsmsgs::msg::Brimpub>::SharedPtr brim_publisher_;
 
 		rclcpp::TimerBase::SharedPtr timer_pub_;
 
@@ -60,9 +60,9 @@ namespace BRIM {
 		void BRIMstep();
 
 		// callback for the bmn subscriber
-		void bmn_callback(const commsmsgs::msg::bmnpub::UniquePtr & msg);
+		void bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg);
 		// callback for the rbquadsim subscriber
-		void rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg);
+		void rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg);
 
 		// helper methods for BRIM
 		// starts all the matrices
