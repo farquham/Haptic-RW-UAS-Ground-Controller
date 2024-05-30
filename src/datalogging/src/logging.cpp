@@ -1,27 +1,27 @@
 #include <../include/datalogging/logging.h>
         
 // sub callbacks
-void datalogging::logging::brim_callback(const commsmsgs::msg::brimPub::UniquePtr & msg, std::ofstream & log_file) {
+void datalogging::logging::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg, std::ofstream & log_file) {
     // write data to file
     log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->desired_drone_position->x << "," << msg->desired_drone_position->y << "," << msg->desired_drone_position->z << "," << msg->phin_list->x << "," << msg->phin_list->y << "," << msg->phin_list->z << "," << msg->phin_dot_list->x << "," << msg->phin_dot_list->y << "," << msg->phin_dot_list->z << "," << msg->brim_freq << "," << msg->brim_count << "," << msg->brim_time << "\n";
 }
 
-void datalogging::logging::bmn_callback(const commsmsgs::msg::bmnPub::UniquePtr & msg) {
+void datalogging::logging::bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg) {
     // write data to file
     log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->desired_drone_position->x << "," << msg->desired_drone_position->y << "," << msg->desired_drone_position->z << "," << msg->interface_force_list->x << "," << msg->interface_force_list->y << "," << msg->interface_force_list->z << "," << msg->bmn_freq << "\n";
 }
 
-void datalogging::logging::rbquadsim_callback(const commsmsgs::msg::rbquadsimPub::UniquePtr & msg) {
+void datalogging::logging::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
     // write data to file
     log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->position->x << "," << msg->position->y << "," << msg->position->z << "," << msg->velocity->x << "," << msg->velocity->y << "," << msg->velocity->z << "," << msg->acceleration->x << "," << msg->acceleration->y << "," << msg->acceleration->z << "," << msg->drag->x << "," << msg->drag->y << "," << msg->drag->z << "," << msg->gravity->x << "," << msg->gravity->y << "," << msg->gravity->z << "," << msg->interaction->x << "," << msg->interaction->y << "," << msg->interaction->z << "," << msg->contact << "," << msg->pre_contact << "," << msg->post_contact << "," << msg->no_contact << "," << msg->sim_freq << "\n";
 }
 
-void datalogging::logging::rrim_callback(const commsmsgs::msg::rrimPub::UniquePtr & msg) {
+void datalogging::logging::rrim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg) {
     // write data to file
     log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->actual_drone_position->x << "," << msg->actual_drone_position->y << "," << msg->actual_drone_position->z << "," << msg->phin_list->x << "," << msg->phin_list->y << "," << msg->phin_list->z << "," << msg->phin_dot_list->x << "," << msg->phin_dot_list->y << "," << msg->phin_dot_list->z << "," << msg-rrim_freq << "," << msg->rrim_count << "," << msg->rrim_time << "\n";
 }
 
-void datalogging::logging::rpi_callback(const commsmsgs::msg::rpicommsPub::UniquePtr & msg) {
+void datalogging::logging::rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg) {
     // write data to file
     log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->actual_drone_position->x << "," << msg->actual_drone_position->y << "," << msg->actual_drone_position->z << "," << msg->actual_drone_orientation->w << "," << msg->actual_drone_orientation->x << "," << msg->actual_drone_orientation->y << "," << msg->actual_drone_orientation->z << "," << msg->actual_drone_velocity->x << "," << msg->actual_drone_velocity->y << "," << msg->actual_drone_velocity->z << "," << msg->actual_drone_acceleration->x << "," << msg->actual_drone_acceleration->y << "," << msg->actual_drone_acceleration->z << "," << msg->rpi_freq << "\n";
 }

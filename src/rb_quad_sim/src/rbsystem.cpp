@@ -438,13 +438,13 @@ void RBsystem::RBsystem::interface_solution_CR(Eigen::Matrix <double, 6, 1>* nla
 }
 
 // brim callback
-void RBsystem::RBsystem::brim_callback(const commsmsgs::msg::brimpub::UniquePtr & msg) {
+void RBsystem::RBsystem::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg) {
 	DDP[0] = msg->desired_drone_position[0];
 	DDP[1] = msg->desired_drone_position[1];
 	DDP[2] = msg->desired_drone_position[2];
 }
 
 // prim callback
-void RBsystem::RBsystem::prim_callback(const commsmsgs::msg::primpub::UniquePtr & msg) {
+void RBsystem::RBsystem::prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg) {
 	//do nothing for now
 }

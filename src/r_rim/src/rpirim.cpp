@@ -113,12 +113,12 @@ void PRIM::prim::PRIMstep() {
 }
 
 // callback for the rpi subscriber
-void PRIM::prim::rpi_callback(const commsmsgs::msg::rpicommspub::UniquePtr & msg) {
+void PRIM::prim::rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg) {
 	ADP = {msg->actual_drone_position->x, msg->actual_drone_position->y, msg->actual_drone_position->z};
 }
 
 // callback for the rbquadsim subscriber
-void PRIM::prim::rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg) {
+void PRIM::prim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
 	DP = {msg->position->x, msg->position->y, msg->position->z};
 	Eigen::SparseMatrix<double> vgtemp;
 	PRIM::prim::msg_to_matrix(msg->vg, &vgtemp);

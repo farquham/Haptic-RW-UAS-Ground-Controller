@@ -238,13 +238,13 @@ void BMN::bmnav::BMNstep() {
 }
 
 // brim callback processing
-void BMN::bmnav::brim_callback(const commsmsgs::msg::brimpub::SharedPtr & msg) {
+void BMN::bmnav::brim_callback(const commsmsgs::msg::Brimpub::SharedPtr & msg) {
     phins = { msg->phin_list->x, msg->phin_list->y, msg->phin_list->z };
     dot_phins = { msg->phin_dot_list->x, msg->phin_dot_list->y, msg->phin_dot_list->z };
 }
 
 // rbquadsim callback processing
-void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::SharedPtr & msg) {
+void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::SharedPtr & msg) {
     con = msg->contact;
     precon = msg->precontact;
     postcon = msg->postcontact;

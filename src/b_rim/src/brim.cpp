@@ -113,13 +113,13 @@ void BRIM::brim::BRIMstep() {
 }
 
 // callback for the bmn subscriber
-void BRIM::brim::bmn_callback(const commsmsgs::msg::bmnpub::UniquePtr & msg) {
+void BRIM::brim::bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg) {
 	lambda_i = {msg->interface_force_list->x, msg->interface_force_list->y, msg->interface_force_list->z};
 	DDP = {msg->desired_drone_position->x, msg->desired_drone_position->y, msg->desired_drone_position->z};
 }
 
 // callback for the rbquadsim subscriber
-void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::rbquadsimpub::UniquePtr & msg) {
+void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
 	DP = {msg->position->x, msg->position->y, msg->position->z};
 	Eigen::SparseMatrix<double> vgtemp;
 	BRIM::brim::msg_to_matrix(msg->vg, &vgtemp);
