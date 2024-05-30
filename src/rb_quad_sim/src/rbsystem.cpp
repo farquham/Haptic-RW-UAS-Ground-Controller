@@ -211,6 +211,7 @@ void RBsystem::RBsystem::RBstep() {
 
 	// pushing outputs from the loop
 	commsmsgs::msg::Rbquadsimpub msg{};
+	msg.header.stamp = this->now();
 	msg.position = {drone.get_state().g_pos[0], drone.get_state().g_pos[1], drone.get_state().g_pos[2]};
 	msg.velocity = {drone.get_state().g_vel[0], drone.get_state().g_vel[1], drone.get_state().g_vel[2]};
 	msg.acceleration = {drone.get_state().g_acc[0], drone.get_state().g_acc[1], drone.get_state().g_acc[2]};

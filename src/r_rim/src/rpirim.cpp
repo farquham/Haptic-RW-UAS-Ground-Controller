@@ -74,6 +74,7 @@ void PRIM::prim::PRIMstep() {
 
 	// publishs the PRIM data
 	commsmsgs::msg::primpub msg{};
+	msg.header.stamp = this->now();
 	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
 	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};
 	msg.actual_drone_position = {ADP[0], ADP[1], ADP[2]};

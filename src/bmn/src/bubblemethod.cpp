@@ -205,6 +205,7 @@ void BMN::bmnav::BMNstep() {
     D_D_C = V_B_C + positions;
 
     commsmsgs::msg::bmnpub msg{};
+    msg.header.stamp = this->now();
     msg.interface_force_list.x = iforce_list[0];
     msg.interface_force_list.y = iforce_list[1];
     msg.interface_force_list.z = iforce_list[2];
