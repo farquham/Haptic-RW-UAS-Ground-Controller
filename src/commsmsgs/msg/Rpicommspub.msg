@@ -4,6 +4,13 @@
 # timestamp
 std_msgs/Header header
 
+# running feedback bool
+bool running
+
+# irl drone state data
+bool drone_is_flying
+bool drone_is_landed
+
 # position data
 # subbed by rbsim node
 geometry_msgs/Point actual_drone_position

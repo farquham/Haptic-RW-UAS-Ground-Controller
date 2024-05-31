@@ -4,6 +4,9 @@
 # timestamp
 std_msgs/Header header
 
+# running feedback bool
+bool running
+
 # drone state data
 geometry_msgs/Vector3 position
 geometry_msgs/Vector3 velocity

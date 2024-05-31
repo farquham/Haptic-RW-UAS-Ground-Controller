@@ -4,6 +4,9 @@
 # timestamp
 std_msgs/Header header
 
+# running feedback bool
+bool running
+
 # position data
 # subbed to by brim node
 geometry_msgs/Vector3 interface_force_list

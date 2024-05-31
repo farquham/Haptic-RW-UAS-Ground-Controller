@@ -3,11 +3,11 @@
 # timestamp
 std_msgs/Header header
 
-# open logs
-bool open
+# opened logs
+bool opened
 
-# close logs
-bool close
+# closed logs
+bool closed
 
-# clear logs
-bool clear
+# cleared logs
+bool cleared

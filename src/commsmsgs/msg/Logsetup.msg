@@ -14,10 +14,3 @@ string movement_type
 
 # rim type id (ZOH = 0, FOH = 1, RIM = 2, RIM+ = 3)
 int32 rim_type
-
-# file type id
-string file_type1
-string file_type2
-string file_type3
-string file_type4
-string file_type5

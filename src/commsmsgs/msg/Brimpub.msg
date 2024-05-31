@@ -4,6 +4,9 @@
 # timestamp
 std_msgs/Header header
 
+# running feedback bool
+bool running
+
 # position data
 # subbed by bmn node
 geometry_msgs/Vector3 phin_list
