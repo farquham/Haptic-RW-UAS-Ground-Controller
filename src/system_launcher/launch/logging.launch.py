@@ -19,6 +19,6 @@ def generate_launch_description():
          executable='data_logging',
          namespace='logging',
          name='sim',
-         parameters=[config]
+         parameters=[]
       )
    ])

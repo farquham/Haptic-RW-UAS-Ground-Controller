@@ -28,7 +28,7 @@ namespace RPI {
 	// class for offboard control which starts a ROS2 node
 	class rpicomms : public rclcpp::Node {
 	public:
-		rpicomms() : Node("rpi_comms")
+		rpicomms(float desired_frequency) : Node("rpi_comms")
 		{
 			// subscribers for recieving ddc from bmn comp
 			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&rpicomms::brim_callback, [this], std::placeholders::_1));
@@ -57,7 +57,10 @@ namespace RPI {
 			// init node vars
 			// initrpicomms();
 
-			timer_ = this->create_wall_timer(1ms, timer_callback);
+			// desired frequency to run the timer at
+			time = 1000ms / desired_frequency;
+
+			timer_ = this->create_wall_timer(time, timer_callback);
 		}
 
 	private:

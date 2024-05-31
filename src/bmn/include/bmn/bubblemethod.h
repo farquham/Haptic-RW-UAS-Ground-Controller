@@ -18,7 +18,7 @@
 namespace BMN {
 	class bmnav : public rclcpp:Node {
 		public:
-			bmnav(float freqbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange) : Node("bm_nav")
+			bmnav(float freqbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange) : Node("bmn_node")
 			{
 				brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&bmnav::brim_callback, [this], std::placeholders::_1));
 				rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&bmnav::rbquadsim_callback, [this], std::placeholders::_1));
@@ -35,7 +35,9 @@ namespace BMN {
 
 				start_time = clocky::now();
 
-				timer_pub_ = this->create_wall_timer(1ms, timer_callback);
+				time = 1000ms / freqbmn;
+
+				timer_pub_ = this->create_wall_timer(time, timer_callback);
 			}
 
 		private:

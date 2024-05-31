@@ -17,7 +17,7 @@ def generate_launch_description():
       Node(
          package='b_rim',
          executable='brim_node',
-         namespace='BRIM',
+         namespace='b_rim',
          name='sim',
          parameters=[config]
       )

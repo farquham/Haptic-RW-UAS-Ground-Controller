@@ -16,8 +16,8 @@ def generate_launch_description():
    return LaunchDescription([
       Node(
          package='r_rim',
-         executable='rrim_node',
-         namespace='RRIM',
+         executable='prim_node',
+         namespace='r_rim',
          name='sim',
          parameters=[config]
       )

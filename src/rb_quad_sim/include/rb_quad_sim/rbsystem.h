@@ -24,7 +24,7 @@ namespace RBsystem {
 	class RBsystem : public rclcpp::Node {
 	public:
 		// constructor for the rigid body system
-		RBsystem(float freqsim, Quadcopter::dr_prop* dr, RBH::planes* planes, double h, double stiff, double damp)
+		RBsystem(float freqsim, double h, float g_p[3], float l, float w, float he, float In[3][3], float mass, float con_rad, float prop_dia, float kprop, float bprop, float xypdis, float zpdis, int Tscale, float PIDlims[13], float kp[3], float kvp[3], float kvi[3], float kvd[3], float kap[3], float krp[3], float kri[3], float krd[3], float krff[3], float vel_con_lims[2], float n[6][3], float nhat[6][3], float poswall, float negwall, float d[6], float stiff, float damp) : Node("rb_quad_sim_node")
 		{
 			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, [this], std::placeholders::_1));
 			prim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, [this], std::placeholders::_1));
@@ -36,7 +36,37 @@ namespace RBsystem {
 				this->RBstep();
 			}
 
-			initrb(freqsim, dr, planes, h, stiff, damp);
+			Quadcopter::dr_prop dr;
+			dr.g_p = Eigen::Vector3d(g_p[0], g_p[1], g_p[2]);
+			dr.l = l;
+			dr.w = w;
+			dr.h = h;
+			dr.In = Eigen::Matrix3d(In[0][0], In[0][1], In[0][2], In[1][0], In[1][1], In[1][2], In[2][0], In[2][1], In[2][2]);
+			dr.mass = mass;
+			dr.con_rad = con_rad;
+			dr.prop_dia = prop_dia;
+			dr.k = kprop/(1.2*(std::pow(prop_dia,4))); 
+			dr.b = bprop/(1.2*(std::pow(prop_dia,5))); 
+			dr.xypdis = xypdis;
+			dr.zpdis = zpdis;
+			dr.Tscale = Tscale;
+			dr.PIDlims = Eigen::Matrix<double, 13, 1>(PIDlims[0]* (3.14159/180), PIDlims[1]* (3.14159/180), PIDlims[2]* (3.14159/180), PIDlims[3], PIDlims[4], PIDlims[5], PIDlims[6], PIDlims[7], PIDlims[8], PIDlims[9], PIDlims[10], PIDlims[11], PIDlims[12]);
+			dr.kp = Eigen::Vector3d(kp[0], kp[1], kp[2]);
+			dr.kvp = Eigen::Vector3d(kvp[0], kvp[1], kvp[2]);
+			dr.kvi = Eigen::Vector3d(kvi[0], kvi[1], kvi[2]);
+			dr.kvd = Eigen::Vector3d(kvd[0], kvd[1], kvd[2]);
+			dr.kap = Eigen::Vector3d(kap[0], kap[1], kap[2]);
+			dr.krp = Eigen::Vector3d(krp[0], krp[1], krp[2]);
+			dr.kri = Eigen::Vector3d(kri[0], kri[1], kri[2]);
+			dr.krd = Eigen::Vector3d(krd[0], krd[1], krd[2]);
+			dr.krff = Eigen::Vector3d(krff[0], krff[1], krff[2]);
+			dr.vel_con_lims = Eigen::Vector2d(vel_con_lims[0], vel_con_lims[1]);
+			RBH::planes planes;
+			planes.n = Eigen::Matrix <double, 6, 3>(n[0][0], n[0][1], n[0][2], n[1][0], n[1][1], n[1][2], n[2][0], n[2][1], n[2][2], n[3][0], n[3][1], n[3][2], n[4][0], n[4][1], n[4][2], n[5][0], n[5][1], n[5][2]);
+			planes.nhat = Eigen::Matrix <double, 6, 3>(nhat[0][0], nhat[0][1], nhat[0][2], nhat[1][0], nhat[1][1], nhat[1][2], nhat[2][0], nhat[2][1], nhat[2][2], nhat[3][0], nhat[3][1], nhat[3][2], nhat[4][0], nhat[4][1], nhat[4][2], nhat[5][0], nhat[5][1], nhat[5][2]);
+			planes.d = Eigen::Matrix <double, 6, 1>(d[0]*poswall, d[1]*negwall, d[2]*poswall, d[3]*negwall, d[4]*poswall, d[5]*poswall);
+
+			initrb(freqsim, &dr, &planes, h, stiff, damp);
 
 			// wait for a few ms for variables to finish initializing
 			// I dont know for some reason we need a pause here
@@ -45,7 +75,9 @@ namespace RBsystem {
 			start_time = clocky::now();
 			loop_time = clocky::now();
 
-			timer_pub_ = this->create_wall_timer(10ms, timer_callback);
+			time = 1000ms / freqsim;
+
+			timer_pub_ = this->create_wall_timer(time, timer_callback);
 		
 		}
 	private:

@@ -42,7 +42,9 @@ namespace BRIM {
 			start_time = clocky::now();
 			loop_time = clocky::now();
 
-			timer_pub_ = this->create_wall_timer(1ms, timer_callback);
+			time = 1000ms / freqrim;
+
+			timer_pub_ = this->create_wall_timer(time, timer_callback);
 		}
 	private:
 		// subscibers and publishers

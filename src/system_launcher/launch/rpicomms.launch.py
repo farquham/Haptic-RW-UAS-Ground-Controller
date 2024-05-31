@@ -16,8 +16,8 @@ def generate_launch_description():
    return LaunchDescription([
       Node(
          package='rpicomms',
-         executable='rpicomms_node',
-         namespace='RPI',
+         executable='rpi_comms',
+         namespace='rpicomms',
          name='sim',
          parameters=[config]
       )
