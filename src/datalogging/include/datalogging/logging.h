@@ -21,6 +21,9 @@
 #include "commsmsgs/msg/logctrlbools.hpp"
 #include "commsmsgs/msg/guicontrols.hpp"
 
+typedef std::chrono::high_resolution_clock clocky;
+using namespace std::chrono_literals;
+
 namespace datalogging {
 	// class for offboard control which starts a ROS2 node
 	class logging : public rclcpp::Node {
@@ -36,13 +39,14 @@ namespace datalogging {
             // log state publisher
             logs_publisher_ = this->create_publisher<commsmsgs::msg::Logctrlbools>("/GC/internal/logctrl", 10);
 
-            auto timer_callback = [this]() -> void {
-                // what ever code to run every timer iteration
-                this->publish_log_state();
-            };
+            // auto timer_callback = [this]() -> void {
+            //     // what ever code to run every timer iteration
+            //     this->publish_log_state();
+            // };
 
-            timer_ = this->create_wall_timer(100ms, timer_callback);
-            if self.logs_open {
+            timer_ = this->create_wall_timer(100ms, std::bind(&datalogging::logging::timer_callback, this));
+
+            if logs_open {
                 // state subscriber for recieving IRL drone position, velocity and acceleration
                 brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
                 bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
@@ -53,6 +57,9 @@ namespace datalogging {
 		}
 
 	private:
+        void timer_callback() {
+            this->publish_log_state();
+        }
         rclcpp::Subscription<commsmsgs::msg::Logsetup>::SharedPtr name_logs_subscriber_;
         rclcpp::Subscription<commsmsgs::msg::Guicontrols>::SharedPtr ctrl_subscriber_;
         rclcpp::Publisher<commsmsgs::msg::Logctrlbools>::SharedPtr logs_publisher_;
@@ -97,15 +104,16 @@ namespace datalogging {
         void close_log_file(std::ofstream & log_file);
         void clear_log_file(std::string file_name, std::ofstream & log_file);
 
-        void name_logs_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg, std::string & brim_file, std::string & bmn_file, std::string & rbquadsim_file, std::string & rrim_file, std::string & rpi_file);
-        void ctrl_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg, std::string & brim_file, std::ofstream & brim_log_file, std::string & bmn_file, std::ofstream & bmn_log_file, std::string & rbquadsim_file, std::ofstream & rbquadsim_log_file, std::string & rrim_file, std::ofstream & rrim_log_file, std::string & rpi_file, std::ofstream & rpi_log_file);
+        void name_logs_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg);
+        void ctrl_logs_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
 	};
-    int main(int argc, char * argv[]) {
-        rclcpp::init(argc, argv);
-        rclcpp::spin(std::make_shared<logging>());
-        rclcpp::shutdown();
-        return 0;
-    }
+}
+
+int main(int argc, char * argv[]) {
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<datalogging::logging>());
+    rclcpp::shutdown();
+    return 0;
 }
 
 #endif

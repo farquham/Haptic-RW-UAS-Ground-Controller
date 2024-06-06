@@ -17,6 +17,14 @@ find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(commsmsgs REQUIRED)
 
+add_executable(rpi_comms src/rpicomms.cpp)
+ament_target_dependencies(rpi_comms rclcpp Eigen3 geometry_msgs std_msgs commsmsgs)
+
+install(TARGETS
+  rpi_comms
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

@@ -1,4 +1,4 @@
-#include <../include/bmn/bubblemethod.h>
+#include "../include/bmn/bubblemethod.h"
 
 namespace API = Haply::HardwareAPI;
 using namespace std::chrono_literals;
@@ -32,7 +32,7 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     stiff_ki = k_i;
     damp_b = d_i;
     damp_bi = d_i;
-    stiff_kb = k_b;
+    stiff_bk = k_b;
     bub_rad = b_r;
     con_rad = c_r;
     act_dis = a_d;
@@ -62,7 +62,7 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     h = 1/fbmn;
     w_c = { -0.02, -0.15, 0.1 };
     rest = 0.025;
-    BMN::bmnav::centerDevice()
+    BMN::bmnav::centerDevice();
 }
 
 // fetches the port the inverse is connected too
@@ -100,7 +100,7 @@ void BMN::bmnav::centerDevice() {
     Eigen::Vector3d forces;
     forces.setZero();
     // checks if the end effector is within the deadzone of the center of the workspace
-    bool flag = start_check(w_c, &raw_positions, rest);
+    bool flag = start_check(&w_c, &raw_positions, &rest);
     Eigen::Vector3d velocities;
     Eigen::Vector3d positions;
     API::Devices::Inverse3::EndEffectorStateResponse state;
@@ -115,8 +115,8 @@ void BMN::bmnav::centerDevice() {
         state = Inverse_object.EndEffectorForce(requested);
         raw_positions = { state.position[0], state.position[1], state.position[2] };
         velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
-        force_restitution(w_c, &raw_positions, &rad, &stiffy, &forces);
-        flag = start_check(w_c, &raw_positions, rest);
+        force_restitution(&w_c, &raw_positions, &rad, &stiffy, &forces);
+        flag = start_check(&w_c, &raw_positions, &rest);
 
         // frequency limiter
         std::chrono::duration<double> dt = clocky::now() - start_time;
@@ -155,17 +155,17 @@ void BMN::bmnav::BMNstep() {
     abs_positions = positions + V_B_C;
 
     // Force calculations
-    BMN::bmnav::force_restitution(w_c, &raw_positions, &bub_rad, &stiff_bk, &rforces);
+    BMN::bmnav::force_restitution(&w_c, &raw_positions, &bub_rad, &stiff_bk, &rforces);
     BMN::bmnav::force_interface(&stiff_k, &damp_b, &con_rad, &phins, &dot_phins, &iforces, &iforce_list);
     forces = rforces + iforces;
     BMN::bmnav::force_scaling(&forces, &flims, &fscale);
     BMN::bmnav::force_scaling(&iforce_list, &flims, &fscale);
 
     // bubble method region checking and handling
-    boundary = BMN::bmnav::pos_check(w_c, &raw_positions, &bub_rad);
+    boundary = BMN::bmnav::pos_check(&w_c, &raw_positions, &bub_rad);
     double temp = h * v_scale;
     if (boundary == false) {
-        BMN::bmnav::velocity_applied(w_c, &raw_positions, &bub_rad, 100, &Va);
+        BMN::bmnav::velocity_applied(&w_c, &raw_positions, &bub_rad, 100, &Va);
         magVa = Va.norm();
         if (magVa > maxVa) {
             Va = { (maxVa / magVa) * Va[0], (maxVa / magVa) * Va[1] , (maxVa / magVa) * Va[2] };
@@ -188,7 +188,7 @@ void BMN::bmnav::BMNstep() {
     // if the bubble is in the postion control region then
     // the activation distance is set to standard
     else if (boundary && ncon) {
-        stiff_k = posspringadj * stiff_ki
+        stiff_k = posspringadj * stiff_ki;
         damp_b = posspringadj * damp_bi;
         act_dis = bub_rad;
     }
@@ -239,8 +239,8 @@ void BMN::bmnav::BMNstep() {
 
 // brim callback processing
 void BMN::bmnav::brim_callback(const commsmsgs::msg::Brimpub::SharedPtr & msg) {
-    phins = { msg->phin_list->x, msg->phin_list->y, msg->phin_list->z };
-    dot_phins = { msg->phin_dot_list->x, msg->phin_dot_list->y, msg->phin_dot_list->z };
+    phins = { msg->phin_list.x, msg->phin_list.y, msg->phin_list.z };
+    dot_phins = { msg->phin_dot_list.x, msg->phin_dot_list.y, msg->phin_dot_list.z };
 }
 
 // rbquadsim callback processing
@@ -249,7 +249,7 @@ void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::SharedPt
     precon = msg->precontact;
     postcon = msg->postcontact;
     ncon = msg->nocontact;
-    A_D_C = { msg->position->x, msg->position->y, msg->position->z };
+    A_D_C = { msg->position.x, msg->position.y, msg->position.z };
 }
 
 // function to calculate the force of contact using RIM

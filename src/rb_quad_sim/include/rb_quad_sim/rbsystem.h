@@ -20,28 +20,107 @@
 #include "commsmsgs/msg/rrimpub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
 
+typedef std::chrono::high_resolution_clock clocky;
+using namespace std::chrono_literals;
+
 namespace RBsystem {		
 	class RBsystem : public rclcpp::Node {
 	public:
 		// constructor for the rigid body system
-		RBsystem(float freqsim, double h, float g_p[3], float l, float w, float he, float In[3][3], float mass, float con_rad, float prop_dia, float kprop, float bprop, float xypdis, float zpdis, int Tscale, float PIDlims[13], float kp[3], float kvp[3], float kvi[3], float kvd[3], float kap[3], float krp[3], float kri[3], float krd[3], float krff[3], float vel_con_lims[2], float n[6][3], float nhat[6][3], float poswall, float negwall, float d[6], float stiff, float damp) : Node("rb_quad_sim_node")
+		RBsystem() : Node("rb_quad_sim_node")
 		{
-			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, [this], std::placeholders::_1));
-			prim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, [this], std::placeholders::_1));
+			this->declare_parameter("freqsim", 1000.0);
+			this->declare_parameter("h", 0.0);
+			this->declare_parameter("g_p", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("l", 0.0);
+			this->declare_parameter("w", 0.0);
+			this->declare_parameter("he", 0.0);
+			this->declare_parameter("In", std::vector<float>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+			this->declare_parameter("mass", 0.0);
+			this->declare_parameter("con_rad", 0.0);
+			this->declare_parameter("prop_dia", 0.0);
+			this->declare_parameter("kprop", 0.0);
+			this->declare_parameter("bprop", 0.0);
+			this->declare_parameter("xypdis", 0.0);
+			this->declare_parameter("zpdis", 0.0);
+			this->declare_parameter("Tscale", 0);
+			this->declare_parameter("PIDlims", std::vector<float>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+			this->declare_parameter("kp", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("kvp", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("kvi", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("kvd", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("kap", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("krp", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("kri", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("krd", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("krff", std::vector<float>{0.0, 0.0, 0.0});
+			this->declare_parameter("vel_con_lims", std::vector<float>{0.0, 0.0});
+			this->declare_parameter("n", std::vector<float>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+			this->declare_parameter("nhat", std::vector<float>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+			this->declare_parameter("poswall", 0.0);
+			this->declare_parameter("negwall", 0.0);
+			this->declare_parameter("d", std::vector<float>{0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+			this->declare_parameter("stiff", 0.0);
+			this->declare_parameter("damp", 0.0);
+
+			double freqsim = this->get_parameter("freqsim").as_double();
+			double h = this->get_parameter("h").as_double();
+			std::vector<double> g_p = this->get_parameter("g_p").as_double_array();
+			double l = this->get_parameter("l").as_double();
+			double w = this->get_parameter("w").as_double();
+			double he = this->get_parameter("he").as_double();
+			std::vector<double> In = this->get_parameter("In").as_double_array();
+			double mass = this->get_parameter("mass").as_double();
+			double con_rad = this->get_parameter("con_rad").as_double();
+			double prop_dia = this->get_parameter("prop_dia").as_double();
+			double kprop = this->get_parameter("kprop").as_double();
+			double bprop = this->get_parameter("bprop").as_double();
+			double xypdis = this->get_parameter("xypdis").as_double();
+			double zpdis = this->get_parameter("zpdis").as_double();
+			int Tscale = this->get_parameter("Tscale").as_int();
+			std::vector<double> PIDlims = this->get_parameter("PIDlims").as_double_array();
+			std::vector<double> kp = this->get_parameter("kp").as_double_array();
+			std::vector<double> kvp = this->get_parameter("kvp").as_double_array();
+			std::vector<double> kvi = this->get_parameter("kvi").as_double_array();
+			std::vector<double> kvd = this->get_parameter("kvd").as_double_array();
+			std::vector<double> kap = this->get_parameter("kap").as_double_array();
+			std::vector<double> krp = this->get_parameter("krp").as_double_array();
+			std::vector<double> kri = this->get_parameter("kri").as_double_array();
+			std::vector<double> krd = this->get_parameter("krd").as_double_array();
+			std::vector<double> krff = this->get_parameter("krff").as_double_array();
+			std::vector<double> vel_con_lims = this->get_parameter("vel_con_lims").as_double_array();
+			std::vector<double> n = this->get_parameter("n").as_double_array();
+			std::vector<double> nhat = this->get_parameter("nhat").as_double_array();
+			double poswall = this->get_parameter("poswall").as_double();
+			double negwall = this->get_parameter("negwall").as_double();
+			std::vector<double> d = this->get_parameter("d").as_double_array();
+			double stiff = this->get_parameter("stiff").as_double();
+			double damp = this->get_parameter("damp").as_double();
+
+			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, this, std::placeholders::_1));
+			prim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, this, std::placeholders::_1));
 			
 			rbquadsim_publisher_ = this->create_publisher<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10);
 
-			auto timer_callback = [this]() -> void {
-				// what ever code to run every timer iteration
-				this->RBstep();
-			}
+			// auto timer_callback = [this]() -> void {
+			// 	// what ever code to run every timer iteration
+			// 	this->RBstep();
+			// }
 
 			Quadcopter::dr_prop dr;
 			dr.g_p = Eigen::Vector3d(g_p[0], g_p[1], g_p[2]);
 			dr.l = l;
 			dr.w = w;
 			dr.h = h;
-			dr.In = Eigen::Matrix3d(In[0][0], In[0][1], In[0][2], In[1][0], In[1][1], In[1][2], In[2][0], In[2][1], In[2][2]);
+			dr.In(0,0) = In[0];
+			dr.In(0,1) = In[1];
+			dr.In(0,2) = In[2];
+			dr.In(1,0) = In[3];
+			dr.In(1,1) = In[4];
+			dr.In(1,2) = In[5];
+			dr.In(2,0) = In[6];
+			dr.In(2,1) = In[7];
+			dr.In(2,2) = In[8];
 			dr.mass = mass;
 			dr.con_rad = con_rad;
 			dr.prop_dia = prop_dia;
@@ -62,8 +141,42 @@ namespace RBsystem {
 			dr.krff = Eigen::Vector3d(krff[0], krff[1], krff[2]);
 			dr.vel_con_lims = Eigen::Vector2d(vel_con_lims[0], vel_con_lims[1]);
 			RBH::planes planes;
-			planes.n = Eigen::Matrix <double, 6, 3>(n[0][0], n[0][1], n[0][2], n[1][0], n[1][1], n[1][2], n[2][0], n[2][1], n[2][2], n[3][0], n[3][1], n[3][2], n[4][0], n[4][1], n[4][2], n[5][0], n[5][1], n[5][2]);
-			planes.nhat = Eigen::Matrix <double, 6, 3>(nhat[0][0], nhat[0][1], nhat[0][2], nhat[1][0], nhat[1][1], nhat[1][2], nhat[2][0], nhat[2][1], nhat[2][2], nhat[3][0], nhat[3][1], nhat[3][2], nhat[4][0], nhat[4][1], nhat[4][2], nhat[5][0], nhat[5][1], nhat[5][2]);
+			planes.n(0,0) = n[0];
+			planes.n(0,1) = n[1];
+			planes.n(0,2) = n[2];
+			planes.n(1,0) = n[3];
+			planes.n(1,1) = n[4];
+			planes.n(1,2) = n[5];
+			planes.n(2,0) = n[6];
+			planes.n(2,1) = n[7];
+			planes.n(2,2) = n[8];
+			planes.n(3,0) = n[9];
+			planes.n(3,1) = n[10];
+			planes.n(3,2) = n[11];
+			planes.n(4,0) = n[12];
+			planes.n(4,1) = n[13];
+			planes.n(4,2) = n[14];
+			planes.n(5,0) = n[15];
+			planes.n(5,1) = n[16];
+			planes.n(5,2) = n[17];
+			planes.nhat(0,0) = nhat[0];
+			planes.nhat(0,1) = nhat[1];
+			planes.nhat(0,2) = nhat[2];
+			planes.nhat(1,0) = nhat[3];
+			planes.nhat(1,1) = nhat[4];
+			planes.nhat(1,2) = nhat[5];
+			planes.nhat(2,0) = nhat[6];
+			planes.nhat(2,1) = nhat[7];
+			planes.nhat(2,2) = nhat[8];
+			planes.nhat(3,0) = nhat[9];
+			planes.nhat(3,1) = nhat[10];
+			planes.nhat(3,2) = nhat[11];
+			planes.nhat(4,0) = nhat[12];
+			planes.nhat(4,1) = nhat[13];
+			planes.nhat(4,2) = nhat[14];
+			planes.nhat(5,0) = nhat[15];
+			planes.nhat(5,1) = nhat[16];
+			planes.nhat(5,2) = nhat[17];
 			planes.d = Eigen::Matrix <double, 6, 1>(d[0]*poswall, d[1]*negwall, d[2]*poswall, d[3]*negwall, d[4]*poswall, d[5]*poswall);
 
 			initrb(freqsim, &dr, &planes, h, stiff, damp);
@@ -73,14 +186,16 @@ namespace RBsystem {
 			for (int i = 0; i < 100; i++) {}
 
 			start_time = clocky::now();
-			loop_time = clocky::now();
 
-			time = 1000ms / freqsim;
+			auto time = 1000ms / freqsim;
 
-			timer_pub_ = this->create_wall_timer(time, timer_callback);
-		
+			timer_pub_ = this->create_wall_timer(time, std::bind(&RBsystem::RBsystem::timer_callback, this));
 		}
 	private:
+		void timer_callback() {
+			// what ever code to run every timer iteration
+			this->RBstep();
+		}
 		// subscibers and publishers
 		rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::Rrimpub>::SharedPtr prim_subscriber_;
@@ -164,6 +279,7 @@ namespace RBsystem {
 		int i;
 		double freq;
 		double pos_norm;
+		double fsim;
 
 		// structs
 		Quadcopter::draggrav dgout;
@@ -176,13 +292,17 @@ namespace RBsystem {
 		Eigen::Matrix <double, 1, 6> droneCrvel;
 		Eigen::Vector3d pos_diff;
 		Eigen::MatrixXd velimp;
+
+		std::chrono::_V2::system_clock::time_point start_time;
+		std::chrono::duration<double> loop_time;
 	};
-	int main(int argc, char * argv[]) {
-		rclcpp::init(argc, argv);
-		rclcpp::spin(std::make_shared<RBsystem>());
-		rclcpp::shutdown();
-		return 0;
-	}
+}
+
+int main(int argc, char * argv[]) {
+	rclcpp::init(argc, argv);
+	rclcpp::spin(std::make_shared<RBsystem::RBsystem>());
+	rclcpp::shutdown();
+	return 0;
 }
 
 #endif

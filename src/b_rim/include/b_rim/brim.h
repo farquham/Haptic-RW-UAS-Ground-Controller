@@ -26,14 +26,14 @@ namespace BRIM {
 		brim() : Node("brim_node")
 		{
 			this->declare_parameter("freqrim", 1000.0);
-			this->declare_parameter("fcom1", 100.0);
-			this->declare_parameter("rim_type", 2);
-			this->declare_parameter("xlim", 5.0);
-			this->declare_parameter("ylim", 5.0);
-			this->declare_parameter("zlim", 5.0);
-			this->declare_parameter("dxlim", 12.0);
-			this->declare_parameter("dylim", 12.0);
-			this->declare_parameter("dzlim", 3.0);
+			this->declare_parameter("fcom1", 0);
+			this->declare_parameter("rim_type", 0);
+			this->declare_parameter("xlim", 0);
+			this->declare_parameter("ylim", 0);
+			this->declare_parameter("zlim", 0);
+			this->declare_parameter("dxlim", 0);
+			this->declare_parameter("dylim", 0);
+			this->declare_parameter("dzlim", 0);
 
 			float freqrim = this->get_parameter("freqrim").as_double();
 			int fcom1 = this->get_parameter("fcom1").as_int();
@@ -65,7 +65,9 @@ namespace BRIM {
 
 			start_time = clocky::now();
 
-			timer_pub_ = this->create_wall_timer(1ms, std::bind(&BRIM::brim::timer_callback, this));
+			auto time = 1000ms / freqrim;
+
+			timer_pub_ = this->create_wall_timer(time, std::bind(&BRIM::brim::timer_callback, this));
 		}
 	private:
 		void timer_callback() {

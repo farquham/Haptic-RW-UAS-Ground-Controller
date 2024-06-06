@@ -1,4 +1,4 @@
-#include "RBsystem.h"
+#include "../include/rb_quad_sim/rbsystem.h"
 
 typedef std::chrono::high_resolution_clock clocky;
 
@@ -46,6 +46,8 @@ void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props,
 	// interaction properties
 	drphin = 0;
 	drdphin = 0;
+
+	fsim = freqsim;
 
 	// interaction flags
 	contact = false;
@@ -212,15 +214,32 @@ void RBsystem::RBsystem::RBstep() {
 	// pushing outputs from the loop
 	commsmsgs::msg::Rbquadsimpub msg{};
 	msg.header.stamp = this->now();
-	msg.position = {drone.get_state().g_pos[0], drone.get_state().g_pos[1], drone.get_state().g_pos[2]};
-	msg.velocity = {drone.get_state().g_vel[0], drone.get_state().g_vel[1], drone.get_state().g_vel[2]};
-	msg.acceleration = {drone.get_state().g_acc[0], drone.get_state().g_acc[1], drone.get_state().g_acc[2]};
-	msg.orientation = {drone.get_state().g_att.w(), drone.get_state().g_att.x(), drone.get_state().g_att.y(), drone.get_state().g_att.z()};
-	msg.angular_velocity = {drone.get_state().b_avel[0], drone.get_state().b_avel[1], drone.get_state().b_avel[2]};
+	msg.position.x = drone.get_state().g_pos[0];
+	msg.position.y = drone.get_state().g_pos[1];
+	msg.position.z = drone.get_state().g_pos[2];
+	msg.velocity.x = drone.get_state().g_vel[0];
+	msg.velocity.y = drone.get_state().g_vel[1];
+	msg.velocity.z = drone.get_state().g_vel[2];
+	msg.acceleration.x = drone.get_state().g_acc[0];
+	msg.acceleration.y = drone.get_state().g_acc[1];
+	msg.acceleration.z = drone.get_state().g_acc[2];
+	msg.orientation.w = drone.get_state().g_att.w();
+	msg.orientation.x = drone.get_state().g_att.x();
+	msg.orientation.y = drone.get_state().g_att.y();
+	msg.orientation.z = drone.get_state().g_att.z();
+	msg.angular_velocity.x = drone.get_state().b_avel[0];
+	msg.angular_velocity.y = drone.get_state().b_avel[1];
+	msg.angular_velocity.z = drone.get_state().b_avel[2];
 	// pose / orientation ???
-	msg.drag = {dgout.Fd[0], dgout.Fd[1], dgout.Fd[2]};
-	msg.gravity = {dgout.Fg[0], dgout.Fg[1], dgout.Fg[2]};
-	msg.interaction = {Int_for[0], Int_for[1], Int_for[2]};
+	msg.drag.x = dgout.Fd[0];
+	msg.drag.y = dgout.Fd[1];
+	msg.drag.z = dgout.Fd[2];
+	msg.gravity.x = dgout.Fg[0];
+	msg.gravity.y = dgout.Fg[1];
+	msg.gravity.z = dgout.Fg[2];
+	msg.interaction.x = Int_for[0];
+	msg.interaction.y = Int_for[1];
+	msg.interaction.z = Int_for[2];
 	msg.rotation_matrix.m11 = drone.get_state().r_mat(0, 0);
 	msg.rotation_matrix.m12 = drone.get_state().r_mat(0, 1);
 	msg.rotation_matrix.m13 = drone.get_state().r_mat(0, 2);
@@ -246,7 +265,7 @@ void RBsystem::RBsystem::RBstep() {
 
 	std::chrono::duration<double> dt = clocky::now() - start_time;
 	freq = 1 / dt.count();
-	while (freq > frim)
+	while (freq > fsim)
 	{
 		dt = clocky::now() - start_time;
 		freq = 1 / dt.count();
@@ -441,9 +460,9 @@ void RBsystem::RBsystem::interface_solution_CR(Eigen::Matrix <double, 6, 1>* nla
 
 // brim callback
 void RBsystem::RBsystem::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg) {
-	DDP[0] = msg->desired_drone_position[0];
-	DDP[1] = msg->desired_drone_position[1];
-	DDP[2] = msg->desired_drone_position[2];
+	DDP[0] = msg->desired_drone_position.x;
+	DDP[1] = msg->desired_drone_position.y;
+	DDP[2] = msg->desired_drone_position.z;
 }
 
 // prim callback

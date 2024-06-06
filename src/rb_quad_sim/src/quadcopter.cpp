@@ -1,4 +1,4 @@
-#include "Quadcopter.h"
+#include "../include/rb_quad_sim/quadcopter.h"
 
 
 //default constructor

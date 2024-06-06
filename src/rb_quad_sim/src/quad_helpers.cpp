@@ -1,4 +1,4 @@
-#include "Q_helpers.h"
+#include "../include/rb_quad_sim/quad_helpers.h"
 
 // controller helpers
 // Position P controller

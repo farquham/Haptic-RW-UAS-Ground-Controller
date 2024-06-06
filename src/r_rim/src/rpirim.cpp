@@ -1,4 +1,4 @@
-#include <../include/p_rim/rpirim.h>
+#include "../include/r_rim/rpirim.h"
 
 using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;
@@ -75,9 +75,15 @@ void PRIM::prim::PRIMstep() {
 	// publishs the PRIM data
 	commsmsgs::msg::Rrimpub msg{};
 	msg.header.stamp = this->now();
-	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
-	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};
-	msg.actual_drone_position = {ADP[0], ADP[1], ADP[2]};
+	msg.phin_list.x = phin_list[0];
+	msg.phin_list.y = phin_list[1];
+	msg.phin_list.z = phin_list[2];
+	msg.phin_dot_list.x = dot_phin_list[0];
+	msg.phin_dot_list.y = dot_phin_list[1];
+	msg.phin_dot_list.z = dot_phin_list[2];
+	msg.actual_drone_position.x = ADP[0];
+	msg.actual_drone_position.y = ADP[1];
+	msg.actual_drone_position.z = ADP[2];
 	msg.rrim_freq = freq;
 	msg.rrim_count = count;
 	msg.rrim_time = loop_time.count();
@@ -114,23 +120,23 @@ void PRIM::prim::PRIMstep() {
 
 // callback for the rpi subscriber
 void PRIM::prim::rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg) {
-	ADP = {msg->actual_drone_position->x, msg->actual_drone_position->y, msg->actual_drone_position->z};
+	ADP = {msg->actual_drone_position.x, msg->actual_drone_position.y, msg->actual_drone_position.z};
 }
 
 // callback for the rbquadsim subscriber
 void PRIM::prim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
-	DP = {msg->position->x, msg->position->y, msg->position->z};
+	DP = {msg->position.x, msg->position.y, msg->position.z};
 	Eigen::SparseMatrix<double> vgtemp;
 	PRIM::prim::msg_to_matrix(msg->vg, &vgtemp);
 	v_g = vgtemp.toDense();
 
 	if (r_type == 2) {
-		fd = {msg->drag->x, msg->drag->y, msg->drag->z};
-		fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
-		fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
+		fd = {msg->drag.x, msg->drag.y, msg->drag.z};
+		fg = {msg->gravity.x, msg->gravity.y, msg->gravity.z};
+		fi = {msg->interaction.x, msg->interaction.y, msg->interaction.z};
 		// sparse stuff
-		PRIM::prim::msg_to_matrix(msg->Ac, &Ac);
-		PRIM::prim::msg_to_matrix(msg->M_inv, &M_hat_inv);
+		PRIM::prim::msg_to_matrix(msg->ac, &Ac);
+		PRIM::prim::msg_to_matrix(msg->m_inv, &M_hat_inv);
 		// update the rigidbody system matrices
 		rb_update(&DP, &ADP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
 	}

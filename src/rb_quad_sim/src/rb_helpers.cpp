@@ -1,4 +1,4 @@
-#include "RB_helpers.h"
+#include "../include/rb_quad_sim/rb_helpers.h"
 
 // plane interaction functions
 // helper function to calculate the distance between the drone and a plane

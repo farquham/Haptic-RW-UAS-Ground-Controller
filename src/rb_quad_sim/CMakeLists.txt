@@ -17,6 +17,14 @@ find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(commsmsgs REQUIRED)
 
+add_executable(rb_quad_sim_node src/rbsystem.cpp src/rb_helpers.cpp src/quadcopter.cpp src/quad_helpers.cpp)
+ament_target_dependencies(rb_quad_sim_node rclcpp Eigen3 geometry_msgs std_msgs commsmsgs)
+
+install(TARGETS
+  rb_quad_sim_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights

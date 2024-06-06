@@ -14,33 +14,79 @@
 #include <stdint.h>
 #include "commsmsgs/msg/brimpub.hpp"
 #include "commsmsgs/msg/bmnpub.hpp"
+#include "commsmsgs/msg/rbquadsimpub.hpp"
+
+typedef std::chrono::high_resolution_clock clocky;
+using namespace std::chrono_literals;
 
 namespace BMN {
-	class bmnav : public rclcpp:Node {
+	class bmnav : public rclcpp::Node {
 		public:
-			bmnav(float freqbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange) : Node("bmn_node")
+			bmnav() : Node("bmn_node")
 			{
-				brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&bmnav::brim_callback, [this], std::placeholders::_1));
-				rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&bmnav::rbquadsim_callback, [this], std::placeholders::_1));
+				this->declare_parameter("freqbmn", 1000.0);
+				this->declare_parameter("k_b", 0.0);
+				this->declare_parameter("k_i", 0.0);
+				this->declare_parameter("d_i", 0.0);
+				this->declare_parameter("v_s", 0.0);
+				this->declare_parameter("p_s", 0.0);
+				this->declare_parameter("b_r", 0.0);
+				this->declare_parameter("c_r", 0.0);
+				this->declare_parameter("a_d", 0.0);
+				this->declare_parameter("v_l", 0.0);
+				this->declare_parameter("f_s", 0.0);
+				this->declare_parameter("flimx", 0.0);
+				this->declare_parameter("flimy", 0.0);
+				this->declare_parameter("flimz", 0.0);
+				this->declare_parameter("phin_max", 0.0);
+				this->declare_parameter("vmaxchange", 0.0);
+				this->declare_parameter("PSchange", 0.0);
+				this->declare_parameter("VSchange", 0.0);
+
+				float freqbmn = this->get_parameter("freqbmnd").as_double();
+				double k_b = this->get_parameter("k_b").as_double();
+				double k_i = this->get_parameter("k_i").as_double();
+				double d_i = this->get_parameter("d_i").as_double();
+				double v_s = this->get_parameter("v_s").as_double();
+				double p_s = this->get_parameter("p_s").as_double();
+				double b_r = this->get_parameter("b_r").as_double();
+				double c_r = this->get_parameter("c_r").as_double();
+				double a_d = this->get_parameter("a_d").as_double();
+				double v_l = this->get_parameter("v_l").as_double();
+				double f_s = this->get_parameter("f_s").as_double();
+				double flimx = this->get_parameter("flimx").as_double();
+				double flimy = this->get_parameter("flimy").as_double();
+				double flimz = this->get_parameter("flimz").as_double();
+				double phin_max = this->get_parameter("phin_max").as_double();
+				double vmaxchange = this->get_parameter("vmaxchange").as_double();
+				double PSchange = this->get_parameter("PSchange").as_double();
+				double VSchange = this->get_parameter("VSchange").as_double();
+
+				brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&bmnav::brim_callback, this, std::placeholders::_1));
+				rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&bmnav::rbquadsim_callback, this, std::placeholders::_1));
 
 				bmn_publisher_ = this->create_publisher<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10);
 
-				auto timer_callback = [this]() -> void {
-					// what ever code to run every timer iteration
-					this->BMNstep();
-				}
+				// auto timer_callback = [this]() -> void {
+				// 	// what ever code accel_stampedto run every timer iteration
+				// 	this->BMNstep();
+				// }
 
 				// add params
 				initbmn(freqbmn, k_b, k_i, d_i, v_s, p_s, b_r, c_r, a_d, v_l, f_s, flimx, flimy, flimz, phin_max, vmaxchange, PSchange, VSchange);
 
 				start_time = clocky::now();
 
-				time = 1000ms / freqbmn;
+				auto time = 1000ms / freqbmn;
 
-				timer_pub_ = this->create_wall_timer(time, timer_callback);
+				timer_pub_ = this->create_wall_timer(time, std::bind(&BMN::bmnav::timer_callback, this));
 			}
 
 		private:
+			void timer_callback() {
+				// what ever code to run every timer iteration
+				this->BMNstep();
+			}
 			// subscibers and publishers
 			rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
 			rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
@@ -85,13 +131,13 @@ namespace BMN {
 			// fields for class
 			// inverse stuff
 			std::string comm;
-			API::Devices::Inverse3 Inverse_object;
+			HardwareAPI::Devices::Inverse3 Inverse_object;
 			double h;
-			EIgen::Vector3d w_c;
+			Eigen::Vector3d w_c;
 			double rest;
 			// inverse data fetching and handling
-    		API::Devices::Inverse3::EndEffectorStateResponse state;
-    		API::Devices::Inverse3::EndEffectorForceRequest requested;
+    		HardwareAPI::Devices::Inverse3::EndEffectorStateResponse state;
+    		HardwareAPI::Devices::Inverse3::EndEffectorForceRequest requested;
 
 			// looping vars
 			Eigen::Vector3d raw_positions;
@@ -143,14 +189,15 @@ namespace BMN {
 			Eigen::Vector3d flims;
 			double fscale;
 
-			auto start_time = clocky::now();
-	}
-	int main(int argc, char * argv[]) {
-		rclcpp::init(argc, argv);
-		rclcpp::spin(std::make_shared<bmnav>());
-		rclcpp::shutdown();
-		return 0;
-	}
+			std::chrono::_V2::system_clock::time_point start_time;
+	};
+}
+
+int main(int argc, char * argv[]) {
+	rclcpp::init(argc, argv);
+	rclcpp::spin(std::make_shared<BMN::bmnav>());
+	rclcpp::shutdown();
+	return 0;
 }
 
 #endif

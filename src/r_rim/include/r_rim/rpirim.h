@@ -17,20 +17,45 @@
 #include "commsmsgs/msg/rpicommspub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
 
+typedef std::chrono::high_resolution_clock clocky;
+using namespace std::chrono_literals;
+
 namespace PRIM {
-	class prim : public rclcpp:Node {
+	class prim : public rclcpp::Node {
 	public:
-		prim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("prim_node")
+		prim() : Node("prim_node")
 		{
-			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&brim::rpi_callback, [this], std::placeholders::_1));
-			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
+			this->declare_parameter("freqrim", 1000.0);
+			this->declare_parameter("fcom1", 0);
+			this->declare_parameter("fcom2", 0);
+			this->declare_parameter("rim_type", 0);
+			this->declare_parameter("xlim", 0);
+			this->declare_parameter("ylim", 0);
+			this->declare_parameter("zlim", 0);
+			this->declare_parameter("dxlim", 0);
+			this->declare_parameter("dylim", 0);
+			this->declare_parameter("dzlim", 0);
+
+			float freqrim = this->get_parameter("freqrim").as_double();
+			int fcom1 = this->get_parameter("fcom1").as_int();
+			int fcom2 = this->get_parameter("fcom2").as_int();
+			int rim_type = this->get_parameter("rim_type").as_int();
+			float xlim = this->get_parameter("xlim").as_double();
+			float ylim = this->get_parameter("ylim").as_double();
+			float zlim = this->get_parameter("zlim").as_double();
+			float dxlim = this->get_parameter("dxlim").as_double();
+			float dylim = this->get_parameter("dylim").as_double();
+			float dzlim = this->get_parameter("dzlim").as_double();
+
+			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&prim::rpi_callback, this, std::placeholders::_1));
+			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&prim::rbquadsim_callback, this, std::placeholders::_1));
 
 			prim_publisher_ = this->create_publisher<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10);
 
-			auto timer_callback = [this]() -> void {
-				// what ever code to run every timer iteration
-				this->PRIMstep();
-			}
+			// auto timer_callback = [this]() -> void {
+			// 	// what ever code to run every timer iteration
+			// 	this->PRIMstep();
+			// }
 
 			// add params
 			initprim(freqrim, fcom1, fcom2, rim_type, xlim, ylim, zlim, dxlim, dylim, dzlim);
@@ -40,13 +65,16 @@ namespace PRIM {
 			for (int i = 0; i < 100; i++) {}
 
 			start_time = clocky::now();
-			loop_time = clocky::now();
 
-			time = 1000ms / freqrim;
+			auto time = 1000ms / freqrim;
 
-			timer_pub_ = this->create_wall_timer(time, timer_callback);
+			timer_pub_ = this->create_wall_timer(time, std::bind(&PRIM::prim::timer_callback, this));
 		}
 	private:
+		void timer_callback() {
+			// what ever code to run every timer iteration
+			this->PRIMstep();
+		}
 		// subscibers and publishers
 		rclcpp::Subscription<commsmsgs::msg::Rpicommspub>::SharedPtr rpi_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
@@ -57,7 +85,7 @@ namespace PRIM {
 		std::atomic<uint64_t> timestamp_;
 
 		// BRIM constructor
-		initprim(float frim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim);
+		void initprim(float frim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim);
 		// BRIM loop starter
 		void PRIMstep();
 
@@ -144,15 +172,16 @@ namespace PRIM {
 
 		Eigen::Matrix<double, 1, 42> tempvb;
 
-		std::chrono::duration<double> start_time;
+		std::chrono::_V2::system_clock::time_point start_time;
 		std::chrono::duration<double> loop_time;
 	};
-	int main(int argc, char * argv[]) {
-		rclcpp::init(argc, argv);
-		rclcpp::spin(std::make_shared<prim>());
-		rclcpp::shutdown();
-		return 0;
-	}
+}
+
+int main(int argc, char * argv[]) {
+	rclcpp::init(argc, argv);
+	rclcpp::spin(std::make_shared<PRIM::prim>());
+	rclcpp::shutdown();
+	return 0;
 }
 
 #endif
