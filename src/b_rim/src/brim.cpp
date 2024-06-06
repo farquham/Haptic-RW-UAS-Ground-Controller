@@ -130,8 +130,8 @@ void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePt
 		fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
 		fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
 		// sparse stuff
-		BRIM::brim::msg_to_matrix(msg->Ac, &Ac);
-		BRIM::brim::msg_to_matrix(msg->M_inv, &M_hat_inv);
+		BRIM::brim::msg_to_matrix(msg->ac, &Ac);
+		BRIM::brim::msg_to_matrix(msg->m_inv, &M_hat_inv);
 		// update the rigidbody system matrices
 		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
 	}

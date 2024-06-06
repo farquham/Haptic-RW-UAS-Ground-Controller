@@ -18,14 +18,14 @@ void datalogging::logging::bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr 
 void datalogging::logging::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg, std::ofstream & log_file) {
     // write data to file
     if (self.logs_open) {
-        log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->position->x << "," << msg->position->y << "," << msg->position->z << "," << msg->velocity->x << "," << msg->velocity->y << "," << msg->velocity->z << "," << msg->acceleration->x << "," << msg->acceleration->y << "," << msg->acceleration->z << "," << msg->drag->x << "," << msg->drag->y << "," << msg->drag->z << "," << msg->gravity->x << "," << msg->gravity->y << "," << msg->gravity->z << "," << msg->interaction->x << "," << msg->interaction->y << "," << msg->interaction->z << "," << msg->contact << "," << msg->pre_contact << "," << msg->post_contact << "," << msg->no_contact << "," << msg->sim_freq << "\n";
+        log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->position->x << "," << msg->position->y << "," << msg->position->z << "," << msg->velocity->x << "," << msg->velocity->y << "," << msg->velocity->z << "," << msg->acceleration->x << "," << msg->acceleration->y << "," << msg->acceleration->z << "," << msg->drag->x << "," << msg->drag->y << "," << msg->drag->z << "," << msg->gravity->x << "," << msg->gravity->y << "," << msg->gravity->z << "," << msg->interaction->x << "," << msg->interaction->y << "," << msg->interaction->z << "," << msg->orientation->w << "," <<  msg->orientation->x << "," << msg->orientation->y << "," << msg->orientation->z << "," <<  msg->angular_velocity->x << "," << msg->angular_velocity->y << "," << msg->angular_velocity->z << "," << msg->contact << "," << msg->pre_contact << "," << msg->post_contact << "," << msg->no_contact << "," << msg->sim_freq << "\n";
     }
 }
 
 void datalogging::logging::rrim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg, std::ofstream & log_file) {
     // write data to file
     if (self.logs_open) {
-        log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->actual_drone_position->x << "," << msg->actual_drone_position->y << "," << msg->actual_drone_position->z << "," << msg->phin_list->x << "," << msg->phin_list->y << "," << msg->phin_list->z << "," << msg->phin_dot_list->x << "," << msg->phin_dot_list->y << "," << msg->phin_dot_list->z << "," << msg-rrim_freq << "," << msg->rrim_count << "," << msg->rrim_time << "\n";
+        log_file << msg->header->stamp->sec << "," << msg->header->stamp->nanosec << "," << msg->actual_drone_position->x << "," << msg->actual_drone_position->y << "," << msg->actual_drone_position->z << "," << msg->phin_list->x << "," << msg->phin_list->y << "," << msg->phin_list->z << "," << msg->phin_dot_list->x << "," << msg->phin_dot_list->y << "," << msg->phin_dot_list->z << "," << msg->rrim_freq << "," << msg->rrim_count << "," << msg->rrim_time << "\n";
     }
 }
 

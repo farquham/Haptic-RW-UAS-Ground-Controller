@@ -26,9 +26,9 @@ void RPI::rpicomms::vehicle_pose_callback(const geometry_msgs::msg::pose_stamped
 
 void RPI::rpicomms::vehicle_twist_callback(const geometry_msgs::msg::twist_stamped::UniquePtr & msg)
 {
-	drone_velocity_actual[0] = msg->twist->linear->x;
-	drone_velocity_actual[1] = msg->twist->linear->y;
-	drone_velocity_actual[2] = msg->twist->linear->z;
+	drone_velocity_actual[0] = msg->twist->angular->x;
+	drone_velocity_actual[1] = msg->twist->angular->y;
+	drone_velocity_actual[2] = msg->twist->angular->z;
 }
 
 void RPI::rpicomms::vehicle_accel_callback(const geometry_msgs::msg::accel_stamped::UniquePtr & msg)

@@ -42,13 +42,14 @@ namespace datalogging {
             };
 
             timer_ = this->create_wall_timer(100ms, timer_callback);
-
-			// state subscriber for recieving IRL drone position, velocity and acceleration
-            brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
-            bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
-            rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, [this, rbquadsim_log_file], std::placeholders::_1));
-            rrim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
-            rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
+            if self.logs_open {
+                // state subscriber for recieving IRL drone position, velocity and acceleration
+                brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
+                bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
+                rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, [this, rbquadsim_log_file], std::placeholders::_1));
+                rrim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
+                rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
+            }
 		}
 
 	private:

@@ -215,6 +215,8 @@ void RBsystem::RBsystem::RBstep() {
 	msg.position = {drone.get_state().g_pos[0], drone.get_state().g_pos[1], drone.get_state().g_pos[2]};
 	msg.velocity = {drone.get_state().g_vel[0], drone.get_state().g_vel[1], drone.get_state().g_vel[2]};
 	msg.acceleration = {drone.get_state().g_acc[0], drone.get_state().g_acc[1], drone.get_state().g_acc[2]};
+	msg.orientation = {drone.get_state().g_att.w(), drone.get_state().g_att.x(), drone.get_state().g_att.y(), drone.get_state().g_att.z()};
+	msg.angular_velocity = {drone.get_state().b_avel[0], drone.get_state().b_avel[1], drone.get_state().b_avel[2]};
 	// pose / orientation ???
 	msg.drag = {dgout.Fd[0], dgout.Fd[1], dgout.Fd[2]};
 	msg.gravity = {dgout.Fg[0], dgout.Fg[1], dgout.Fg[2]};
@@ -229,8 +231,8 @@ void RBsystem::RBsystem::RBstep() {
 	msg.rotation_matrix.m32 = drone.get_state().r_mat(2, 1);
 	msg.rotation_matrix.m33 = drone.get_state().r_mat(2, 2);
 
-	RBH::matrix_to_msg(&M_mat_inv, &msg.M_inv);
-	RBH::matrix_to_msg(&An_mat, &msg.Ac);
+	RBH::matrix_to_msg(&M_mat_inv, &msg.m_inv);
+	RBH::matrix_to_msg(&An_mat, &msg.ac);
 	RBH::matrix_to_msg(&global_vel, &msg.vg);
 
 	msg.contact = contact;

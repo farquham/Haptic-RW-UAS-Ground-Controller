@@ -16,11 +16,13 @@ geometry_msgs/Vector3 acceleration
 geometry_msgs/Vector3 drag
 geometry_msgs/Vector3 gravity
 geometry_msgs/Vector3 interaction
+geometry_msgs/Quaternion orientation 
+geometry_msgs/Vector3 angular_velocity
 Matrixthreef rotation_matrix
 
 # sparse matrices
-std_msgs/Float64MultiArray M_inv
-std_msgs/Float64MultiArray Ac
+std_msgs/Float64MultiArray m_inv
+std_msgs/Float64MultiArray ac
 std_msgs/Float64MultiArray vg
 
 # contact state data
