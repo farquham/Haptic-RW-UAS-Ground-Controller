@@ -19,6 +19,8 @@
 typedef std::chrono::high_resolution_clock clocky;
 using namespace std::chrono_literals;
 
+namespace API = Haply::HardwareAPI;
+
 namespace BMN {
 	class bmnav : public rclcpp::Node {
 		public:
@@ -131,13 +133,13 @@ namespace BMN {
 			// fields for class
 			// inverse stuff
 			std::string comm;
-			HardwareAPI::Devices::Inverse3 Inverse_object;
+			API::Devices::Inverse3 Inverse_object;
 			double h;
 			Eigen::Vector3d w_c;
 			double rest;
 			// inverse data fetching and handling
-    		HardwareAPI::Devices::Inverse3::EndEffectorStateResponse state;
-    		HardwareAPI::Devices::Inverse3::EndEffectorForceRequest requested;
+    		API::Devices::Inverse3::EndEffectorStateResponse state;
+    		API::Devices::Inverse3::EndEffectorForceRequest requested;
 
 			// looping vars
 			Eigen::Vector3d raw_positions;

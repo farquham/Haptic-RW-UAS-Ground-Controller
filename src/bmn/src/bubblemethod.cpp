@@ -1,8 +1,8 @@
 #include "../include/bmn/bubblemethod.h"
 
-namespace API = Haply::HardwareAPI;
-using namespace std::chrono_literals;
-typedef std::chrono::high_resolution_clock clocky;
+// namespace API = Haply::HardwareAPI;
+// using namespace std::chrono_literals;
+// typedef std::chrono::high_resolution_clock clocky;
 
 // starts up the bmn class
 void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange){
@@ -238,17 +238,17 @@ void BMN::bmnav::BMNstep() {
 }
 
 // brim callback processing
-void BMN::bmnav::brim_callback(const commsmsgs::msg::Brimpub::SharedPtr & msg) {
+void BMN::bmnav::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg) {
     phins = { msg->phin_list.x, msg->phin_list.y, msg->phin_list.z };
     dot_phins = { msg->phin_dot_list.x, msg->phin_dot_list.y, msg->phin_dot_list.z };
 }
 
 // rbquadsim callback processing
-void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::SharedPtr & msg) {
+void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
     con = msg->contact;
-    precon = msg->precontact;
-    postcon = msg->postcontact;
-    ncon = msg->nocontact;
+    precon = msg->pre_contact;
+    postcon = msg->post_contact;
+    ncon = msg->no_contact;
     A_D_C = { msg->position.x, msg->position.y, msg->position.z };
 }
 
