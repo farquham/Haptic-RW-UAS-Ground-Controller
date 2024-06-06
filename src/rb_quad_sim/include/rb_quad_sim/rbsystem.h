@@ -177,6 +177,12 @@ namespace RBsystem {
 		Eigen::Vector3d pos_diff;
 		Eigen::MatrixXd velimp;
 	};
+	int main(int argc, char * argv[]) {
+		rclcpp::init(argc, argv);
+		rclcpp::spin(std::make_shared<RBsystem>());
+		rclcpp::shutdown();
+		return 0;
+	}
 }
 
 #endif

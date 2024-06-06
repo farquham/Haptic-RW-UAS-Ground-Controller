@@ -100,6 +100,12 @@ namespace datalogging {
         void name_logs_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg, std::string & brim_file, std::string & bmn_file, std::string & rbquadsim_file, std::string & rrim_file, std::string & rpi_file);
         void ctrl_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg, std::string & brim_file, std::ofstream & brim_log_file, std::string & bmn_file, std::ofstream & bmn_log_file, std::string & rbquadsim_file, std::ofstream & rbquadsim_log_file, std::string & rrim_file, std::ofstream & rrim_log_file, std::string & rpi_file, std::ofstream & rpi_log_file);
 	};
+    int main(int argc, char * argv[]) {
+        rclcpp::init(argc, argv);
+        rclcpp::spin(std::make_shared<logging>());
+        rclcpp::shutdown();
+        return 0;
+    }
 }
 
 #endif

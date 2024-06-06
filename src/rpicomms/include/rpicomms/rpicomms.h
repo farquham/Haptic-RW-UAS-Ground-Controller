@@ -91,6 +91,12 @@ namespace RPI {
 		Eigen::Vector3d drone_velocity_actual;
 		Eigen::Vector3d drone_acceleration_actual;
 	};
+	int main(int argc, char * argv[]) {
+		rclcpp::init(argc, argv);
+		rclcpp::spin(std::make_shared<rpicomms>());
+		rclcpp::shutdown();
+		return 0;
+	}
 }
 
 #endif

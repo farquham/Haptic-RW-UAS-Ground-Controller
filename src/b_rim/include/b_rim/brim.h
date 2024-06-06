@@ -147,6 +147,12 @@ namespace BRIM {
 		std::chrono::duration<double> start_time;
 		std::chrono::duration<double> loop_time;
 	};
+	int main(int argc, char * argv[]) {
+		rclcpp::init(argc, argv);
+		rclcpp::spin(std::make_shared<brim>());
+		rclcpp::shutdown();
+		return 0;
+	}
 }
 
 #endif
