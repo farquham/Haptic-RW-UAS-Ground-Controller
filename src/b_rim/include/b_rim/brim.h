@@ -17,36 +17,61 @@
 #include "commsmsgs/msg/bmnpub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
 
+typedef std::chrono::high_resolution_clock clocky;
+using namespace std::chrono_literals;
+
 namespace BRIM {
-	class brim : public rclcpp:Node {
+	class brim : public rclcpp::Node {
 	public:
-		brim(float freqrim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) : Node("brim_node")
+		brim() : Node("brim_node")
 		{
-			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, [this], std::placeholders::_1));
-			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, [this], std::placeholders::_1));
+			this->declare_parameter("freqrim", 1000.0);
+			this->declare_parameter("fcom1", 100.0);
+			this->declare_parameter("rim_type", 2);
+			this->declare_parameter("xlim", 5.0);
+			this->declare_parameter("ylim", 5.0);
+			this->declare_parameter("zlim", 5.0);
+			this->declare_parameter("dxlim", 12.0);
+			this->declare_parameter("dylim", 12.0);
+			this->declare_parameter("dzlim", 3.0);
+
+			float freqrim = this->get_parameter("freqrim").as_double();
+			int fcom1 = this->get_parameter("fcom1").as_int();
+			int rim_type = this->get_parameter("rim_type").as_int();
+			float xlim = this->get_parameter("xlim").as_double();
+			float ylim = this->get_parameter("ylim").as_double();
+			float zlim = this->get_parameter("zlim").as_double();
+			float dxlim = this->get_parameter("dxlim").as_double();
+			float dylim = this->get_parameter("dylim").as_double();
+			float dzlim = this->get_parameter("dzlim").as_double();
+
+
+			bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&brim::bmn_callback, this, std::placeholders::_1));
+			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&brim::rbquadsim_callback, this, std::placeholders::_1));
 
 			brim_publisher_ = this->create_publisher<commsmsgs::msg::Brimpub>("/GC/out/brim", 10);
 
-			auto timer_callback = [this]() -> void {
-				// what ever code to run every timer iteration
-				this->BRIMstep();
-			}
+			// auto timer_callback = [this]() -> void {
+			// 	// what ever code to run every timer iteration
+			// 	this->BRIMstep();
+			// };
 
 			// add params
-			initbrim(freqrim, fcom1, fcom2, rim_type, xlim, ylim, zlim, dxlim, dylim, dzlim);
+			initbrim(freqrim, fcom1, rim_type, xlim, ylim, zlim, dxlim, dylim, dzlim);
 
 			// wait for a few ms for variables to finish initializing
 			// I dont know for some reason we need a pause here
 			for (int i = 0; i < 100; i++) {}
 
 			start_time = clocky::now();
-			loop_time = clocky::now();
 
-			time = 1000ms / freqrim;
-
-			timer_pub_ = this->create_wall_timer(time, timer_callback);
+			timer_pub_ = this->create_wall_timer(1ms, std::bind(&BRIM::brim::timer_callback, this));
 		}
 	private:
+		void timer_callback() {
+			// what ever code to run every timer iteration
+			this->BRIMstep();
+		}
 		// subscibers and publishers
 		rclcpp::Subscription<commsmsgs::msg::Bmnpub>::SharedPtr bmn_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
@@ -57,7 +82,7 @@ namespace BRIM {
 		std::atomic<uint64_t> timestamp_;
 
 		// BRIM constructor
-		initbrim(float frim, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim);
+		void initbrim(float frim, int fcom1, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim);
 		// BRIM loop starter
 		void BRIMstep();
 
@@ -74,7 +99,7 @@ namespace BRIM {
 		// sets up the rigid body system matrices
 		void rb_setup(Eigen::SparseMatrix<double>* Ac, Eigen::SparseMatrix<double>* M_hat_inv, Eigen::SparseMatrix<double>* Pc_hat, Eigen::SparseMatrix<double>* I, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix3d* M_temp_offset);
 		// updates the rigid body system projection calculations when needed
-		void rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix<double, 42, 1>* v_g, double h, Eigen::Vector3d* Drag, Eigen::Vector3d* Gravity, Eigen::Matrix3d* M_temp_offset, Eigen::Matrix3d* M_tilde, Eigen::Matrix3d* M_tilde_inv, Eigen::Matrix<double, 42, 1>* f_ext, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::SparseMatrix<double>* Pc_hat, Eigen::Matrix<double, 42, 1>* v_g_old, double h_com1, Eigen::Vector3d* Drone_Interaction);
+		void rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix<double, 42, 1>* v_g, double h, Eigen::Vector3d* Drag, Eigen::Vector3d* Gravity, Eigen::Matrix3d* M_temp_offset, Eigen::Matrix3d* M_tilde, Eigen::Matrix3d* M_tilde_inv, Eigen::Matrix<double, 42, 1>* f_ext, Eigen::Vector3d* lambda_tilde, Eigen::SparseMatrix<double>* Pc_hat, Eigen::Matrix<double, 42, 1>* v_g_old, double h_com1, Eigen::Vector3d* Drone_Interaction);
 		// updates the bubble method system when needed
 		void bmn_update(double* r_type, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::Vector3d* R_vec_est, Eigen::Matrix3d* M_tilde_inv, double h, Eigen::Vector3d* dx_lims, Eigen::Vector3d* x_lims);
 		// sparse matrix helpers
@@ -144,15 +169,16 @@ namespace BRIM {
 
 		Eigen::Matrix<double, 1, 42> tempvb;
 
-		std::chrono::duration<double> start_time;
+		std::chrono::_V2::system_clock::time_point start_time;
 		std::chrono::duration<double> loop_time;
 	};
-	int main(int argc, char * argv[]) {
-		rclcpp::init(argc, argv);
-		rclcpp::spin(std::make_shared<brim>());
-		rclcpp::shutdown();
-		return 0;
-	}
+}
+
+int main(int argc, char * argv[]) {
+	rclcpp::init(argc, argv);
+	rclcpp::spin(std::make_shared<BRIM::brim>());
+	rclcpp::shutdown();
+	return 0;
 }
 
 #endif

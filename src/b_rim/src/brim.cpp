@@ -1,10 +1,10 @@
-#include <../include/b_rim/brim.h>
+#include "../include/b_rim/brim.h"
 
 using namespace std::chrono_literals;
 typedef std::chrono::high_resolution_clock clocky;
 
 // BRIM constructor
-void BRIM::brim::initbrim(float fr, int fcom1, int fcom2, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) {
+void BRIM::brim::initbrim(float fr, int fcom1, int rim_type, float xlim, float ylim, float zlim, float dxlim, float dylim, float dzlim) {
 	const int size = 42;
 	const int dim = 3;
 	// initialize the sparse matrices
@@ -75,16 +75,22 @@ void BRIM::brim::BRIMstep() {
 	// publishs the BRIM data
 	commsmsgs::msg::Brimpub msg{};
 	msg.header.stamp = this->now();
-	msg.phin_list = {phin_list[0], phin_list[1], phin_list[2]};
-	msg.dot_phin_list = {dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]};
-	msg.desired_drone_position = {DDP[0], DDP[1], DDP[2]};
+	msg.phin_list.x = phin_list[0];
+	msg.phin_list.y = phin_list[1];
+	msg.phin_list.z = phin_list[2];
+	msg.phin_dot_list.x = dot_phin_list[0];
+	msg.phin_dot_list.y = dot_phin_list[1];
+	msg.phin_dot_list.z = dot_phin_list[2];
+	msg.desired_drone_position.x = DDP[0];
+	msg.desired_drone_position.y = DDP[1];
+	msg.desired_drone_position.z = DDP[2];
 	msg.brim_freq = freq;
 	msg.brim_count = count;
 	msg.brim_time = loop_time.count();
 	brim_publisher_->publish(msg);
 
 	// calculates loop time
-	auto loop_end = clocky::now();
+	std::chrono::_V2::system_clock::time_point loop_end = clocky::now();
 	loop_time = loop_end - loop_start;
 
 	// no more sim stuff below this line //
@@ -114,26 +120,26 @@ void BRIM::brim::BRIMstep() {
 
 // callback for the bmn subscriber
 void BRIM::brim::bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg) {
-	lambda_i = {msg->interface_force_list->x, msg->interface_force_list->y, msg->interface_force_list->z};
-	DDP = {msg->desired_drone_position->x, msg->desired_drone_position->y, msg->desired_drone_position->z};
+	lambda_i = {msg->interface_force_list.x, msg->interface_force_list.y, msg->interface_force_list.z};
+	DDP = {msg->desired_drone_position.x, msg->desired_drone_position.y, msg->desired_drone_position.z};
 }
 
 // callback for the rbquadsim subscriber
 void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
-	DP = {msg->position->x, msg->position->y, msg->position->z};
+	DP = {msg->position.x, msg->position.y, msg->position.z};
 	Eigen::SparseMatrix<double> vgtemp;
 	BRIM::brim::msg_to_matrix(msg->vg, &vgtemp);
 	v_g = vgtemp.toDense();
 
 	if (r_type == 2) {
-		fd = {msg->drag->x, msg->drag->y, msg->drag->z};
-		fg = {msg->gravity->x, msg->gravity->y, msg->gravity->z};
-		fi = {msg->interaction->x, msg->interaction->y, msg->interaction->z};
+		fd = {msg->drag.x, msg->drag.y, msg->drag.z};
+		fg = {msg->gravity.x, msg->gravity.y, msg->gravity.z};
+		fi = {msg->interaction.x, msg->interaction.y, msg->interaction.z};
 		// sparse stuff
 		BRIM::brim::msg_to_matrix(msg->ac, &Ac);
 		BRIM::brim::msg_to_matrix(msg->m_inv, &M_hat_inv);
 		// update the rigidbody system matrices
-		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
+		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &Pc_hat, &v_g_old, h_com1, &fi);
 	}
 	else {
 		// for ZOH and FOH
@@ -229,7 +235,7 @@ void BRIM::brim::rb_setup(Eigen::SparseMatrix<double>* Ac, Eigen::SparseMatrix<d
 }
 
 // updates all the matrices that change when the interface jacobian changes
-void BRIM::brim::rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix<double, 42, 1>* v_g, double h, Eigen::Vector3d* Drag, Eigen::Vector3d* Gravity, Eigen::Matrix3d* M_temp_offset, Eigen::Matrix3d* M_tilde, Eigen::Matrix3d* M_tilde_inv, Eigen::Matrix<double, 42, 1>* f_ext, Eigen::Vector3d* lambda_tilde, Eigen::Vector3d* lambda_i, Eigen::SparseMatrix<double>* Pc_hat, Eigen::Matrix<double, 42, 1>* v_g_old, double h_com1, Eigen::Vector3d* Drone_Interaction) {
+void BRIM::brim::rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vector3d* R_vec, Eigen::Matrix3d* R_tilde_mat, Eigen::Vector3d* phin_list, Eigen::Vector3d* dot_phin_list, Eigen::SparseMatrix<double>* Ai, Eigen::SparseMatrix<double>* Ai_old, Eigen::SparseMatrix<double>* Ai_dot, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix<double, 42, 1>* v_g, double h, Eigen::Vector3d* Drag, Eigen::Vector3d* Gravity, Eigen::Matrix3d* M_temp_offset, Eigen::Matrix3d* M_tilde, Eigen::Matrix3d* M_tilde_inv, Eigen::Matrix<double, 42, 1>* f_ext, Eigen::Vector3d* lambda_tilde, Eigen::SparseMatrix<double>* Pc_hat, Eigen::Matrix<double, 42, 1>* v_g_old, double h_com1, Eigen::Vector3d* Drone_Interaction) {
 	// updates the interface jacobian
 	Interface_Jacobian(DP, DDP, R_vec, R_tilde_mat, phin_list, Ai, Ai_old, Ai_dot, h);
 	(*dot_phin_list) = (*Ai) * (*v_g);
@@ -344,8 +350,8 @@ void BRIM::brim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 
 // function to convert a ros msg to a sparse matrix
 void BRIM::brim::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
-	int rows = min.data[0];
-	int cols = min.data[1];
+	// int rows = min.data[0];
+	// int cols = min.data[1];
 	int size = min.data[2];
 	float data = 0.0;
 	int i,j = 0;
