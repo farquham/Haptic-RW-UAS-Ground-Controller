@@ -35,7 +35,7 @@ class vis(Node):
         # logs open, logs close, logs clear, sim start, sim stop, sim reset, bmn start, bmn stop, bmn reset, rpicomms start, rpicomms stop, rpicomms reset, irl drone takeoff, irl drone land
         self.controls = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
-        self.states = [False, True, False, True, False, True, False, True, False, True, False, True, False, True]
+        self.states = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
         self.Drone_pos = [0, 0, 0]
         self.drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         
@@ -255,29 +255,20 @@ class vis(Node):
         
         # sim controls, first after logs to activate, last before logs to close
         # start simulation button
-        # if button pressed and sim is currently closed and logs are open already and irl drone is landed
-        if (ps.imgui.Button("Start Simulation") and self.states[7] and self.states[0] and self.states[13]):
+        # if button pressed and sim is currently closed and logs are open already
+        if (ps.imgui.Button("Start Simulation") and self.states[7] and self.states[0]):
             print("Starting Simulation")
             self.controls[3] = True
             self.controls[4] = False
             self.controls[5] = False
         
         # stop simulation button
-        # if button pressed and sim is currently open and irl drone is landed and bmn/brim is closed and rpicomms/rrim is closed
-        if (ps.imgui.Button("Stop Simulation") and self.states[6] and self.states[13] and self.states[5] and self.states[3] and self.states[11] and self.states[9]):
+        # if button pressed and sim is currently open and bmn/brim is closed and rpicomms/rrim is closed
+        if (ps.imgui.Button("Stop Simulation") and self.states[6] and self.states[5] and self.states[3] and self.states[11] and self.states[9]):
             print("Stopping Simulation")
             self.controls[3] = False
             self.controls[4] = True
-            self.controls[5] = False
-            
-        # # reset simulation button
-        # # if button pressed and sim is currently closed
-        # if (ps.imgui.Button("Reset Simulation") and self.states[7]):
-        #     print("Resetting Simulation")
-        #     self.controls[3] = False
-        #     self.controls[4] = False
-        #     self.controls[5] = True
-            
+            self.controls[5] = False            
             
         # bmn and brim controls, have to be activated after sim, stopped before sim, open bmn first and close brim first
         # start bmn button
@@ -289,20 +280,12 @@ class vis(Node):
             self.controls[8] = False
             
         # stop bmn button
-        # if button pressed and bmn/brim is open and irl drone is landed
-        if (ps.imgui.Button("Stop BMN") and self.states[4] and self.states[2] and self.states[13]):
+        # if button pressed and bmn/brim is open
+        if (ps.imgui.Button("Stop BMN") and self.states[4] and self.states[2]):
             print("Stopping BMN")
             self.controls[6] = False
             self.controls[7] = True
             self.controls[8] = False
-            
-        # # reset bmn button
-        # # if button pressed and bmn/brim is closed
-        # if (ps.imgui.Button("Reset BMN") and self.states[5] and self.states[3]):
-        #     print("Resetting BMN")
-        #     self.controls[6] = False
-        #     self.controls[7] = False
-        #     self.controls[8] = True
             
         # rpicomms and rrim controls, have to activate after sim, stopped before sim, open rpicomms first and close rrim first
         # start rpicomms button
@@ -314,35 +297,12 @@ class vis(Node):
             self.controls[11] = False
             
         # stop rpicomms button
-        # if button pressed and rpicomms/rrim is open and irl drone is landed
-        if (ps.imgui.Button("Stop Rpicomms") and self.states[10] and self.states[8] and self.states[13]):
+        # if button pressed and rpicomms/rrim is open
+        if (ps.imgui.Button("Stop Rpicomms") and self.states[10] and self.states[8]):
             print("Stopping Rpicomms")
             self.controls[9] = False
             self.controls[10] = True
-            self.controls[11] = False
-        
-        # # reset rpicomms button
-        # # if button pressed and rpicomms/rrim is closed
-        # if (ps.imgui.Button("Reset Rpicomms") and self.states[11] and self.states[9]):
-        #     print("Resetting Rpicomms")
-        #     self.controls[9] = False
-        #     self.controls[10] = False
-        #     self.controls[11] = True
-            
-        # # irl drone takeoff to 1m z and wait, last button to press to allow drone to be controlled, won't allow drone to accept other commands until pressed
-        # # if button pressed and drone is currently landed and sim, bmn/brim, rpicomms/rrim are all running
-        # if (ps.imgui.Button("TAKEOFF") and self.states[13] and self.states[6] and self.states[4] and self.states[2] and self.states[10] and self.states[8]):
-        #     print("Drone Taking off")
-        #     self.controls[12] = True
-        #     self.controls[13] = False
-        
-        # # irl drone land, first button to press on shutdown and reset, won't allow drone to accept any other commands
-        # # if button pressed and drone is currently in the air
-        # if (ps.imgui.Button("LAND") and self.states[12]):
-        #     print("Landing Drone")
-        #     self.controls[12] = False
-        #     self.controls[13] = True
-        
+            self.controls[11] = False        
         
         ps.imgui.PopItemWidth()
         ps.imgui.End()

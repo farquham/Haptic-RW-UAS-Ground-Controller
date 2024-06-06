@@ -11,6 +11,8 @@
 
 // ros2 msgs
 #include <rclcpp/rclcpp.hpp>
+#include <rosbag2_cpp/writer.hpp>
+#include <rclcpp/serialization.hpp>
 #include <stdint.h>
 #include "commsmsgs/msg/brimpub.hpp"
 #include "commsmsgs/msg/bmnpub.hpp"
@@ -30,29 +32,25 @@ namespace datalogging {
 	public:
 		logging() : Node("data_logging")
 		{
-            // setup subscriber for log file names
-            name_logs_subscriber_ = this->create_subscription<commsmsgs::msg::Logsetup>("/GC/internal/logsetup", 10, std::bind(&logging::name_logs_callback, [this, brim_file, bmn_file, rbquadsim_file, rrim_file, rpi_file], std::placeholders::_1));
+            // setup rosbag writer
+            writer_ = std::make_unique<rosbag2_cpp::Writer>();
+            writer_->open("DataLog");
 
             // control subscriber
-            ctrl_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&logging::ctrl_callback, [this, brim_file, brim_log_file, bmn_file, bmn_log_file, rbquadsim_file, rbquadsim_log_file, rrim_file, rrim_log_file, rpi_file, rpi_log_file], std::placeholders::_1));
+            ctrl_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&logging::ctrl_logs_callback, this, std::placeholders::_1));
 
             // log state publisher
             logs_publisher_ = this->create_publisher<commsmsgs::msg::Logctrlbools>("/GC/internal/logctrl", 10);
 
-            // auto timer_callback = [this]() -> void {
-            //     // what ever code to run every timer iteration
-            //     this->publish_log_state();
-            // };
-
             timer_ = this->create_wall_timer(100ms, std::bind(&datalogging::logging::timer_callback, this));
 
-            if logs_open {
+            if (logs_open) {
                 // state subscriber for recieving IRL drone position, velocity and acceleration
-                brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, [this, brim_log_file], std::placeholders::_1));
-                bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, [this, bmn_log_file], std::placeholders::_1));
-                rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, [this, rbquadsim_log_file], std::placeholders::_1));
-                rrim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, [this, rrim_log_file], std::placeholders::_1));
-                rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, [this, rpi_log_file], std::placeholders::_1));
+                brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&logging::brim_callback, this, std::placeholders::_1));
+                bmn_subscriber_ = this->create_subscription<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10, std::bind(&logging::bmn_callback, this, std::placeholders::_1));
+                rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&logging::rbquadsim_callback, this, std::placeholders::_1));
+                rrim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&logging::rrim_callback, this, std::placeholders::_1));
+                rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&logging::rpi_callback, this, std::placeholders::_1));
             }
 		}
 
@@ -72,39 +70,23 @@ namespace datalogging {
 
         rclcpp::TimerBase::SharedPtr timer_;
 
-		std::atomic<uint64_t> timestamp_;   //!< common synced timestamped
+        std::unique_ptr<rosbag2_cpp::Writer> writer_;
 
-        std::string brim_file = "";
-        std::ofstream brim_log_file;
-        std::string bmn_file = "";
-        std::ofstream bmn_log_file;
-        std::string rbquadsim_file = "";
-        std::ofstream rbquadsim_log_file;
-        std::string rrim_file = "";
-        std::ofstream rrim_log_file;
-        std::string rpi_file = "";
-        std::ofstream rpi_log_file;
+		std::atomic<uint64_t> timestamp_;   //!< common synced timestamped
 
         bool logs_open = false;
         bool logs_closed = false;
         bool logs_cleared = false;
 
 		// series of functions needed to operate the subscribers
-		void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg, std::ofstream & log_file);
-        void bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg, std::ofstream & log_file);
-        void rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg, std::ofstream & log_file);
-        void rrim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg, std::ofstream & log_file);
-        void rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg, std::ofstream & log_file);
+		void brim_callback(std::shared_ptr<rclcpp::SerializedMessage> message);
+        void bmn_callback(std::shared_ptr<rclcpp::SerializedMessage> message);
+        void rbquadsim_callback(std::shared_ptr<rclcpp::SerializedMessage> message);
+        void rrim_callback(std::shared_ptr<rclcpp::SerializedMessage> message);
+        void rpi_callback(std::shared_ptr<rclcpp::SerializedMessage> message);
 
         void publish_log_state();
 
-        // logging files helpers
-        void name_log_file(std::string & file_name, int Part_ID, int exp_num, std::string type, int r_type, std::string file_type);
-        void open_log_file(std::string file_name, std::ofstream & log_file);
-        void close_log_file(std::ofstream & log_file);
-        void clear_log_file(std::string file_name, std::ofstream & log_file);
-
-        void name_logs_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg);
         void ctrl_logs_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
 	};
 }

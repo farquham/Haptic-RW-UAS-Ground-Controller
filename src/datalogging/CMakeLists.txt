@@ -16,9 +16,10 @@ find_package(Eigen3 REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(commsmsgs REQUIRED)
+find_package(rosbag2_cpp REQUIRED)
 
 add_executable(data_logging src/logging.cpp)
-ament_target_dependencies(data_logging rclcpp Eigen3 geometry_msgs std_msgs commsmsgs)
+ament_target_dependencies(data_logging rclcpp Eigen3 geometry_msgs std_msgs commsmsgs rosbag2_cpp)
 
 install(TARGETS
   data_logging
