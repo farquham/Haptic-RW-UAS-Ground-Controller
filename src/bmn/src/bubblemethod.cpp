@@ -48,6 +48,7 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     p_scale = p_s;
 	v_scale = v_s;
 
+    run = false;
     boundary = true;
     ncon = false;
     con = false;
@@ -241,11 +242,11 @@ void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePt
 }
 
 // guictl callback processing
-void BMN::bmnav::guictl_callback(const commsmsgs::msg::Guictlpub::UniquePtr & msg) {
-    if (msg->start_bmn) && !(msg->stop_bmn){
+void BMN::bmnav::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
+    if ((msg->start_bmn) && (!(msg->stop_bmn))){
         run = true;
     }
-    else if (msg->stop_bmn) && !(msg->start_bmn){
+    else if ((msg->stop_bmn) && (!(msg->start_bmn))){
         run = false;
     }
 }

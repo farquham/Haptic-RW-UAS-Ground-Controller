@@ -46,6 +46,7 @@ void PRIM::prim::initprim(float fr, int fcom1, int fcom2, int rim_type, float xl
 	count = 0;
 	i = 0;
 	freq = 0.0;
+	run = false;
 
 	lims = {xlim, ylim, zlim};
 	dlims = {dxlim, dylim, dzlim};
@@ -71,23 +72,6 @@ void PRIM::prim::PRIMstep() {
 
 	// runs the main update function every loop which updates the rpi system vectors
 	fast_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h, &dlims, &lims);
-
-	// publishs the PRIM data
-	commsmsgs::msg::Rrimpub msg{};
-	msg.header.stamp = this->now();
-	msg.phin_list.x = phin_list[0];
-	msg.phin_list.y = phin_list[1];
-	msg.phin_list.z = phin_list[2];
-	msg.phin_dot_list.x = dot_phin_list[0];
-	msg.phin_dot_list.y = dot_phin_list[1];
-	msg.phin_dot_list.z = dot_phin_list[2];
-	msg.actual_drone_position.x = ADP[0];
-	msg.actual_drone_position.y = ADP[1];
-	msg.actual_drone_position.z = ADP[2];
-	msg.rrim_freq = freq;
-	msg.rrim_count = count;
-	msg.rrim_time = loop_time.count();
-	prim_publisher_->publish(msg);
 
 	// calculates loop time
 	auto loop_end = clocky::now();
@@ -148,6 +132,21 @@ void PRIM::prim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePt
 		phin_list[1] = R_vec[1];
 		phin_list[2] = R_vec[2];
 	}
+}
+
+// callback for logsetup subscriber to get correct rim type
+void PRIM::prim::logsetup_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg) {
+	r_type = msg->rim_type;
+}
+
+// callback for the guicontrols subscriber
+void PRIM::prim::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
+    if ((msg->start_rpicomms) && (!(msg->stop_rpicomms))){
+        run = true;
+    }
+    else if ((msg->stop_rpicomms) && (!(msg->start_rpicomms))){
+        run = false;
+    }
 }
 
 // initializes and fills all the sparsematrices with temp values

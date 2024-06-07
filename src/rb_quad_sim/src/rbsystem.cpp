@@ -63,6 +63,8 @@ void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props,
 	freq = 0.0;
 	pos_norm = 0;
 
+	run = false;
+
 	DDP = { 0.0,0.0,1.0 };
 	Wvv = { 0,0,0 };
 	Fid = { 0,0,0 };
@@ -210,58 +212,6 @@ void RBsystem::RBsystem::RBstep() {
 	global_vel.coeffRef(0, 3) = drone.get_state().g_avel[0];
 	global_vel.coeffRef(0, 4) = drone.get_state().g_avel[1];
 	global_vel.coeffRef(0, 5) = drone.get_state().g_avel[2];
-
-	// pushing outputs from the loop
-	commsmsgs::msg::Rbquadsimpub msg{};
-	msg.header.stamp = this->now();
-	msg.position.x = drone.get_state().g_pos[0];
-	msg.position.y = drone.get_state().g_pos[1];
-	msg.position.z = drone.get_state().g_pos[2];
-	msg.velocity.x = drone.get_state().g_vel[0];
-	msg.velocity.y = drone.get_state().g_vel[1];
-	msg.velocity.z = drone.get_state().g_vel[2];
-	msg.acceleration.x = drone.get_state().g_acc[0];
-	msg.acceleration.y = drone.get_state().g_acc[1];
-	msg.acceleration.z = drone.get_state().g_acc[2];
-	msg.orientation.w = drone.get_state().g_att.w();
-	msg.orientation.x = drone.get_state().g_att.x();
-	msg.orientation.y = drone.get_state().g_att.y();
-	msg.orientation.z = drone.get_state().g_att.z();
-	msg.angular_velocity.x = drone.get_state().b_avel[0];
-	msg.angular_velocity.y = drone.get_state().b_avel[1];
-	msg.angular_velocity.z = drone.get_state().b_avel[2];
-	// pose / orientation ???
-	msg.drag.x = dgout.Fd[0];
-	msg.drag.y = dgout.Fd[1];
-	msg.drag.z = dgout.Fd[2];
-	msg.gravity.x = dgout.Fg[0];
-	msg.gravity.y = dgout.Fg[1];
-	msg.gravity.z = dgout.Fg[2];
-	msg.interaction.x = Int_for[0];
-	msg.interaction.y = Int_for[1];
-	msg.interaction.z = Int_for[2];
-	msg.rotation_matrix.m11 = drone.get_state().r_mat(0, 0);
-	msg.rotation_matrix.m12 = drone.get_state().r_mat(0, 1);
-	msg.rotation_matrix.m13 = drone.get_state().r_mat(0, 2);
-	msg.rotation_matrix.m21 = drone.get_state().r_mat(1, 0);
-	msg.rotation_matrix.m22 = drone.get_state().r_mat(1, 1);
-	msg.rotation_matrix.m23 = drone.get_state().r_mat(1, 2);
-	msg.rotation_matrix.m31 = drone.get_state().r_mat(2, 0);
-	msg.rotation_matrix.m32 = drone.get_state().r_mat(2, 1);
-	msg.rotation_matrix.m33 = drone.get_state().r_mat(2, 2);
-
-	RBH::matrix_to_msg(&M_mat_inv, &msg.m_inv);
-	RBH::matrix_to_msg(&An_mat, &msg.ac);
-	RBH::matrix_to_msg(&global_vel, &msg.vg);
-
-	msg.contact = contact;
-	msg.pre_contact = pre_contact;
-	msg.post_contact = post_contact;
-	msg.no_contact = no_contact;
-	msg.sim_freq = freq;
-
-	// publish the message
-	rbquadsim_publisher_->publish(msg);
 
 	std::chrono::duration<double> dt = clocky::now() - start_time;
 	freq = 1 / dt.count();
@@ -468,4 +418,14 @@ void RBsystem::RBsystem::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr 
 // prim callback
 void RBsystem::RBsystem::prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg) {
 	//do nothing for now
+}
+
+// guicontrols callback
+void RBsystem::RBsystem::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
+    if ((msg->start_simulation) && (!(msg->stop_simulation))){
+        run = true;
+    }
+    else if ((msg->stop_simulation) && (!(msg->start_simulation))){
+        run = false;
+    }
 }

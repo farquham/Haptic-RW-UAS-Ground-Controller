@@ -46,6 +46,7 @@ void BRIM::brim::initbrim(float fr, int fcom1, int rim_type, float xlim, float y
 	count = 0;
 	i = 0;
 	freq = 0.0;
+	run = false;
 
 	lims = {xlim, ylim, zlim};
 	dlims = {dxlim, dylim, dzlim};
@@ -71,23 +72,6 @@ void BRIM::brim::BRIMstep() {
 
 	// runs the main update function every loop which updates the BMN system vectors
 	bmn_update(&r_type, &phin_list, &dot_phin_list, &lambda_tilde, &lambda_i, &R_vec_est, &M_tilde_inv, h, &dlims, &lims);
-
-	// publishs the BRIM data
-	commsmsgs::msg::Brimpub msg{};
-	msg.header.stamp = this->now();
-	msg.phin_list.x = phin_list[0];
-	msg.phin_list.y = phin_list[1];
-	msg.phin_list.z = phin_list[2];
-	msg.phin_dot_list.x = dot_phin_list[0];
-	msg.phin_dot_list.y = dot_phin_list[1];
-	msg.phin_dot_list.z = dot_phin_list[2];
-	msg.desired_drone_position.x = DDP[0];
-	msg.desired_drone_position.y = DDP[1];
-	msg.desired_drone_position.z = DDP[2];
-	msg.brim_freq = freq;
-	msg.brim_count = count;
-	msg.brim_time = loop_time.count();
-	brim_publisher_->publish(msg);
 
 	// calculates loop time
 	std::chrono::_V2::system_clock::time_point loop_end = clocky::now();
@@ -149,6 +133,21 @@ void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePt
 		phin_list[1] = R_vec[1];
 		phin_list[2] = R_vec[2];
 	}
+}
+
+// callback for the guicontrols subscriber
+void BRIM::brim::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
+    if ((msg->start_bmn) && (!(msg->stop_bmn))){
+        run = true;
+    }
+    else if ((msg->stop_bmn) && (!(msg->start_bmn))){
+        run = false;
+    }
+}
+
+// callback for the logsetup subscriber to get rim type info
+void BRIM::brim::logsetup_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg) {
+	r_type = msg->rim_type;
 }
 
 // initializes and fills all the sparsematrices with temp values

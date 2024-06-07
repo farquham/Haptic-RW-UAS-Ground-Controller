@@ -242,16 +242,7 @@ class vis(Node):
             print("Closing Logs")
             self.controls[0] = False
             self.controls[1] = True
-            self.controls[2] = False
-            
-        # clear logs button
-        # if button pressed and logs are currently open
-        if (ps.imgui.Button("Clear Logs") and self.states[0]):
-            print("Clearing Logs")
-            self.controls[0] = False
-            self.controls[1] = False
-            self.controls[2] = True
-        
+            self.controls[2] = False        
         
         # sim controls, first after logs to activate, last before logs to close
         # start simulation button

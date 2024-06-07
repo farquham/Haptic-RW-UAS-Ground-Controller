@@ -46,11 +46,23 @@ void RPI::rpicomms::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg
 	drone_position_cmd[2] = msg->desired_drone_position.z;
 }
 
+// subscriber to recieve the gui controls from the gui
+void RPI::rpicomms::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg)
+{
+    if ((msg->start_rpicomms) && (!(msg->stop_rpicomms))){
+        run = true;
+    }
+    else if ((msg->stop_rpicomms) && (!(msg->start_rpicomms))){
+        run = false;
+    }
+}
+
 // publisher to send the drone position, velocity and acceleration to the rest of the system
 void RPI::rpicomms::publish_vehicle_state()
 {
 	commsmsgs::msg::Rpicommspub msg{};
 	msg.header.stamp = this->now();
+	msg.running = run;
 	msg.actual_drone_position.x = drone_position_actual[0];
 	msg.actual_drone_position.y = drone_position_actual[1];
 	msg.actual_drone_position.z = drone_position_actual[2];

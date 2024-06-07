@@ -16,6 +16,8 @@
 #include "commsmsgs/msg/rrimpub.hpp"
 #include "commsmsgs/msg/rpicommspub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
+#include "commsmsgs/msg/guicontrols.hpp"
+#include "commsmsgs/msg/logsetup.hpp"
 
 typedef std::chrono::high_resolution_clock clocky;
 using namespace std::chrono_literals;
@@ -49,6 +51,8 @@ namespace PRIM {
 
 			rpi_subscriber_ = this->create_subscription<commsmsgs::msg::Rpicommspub>("/GC/out/rpicomms", 10, std::bind(&prim::rpi_callback, this, std::placeholders::_1));
 			rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&prim::rbquadsim_callback, this, std::placeholders::_1));
+			guicontrols_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&prim::guicontrols_callback, this, std::placeholders::_1));
+			logs_subscriber_ = this->create_subscription<commsmsgs::msg::Logsetup>("/GC/internal/logsetup", 10, std::bind(&prim::logsetup_callback, this, std::placeholders::_1));
 
 			prim_publisher_ = this->create_publisher<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10);
 
@@ -73,12 +77,33 @@ namespace PRIM {
 	private:
 		void timer_callback() {
 			// what ever code to run every timer iteration
-			this->PRIMstep();
+			if (run) {
+				this->PRIMstep();
+			}
+			// publishs the PRIM data
+			commsmsgs::msg::Rrimpub msg{};
+			msg.header.stamp = this->now();
+			msg.running = run;
+			msg.phin_list.x = phin_list[0];
+			msg.phin_list.y = phin_list[1];
+			msg.phin_list.z = phin_list[2];
+			msg.phin_dot_list.x = dot_phin_list[0];
+			msg.phin_dot_list.y = dot_phin_list[1];
+			msg.phin_dot_list.z = dot_phin_list[2];
+			msg.actual_drone_position.x = ADP[0];
+			msg.actual_drone_position.y = ADP[1];
+			msg.actual_drone_position.z = ADP[2];
+			msg.rrim_freq = freq;
+			msg.rrim_count = count;
+			msg.rrim_time = loop_time.count();
+			prim_publisher_->publish(msg);
 		}
 		// subscibers and publishers
 		rclcpp::Subscription<commsmsgs::msg::Rpicommspub>::SharedPtr rpi_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
 		rclcpp::Publisher<commsmsgs::msg::Rrimpub>::SharedPtr prim_publisher_;
+		rclcpp::Subscription<commsmsgs::msg::Guicontrols>::SharedPtr guicontrols_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::Logsetup>::SharedPtr logs_subscriber_;
 
 		rclcpp::TimerBase::SharedPtr timer_pub_;
 
@@ -93,6 +118,10 @@ namespace PRIM {
 		void rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg);
 		// callback for the rbquadsim subscriber
 		void rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg);
+		// callback for the guicontrols subscriber
+		void guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
+		// * callback for the logsetup subscriber to set the correct rim type
+		void logsetup_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg);
 
 		// helper methods for BRIM
 		// starts all the matrices
@@ -169,6 +198,8 @@ namespace PRIM {
 
 		int count, i;
 		double freq;
+
+		bool run;
 
 		Eigen::Matrix<double, 1, 42> tempvb;
 

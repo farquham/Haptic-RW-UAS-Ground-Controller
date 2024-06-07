@@ -19,6 +19,7 @@
 #include "commsmsgs/msg/brimpub.hpp"
 #include "commsmsgs/msg/rrimpub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
+#include "commsmsgs/msg/guicontrols.hpp"
 
 typedef std::chrono::high_resolution_clock clocky;
 using namespace std::chrono_literals;
@@ -99,6 +100,7 @@ namespace RBsystem {
 
 			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, this, std::placeholders::_1));
 			prim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, this, std::placeholders::_1));
+			guicontrols_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&RBsystem::guicontrols_callback, this, std::placeholders::_1));
 			
 			rbquadsim_publisher_ = this->create_publisher<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10);
 
@@ -194,12 +196,68 @@ namespace RBsystem {
 	private:
 		void timer_callback() {
 			// what ever code to run every timer iteration
-			this->RBstep();
+			if (run) {
+				this->RBstep();
+			}
+			
+			// pushing outputs from the loop
+			commsmsgs::msg::Rbquadsimpub msg{};
+			msg.header.stamp = this->now();
+			msg.running = run;
+			msg.position.x = drone.get_state().g_pos[0];
+			msg.position.y = drone.get_state().g_pos[1];
+			msg.position.z = drone.get_state().g_pos[2];
+			msg.velocity.x = drone.get_state().g_vel[0];
+			msg.velocity.y = drone.get_state().g_vel[1];
+			msg.velocity.z = drone.get_state().g_vel[2];
+			msg.acceleration.x = drone.get_state().g_acc[0];
+			msg.acceleration.y = drone.get_state().g_acc[1];
+			msg.acceleration.z = drone.get_state().g_acc[2];
+			msg.orientation.w = drone.get_state().g_att.w();
+			msg.orientation.x = drone.get_state().g_att.x();
+			msg.orientation.y = drone.get_state().g_att.y();
+			msg.orientation.z = drone.get_state().g_att.z();
+			msg.angular_velocity.x = drone.get_state().b_avel[0];
+			msg.angular_velocity.y = drone.get_state().b_avel[1];
+			msg.angular_velocity.z = drone.get_state().b_avel[2];
+			// pose / orientation ???
+			msg.drag.x = dgout.Fd[0];
+			msg.drag.y = dgout.Fd[1];
+			msg.drag.z = dgout.Fd[2];
+			msg.gravity.x = dgout.Fg[0];
+			msg.gravity.y = dgout.Fg[1];
+			msg.gravity.z = dgout.Fg[2];
+			msg.interaction.x = Int_for[0];
+			msg.interaction.y = Int_for[1];
+			msg.interaction.z = Int_for[2];
+			msg.rotation_matrix.m11 = drone.get_state().r_mat(0, 0);
+			msg.rotation_matrix.m12 = drone.get_state().r_mat(0, 1);
+			msg.rotation_matrix.m13 = drone.get_state().r_mat(0, 2);
+			msg.rotation_matrix.m21 = drone.get_state().r_mat(1, 0);
+			msg.rotation_matrix.m22 = drone.get_state().r_mat(1, 1);
+			msg.rotation_matrix.m23 = drone.get_state().r_mat(1, 2);
+			msg.rotation_matrix.m31 = drone.get_state().r_mat(2, 0);
+			msg.rotation_matrix.m32 = drone.get_state().r_mat(2, 1);
+			msg.rotation_matrix.m33 = drone.get_state().r_mat(2, 2);
+
+			RBH::matrix_to_msg(&M_mat_inv, &msg.m_inv);
+			RBH::matrix_to_msg(&An_mat, &msg.ac);
+			RBH::matrix_to_msg(&global_vel, &msg.vg);
+
+			msg.contact = contact;
+			msg.pre_contact = pre_contact;
+			msg.post_contact = post_contact;
+			msg.no_contact = no_contact;
+			msg.sim_freq = freq;
+
+			// publish the message
+			rbquadsim_publisher_->publish(msg);
 		}
 		// subscibers and publishers
 		rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::Rrimpub>::SharedPtr prim_subscriber_;
 		rclcpp::Publisher<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_publisher_;
+		rclcpp::Subscription<commsmsgs::msg::Guicontrols>::SharedPtr guicontrols_subscriber_;
 
 		rclcpp::TimerBase::SharedPtr timer_pub_;
 
@@ -215,6 +273,8 @@ namespace RBsystem {
 		void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
 		// callback for the prim subscriber
 		void prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg);
+		// callback for the guicontrols subscriber
+		void guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
 
 		// fill the sparse matrices to avoid errors
 		void fill_matrices();
@@ -280,6 +340,8 @@ namespace RBsystem {
 		double freq;
 		double pos_norm;
 		double fsim;
+
+		bool run;
 
 		// structs
 		Quadcopter::draggrav dgout;

@@ -94,7 +94,7 @@ namespace BMN {
 				}
 				commsmsgs::msg::Bmnpub msg{};
 				msg.header.stamp = this->now();
-				msg.runnning = run;
+				msg.running = run;
 				msg.interface_force_list.x = iforce_list[0];
 				msg.interface_force_list.y = iforce_list[1];
 				msg.interface_force_list.z = iforce_list[2];
