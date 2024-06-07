@@ -5,7 +5,7 @@
 // typedef std::chrono::high_resolution_clock clocky;
 
 // starts up the bmn class
-void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange){
+void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange, API::Devices::Inverse3 Inverse_object){
     // loop var init
     raw_positions.setZero();
 	velocities.setZero();
@@ -55,14 +55,10 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     precon = false;
     postcon = false;
 
-    // inverse startup
-    comm = BMN::bmnav::inverse3_setup();
-    API::IO::SerialStream stream{ comm.c_str() };
-    Inverse_object = API::Devices::Inverse3{&stream};
     h = 1/fbmn;
     w_c = { -0.02, -0.15, 0.1 };
     rest = 0.025;
-    BMN::bmnav::centerDevice();
+    BMN::bmnav::centerDevice(Inverse_object);
 }
 
 // fetches the port the inverse is connected too
@@ -82,7 +78,7 @@ std::string BMN::bmnav::inverse3_setup() {
 }
 
 // helper function that runs at the beginning to guide the user to the center of the workspace region before starting the simulation
-void BMN::bmnav::centerDevice() {
+void BMN::bmnav::centerDevice(API::Devices::Inverse3 Inverse_object) {
     // wake up the inverse and fetch info
     auto info = Inverse_object.DeviceWakeup();
     std::fprintf(stdout,
@@ -136,12 +132,15 @@ void BMN::bmnav::centerDevice() {
 }
 
 // takes a step in the simulation updating the position of the drone and the velocity ball then returns the sims current state
-void BMN::bmnav::BMNstep() {
+void BMN::bmnav::BMNstep(API::Devices::Inverse3 Inverse_object) {
     if ((phins.norm() > phinmax)) {
         maxVa = vachange * maxVai;
     } else {
         maxVa = maxVai;
     }
+
+    API::Devices::Inverse3::EndEffectorStateResponse state;
+    API::Devices::Inverse3::EndEffectorForceRequest requested;
 
     // inverse 3 interfacing accounting
     requested.force[0] = forces[0];

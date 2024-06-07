@@ -71,26 +71,31 @@ namespace BMN {
 
 				bmn_publisher_ = this->create_publisher<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10);
 
-				// auto timer_callback = [this]() -> void {
-				// 	// what ever code accel_stampedto run every timer iteration
-				// 	this->BMNstep();
-				// }
+				// inverse startup
+    			comm = BMN::bmnav::inverse3_setup();
+    			API::IO::SerialStream stream{ comm.c_str() };
+    			API::Devices::Inverse3 Inverse_object{&stream};
+
+				auto timey_callback = [this, Inverse_object]() -> void {
+					// what ever code accel_stampedto run every timer iteration
+					this->timer_callback(Inverse_object);
+				};
 
 				// add params
-				initbmn(freqbmn, k_b, k_i, d_i, v_s, p_s, b_r, c_r, a_d, v_l, f_s, flimx, flimy, flimz, phin_max, vmaxchange, PSchange, VSchange);
+				initbmn(freqbmn, k_b, k_i, d_i, v_s, p_s, b_r, c_r, a_d, v_l, f_s, flimx, flimy, flimz, phin_max, vmaxchange, PSchange, VSchange, Inverse_object);
 
 				start_time = clocky::now();
 
 				auto time = 1000ms / freqbmn;
 
-				timer_pub_ = this->create_wall_timer(time, std::bind(&BMN::bmnav::timer_callback, this));
+				timer_pub_ = this->create_wall_timer(time, timey_callback);
 			}
 
 		private:
-			void timer_callback() {
+			void timer_callback(API::Devices::Inverse3 Inverse_object) {
 				// what ever code to run every timer iteration
 				if (run) {
-					this->BMNstep();
+					this->BMNstep(Inverse_object);
 				}
 				commsmsgs::msg::Bmnpub msg{};
 				msg.header.stamp = this->now();
@@ -115,13 +120,13 @@ namespace BMN {
 			std::atomic<uint64_t> timestamp_;
 
 			// initialize bmn class
-			void initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange);
+			void initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange, API::Devices::Inverse3 Inverse_object);
 			// setting up the inverse
 			std::string inverse3_setup();
 			// safety function to center the end effector
-			void centerDevice();
+			void centerDevice(API::Devices::Inverse3 Inverse_object);
 			// the main function for the bmn simulation which loops until the user stops it
-			void BMNstep();
+			void BMNstep(API::Devices::Inverse3 Inverse_object);
 
 			// callback for the brim subscriber
 			void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
@@ -151,13 +156,13 @@ namespace BMN {
 			// fields for class
 			// inverse stuff
 			std::string comm;
-			API::Devices::Inverse3 Inverse_object;
+			//API::Devices::Inverse3 Inverse_object;
 			double h;
 			Eigen::Vector3d w_c;
 			double rest;
 			// inverse data fetching and handling
-    		API::Devices::Inverse3::EndEffectorStateResponse state;
-    		API::Devices::Inverse3::EndEffectorForceRequest requested;
+    		//API::Devices::Inverse3::EndEffectorStateResponse state;
+    		//API::Devices::Inverse3::EndEffectorForceRequest requested;
 
 			// looping vars
 			Eigen::Vector3d raw_positions;
