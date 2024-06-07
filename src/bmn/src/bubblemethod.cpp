@@ -48,7 +48,6 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     p_scale = p_s;
 	v_scale = v_s;
 
-    run = true;
     boundary = true;
     ncon = false;
     con = false;
@@ -204,17 +203,6 @@ void BMN::bmnav::BMNstep() {
     // adds the position of the virtual velocity ball to the relative posiiton of the drone
     D_D_C = V_B_C + positions;
 
-    commsmsgs::msg::Bmnpub msg{};
-    msg.header.stamp = this->now();
-    msg.interface_force_list.x = iforce_list[0];
-    msg.interface_force_list.y = iforce_list[1];
-    msg.interface_force_list.z = iforce_list[2];
-    msg.desired_drone_position.x = D_D_C[0];
-    msg.desired_drone_position.y = D_D_C[1];
-    msg.desired_drone_position.z = D_D_C[2];
-    msg.bmn_freq = freq;
-    bmn_publisher_->publish(msg);
-    
     // frequency limiter
 	std::chrono::duration<double> dt = clocky::now() - start_time;
 	freq = 1 / dt.count();
@@ -250,6 +238,16 @@ void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePt
     postcon = msg->post_contact;
     ncon = msg->no_contact;
     A_D_C = { msg->position.x, msg->position.y, msg->position.z };
+}
+
+// guictl callback processing
+void BMN::bmnav::guictl_callback(const commsmsgs::msg::Guictlpub::UniquePtr & msg) {
+    if (msg->start_bmn) && !(msg->stop_bmn){
+        run = true;
+    }
+    else if (msg->stop_bmn) && !(msg->start_bmn){
+        run = false;
+    }
 }
 
 // function to calculate the force of contact using RIM

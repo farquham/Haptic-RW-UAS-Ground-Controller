@@ -15,6 +15,7 @@
 #include "commsmsgs/msg/brimpub.hpp"
 #include "commsmsgs/msg/bmnpub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
+#include "commsmsgs/msg/guicontrols.hpp"
 
 typedef std::chrono::high_resolution_clock clocky;
 using namespace std::chrono_literals;
@@ -66,6 +67,7 @@ namespace BMN {
 
 				brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&bmnav::brim_callback, this, std::placeholders::_1));
 				rbquadsim_subscriber_ = this->create_subscription<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10, std::bind(&bmnav::rbquadsim_callback, this, std::placeholders::_1));
+				guicontrols_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&bmnav::guicontrols_callback, this, std::placeholders::_1));
 
 				bmn_publisher_ = this->create_publisher<commsmsgs::msg::Bmnpub>("/GC/out/bmn", 10);
 
@@ -87,11 +89,25 @@ namespace BMN {
 		private:
 			void timer_callback() {
 				// what ever code to run every timer iteration
-				this->BMNstep();
+				if (run) {
+					this->BMNstep();
+				}
+				commsmsgs::msg::Bmnpub msg{};
+				msg.header.stamp = this->now();
+				msg.runnning = run;
+				msg.interface_force_list.x = iforce_list[0];
+				msg.interface_force_list.y = iforce_list[1];
+				msg.interface_force_list.z = iforce_list[2];
+				msg.desired_drone_position.x = D_D_C[0];
+				msg.desired_drone_position.y = D_D_C[1];
+				msg.desired_drone_position.z = D_D_C[2];
+				msg.bmn_freq = freq;
+    			bmn_publisher_->publish(msg);
 			}
 			// subscibers and publishers
 			rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
 			rclcpp::Subscription<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_subscriber_;
+			rclcpp::Subscription<commsmsgs::msg::Guicontrols>::SharedPtr guicontrols_subscriber_;
 			rclcpp::Publisher<commsmsgs::msg::Bmnpub>::SharedPtr bmn_publisher_;
 
 			rclcpp::TimerBase::SharedPtr timer_pub_;
@@ -111,6 +127,8 @@ namespace BMN {
 			void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
 			// callback for the rbquadsim subscriber
 			void rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg);
+			// callback for the guicontrols subscriber
+			void guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
 
 			// helper functions
 			// function to calculate the interface force for given phins and dot_phins
