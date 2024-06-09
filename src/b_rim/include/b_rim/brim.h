@@ -30,12 +30,12 @@ namespace BRIM {
 			this->declare_parameter("freqrim", 1000.0);
 			this->declare_parameter("fcom1", 0);
 			this->declare_parameter("rim_type", 0);
-			this->declare_parameter("xlim", 0);
-			this->declare_parameter("ylim", 0);
-			this->declare_parameter("zlim", 0);
-			this->declare_parameter("dxlim", 0);
-			this->declare_parameter("dylim", 0);
-			this->declare_parameter("dzlim", 0);
+			this->declare_parameter("xlim", 0.0);
+			this->declare_parameter("ylim", 0.0);
+			this->declare_parameter("zlim", 0.0);
+			this->declare_parameter("dxlim", 0.0);
+			this->declare_parameter("dylim", 0.0);
+			this->declare_parameter("dzlim", 0.0);
 
 			float freqrim = this->get_parameter("freqrim").as_double();
 			int fcom1 = this->get_parameter("fcom1").as_int();

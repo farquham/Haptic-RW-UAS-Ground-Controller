@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'talker = visualization_inputs.vis:main',
+            'vis = visualization_inputs.vis:main',
         ],
     },
 )

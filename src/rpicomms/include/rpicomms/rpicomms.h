@@ -32,7 +32,7 @@ namespace RPI {
 	public:
 		rpicomms() : Node("rpi_comms")
 		{
-			this -> declare_parameter("desired_frequecy", 1000.0);
+			this -> declare_parameter("desired_frequency", 1000.0);
 			float desired_frequency = this->get_parameter("desired_frequency").as_double();
 
 			// subscribers for recieving ddc from bmn comp

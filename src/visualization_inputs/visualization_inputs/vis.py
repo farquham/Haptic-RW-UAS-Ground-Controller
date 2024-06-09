@@ -5,6 +5,7 @@ import polyscope as ps
 import numpy as np
 import igl
 import pyquaternion as pyq
+import os
 
 from std_msgs.msg import String
 import time
@@ -27,61 +28,7 @@ class vis(Node):
     def __init__(self):
         super().__init__('vis')
         
-        # class vars
-        self.participant_id = 0
-        self.experiment_id = 0
-        self.mt = 0
-        self.movement_type = "FM"
-        self.rim_type = 0
-        # logs open, logs close, logs clear, sim start, sim stop, sim reset, bmn start, bmn stop, bmn reset, rpicomms start, rpicomms stop, rpicomms reset, irl drone takeoff, irl drone land
-        self.controls = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-        # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
-        self.states = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
-        self.sim_Drone_pos = [0, 0, 0]
-        self.sim_drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-        self.real_Drone_pos = [0, 0, 0]
-        self.real_drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-        
-        # Initialize the polyscope window
-        ps.set_autocenter_structures(True)
-        ps.set_build_gui(False)
-        ps.set_window_size(3500, 2200)
-        ps.set_open_imgui_window_for_user_callback(True)
-
-        ps.init()
-
-        ps.look_at([-2.0, 1.5, -15.0], [0, 0, 0])
-
-        # Load a mesh
-        self.DroneV, _, _, self.DroneF, _, _= igl.read_obj("../resource/Holybro_np.obj")
-        self.RDroneV, _, _, self.RDroneF, _, _= igl.read_obj("../resource/Holybro_np.obj")
-        self.RoomV, _, _, self.RoomF, _, _= igl.read_obj("../resource/Room_Large_Zn.obj")
-
-        self.DroneVOG = self.DroneV
-        drone_rot_swap = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-        self.DroneVOG_Transpose = np.transpose(self.DroneVOG)
-        self.DroneV = np.transpose(np.dot(drone_rot_swap, self.DroneVOG_Transpose))
-        self.DroneVOG = self.DroneV
-        
-        self.RDroneVOG = self.RDroneV
-        self.RDroneVOG_Transpose = np.transpose(self.RDroneVOG)
-        self.RDroneV = np.transpose(np.dot(drone_rot_swap, self.RDroneVOG_Transpose))
-        self.RDroneVOG = self.RDroneV
-
-        # Register the mesh with polyscope
-        Drone_sur = ps.register_surface_mesh("Drone", self.DroneV, self.DroneF)
-        Real_Drone_sur = ps.register_surface_mesh("Real_Drone", self.RDroneV, self.RDroneF)
-        Room_sur = ps.register_surface_mesh("Room", self.RoomV, self.RoomF)
-
-        # you can also access the structure by name
-        ps.get_surface_mesh("Drone").set_color([0.2, 0.2, 0.2])
-        ps.get_surface_mesh("Real_Drone").set_color([0.5, 0.1, 0.1])
-        ps.get_surface_mesh("Room").set_color([0.8, 0.8, 0.8])
-
-        ps.set_user_callback(self.vis_callback)
-
-        # Show the GUI
-        ps.show() 
+        root_folder = os.getcwd()
         
         # ros2 stuff
         # node inputs: sim, drone pos and drone rm;
@@ -116,6 +63,62 @@ class vis(Node):
         self.brim_state_msg = Brimpub()
         self.brim_state_subscription = self.create_subscription(Brimpub, '/GC/out/brim', self.brim_state_callback, 10)
         self.brim_state_subscription
+        
+        # class vars
+        self.participant_id = 0
+        self.experiment_id = 0
+        self.mt = 0
+        self.movement_type = "FM"
+        self.rim_type = 0
+        # logs open, logs close, logs clear, sim start, sim stop, sim reset, bmn start, bmn stop, bmn reset, rpicomms start, rpicomms stop, rpicomms reset, irl drone takeoff, irl drone land
+        self.controls = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+        # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
+        self.states = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
+        self.sim_Drone_pos = [0, 0, 0]
+        self.sim_drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        self.real_Drone_pos = [0, 0, 0]
+        self.real_drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        
+        # Initialize the polyscope window
+        ps.set_autocenter_structures(True)
+        ps.set_build_gui(False)
+        ps.set_window_size(3500, 2200)
+        ps.set_open_imgui_window_for_user_callback(True)
+
+        ps.init()
+
+        ps.look_at([-2.0, 1.5, -15.0], [0, 0, 0])
+
+        # Load a mesh
+        self.RoomV, self.RoomF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Room_Large_Zn.obj"))
+        self.DroneV, self.DroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
+        self.RDroneV, self.RDroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
+
+        self.DroneVOG = self.DroneV
+        drone_rot_swap = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
+        self.DroneVOG_Transpose = np.transpose(self.DroneVOG)
+        self.DroneV = np.transpose(np.dot(drone_rot_swap, self.DroneVOG_Transpose))
+        self.DroneVOG = self.DroneV
+        
+        self.RDroneVOG = self.RDroneV
+        self.RDroneVOG_Transpose = np.transpose(self.RDroneVOG)
+        self.RDroneV = np.transpose(np.dot(drone_rot_swap, self.RDroneVOG_Transpose))
+        self.RDroneVOG = self.RDroneV
+
+        # Register the mesh with polyscope
+        Drone_sur = ps.register_surface_mesh("Drone", self.DroneV, self.DroneF)
+        Real_Drone_sur = ps.register_surface_mesh("Real_Drone", self.RDroneV, self.RDroneF)
+        Room_sur = ps.register_surface_mesh("Room", self.RoomV, self.RoomF)
+
+        # you can also access the structure by name
+        ps.get_surface_mesh("Drone").set_color([0.2, 0.2, 0.2])
+        ps.get_surface_mesh("Real_Drone").set_color([0.5, 0.1, 0.1])
+        ps.get_surface_mesh("Room").set_color([0.8, 0.8, 0.8])
+
+        ps.set_user_callback(self.vis_callback)
+
+        # Show the GUI
+        ps.show()
 
     # handle the mocap data
     def drone_state_callback(self, msg):
@@ -187,7 +190,7 @@ class vis(Node):
             self.states[3] = True
         
     # publish gui controls commands
-    def gui_controls_pub(self):
+    def gui_controls_pub_callback(self):
         # publish the gui controls message
         msg = Guicontrols()
         msg.header.stamp = self.get_clock().now().to_msg()
@@ -313,8 +316,7 @@ class vis(Node):
         ps.imgui.PopItemWidth()
         ps.imgui.End()
         
-        self.gui_controls_pub()
-        self.runnings_handler()
+        self.gui_controls_pub_callback()
         
         # update the drone objects position and orientation using the info from the ros2 msgs
         drows = self.DroneVOG.shape[0]

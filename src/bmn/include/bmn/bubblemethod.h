@@ -46,7 +46,7 @@ namespace BMN {
 				this->declare_parameter("PSchange", 0.0);
 				this->declare_parameter("VSchange", 0.0);
 
-				float freqbmn = this->get_parameter("freqbmnd").as_double();
+				float freqbmn = this->get_parameter("freqbmn").as_double();
 				double k_b = this->get_parameter("k_b").as_double();
 				double k_i = this->get_parameter("k_i").as_double();
 				double d_i = this->get_parameter("d_i").as_double();

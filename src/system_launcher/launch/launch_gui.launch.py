@@ -10,38 +10,37 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 def generate_launch_description():
    visualization_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_launcher'), 'launch'),
+         get_package_share_directory('system_launcher'), 'launch/'),
          '/visuals.launch.py'])
       )
    logging_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_launcher'), 'launch'),
+         get_package_share_directory('system_launcher'), 'launch/'),
          '/logging.launch.py'])
       )
    bubble_method_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_launcher'), 'launch'),
-         'bmn.launch.py']),
-      launch_arguments={'target_frame': 'carrot1'}.items(),
+         get_package_share_directory('system_launcher'), 'launch/'),
+         'bmn.launch.py'])
       )
    bmn_rim_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_launcher'), 'launch'),
+         get_package_share_directory('system_launcher'), 'launch/'),
          '/bmnrim.launch.py'])
       )
    rb_sim_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_launcher'), 'launch'),
+         get_package_share_directory('system_launcher'), 'launch/'),
          '/rbsim.launch.py'])
       )
    rpi_rim_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_launcher'), 'launch'),
+         get_package_share_directory('system_launcher'), 'launch/'),
          '/rpirim.launch.py'])
       )
    rpi_comms_node = IncludeLaunchDescription(
       PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('system_layncher'), 'launch'),
+         get_package_share_directory('system_launcher'), 'launch/'),
          '/rpicomms.launch.py'])
       )
 

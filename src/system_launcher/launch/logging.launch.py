@@ -15,7 +15,7 @@ def generate_launch_description():
 
    return LaunchDescription([
       Node(
-         package='dataLogging',
+         package='datalogging',
          executable='data_logging',
          namespace='logging',
          name='sim',

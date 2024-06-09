@@ -34,7 +34,9 @@ namespace datalogging {
 		{
             // setup rosbag writer
             writer_ = std::make_unique<rosbag2_cpp::Writer>();
-            writer_->open("DataLog");
+            auto time = clocky::now();
+            auto save_location = "DataLog/" + std::to_string(time.time_since_epoch().count());
+            writer_->open(save_location);
 
             // control subscriber
             ctrl_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&logging::ctrl_logs_callback, this, std::placeholders::_1));
