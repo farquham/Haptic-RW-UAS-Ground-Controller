@@ -4,6 +4,7 @@ from rclpy.node import Node
 import polyscope as ps
 import numpy as np
 import igl
+import pyquaternion as pyq
 
 from std_msgs.msg import String
 import time
@@ -36,8 +37,10 @@ class vis(Node):
         self.controls = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
         self.states = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
-        self.Drone_pos = [0, 0, 0]
-        self.drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        self.sim_Drone_pos = [0, 0, 0]
+        self.sim_drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        self.real_Drone_pos = [0, 0, 0]
+        self.real_drone_rm = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
         
         # Initialize the polyscope window
         ps.set_autocenter_structures(True)
@@ -51,6 +54,7 @@ class vis(Node):
 
         # Load a mesh
         self.DroneV, _, _, self.DroneF, _, _= igl.read_obj("../resource/Holybro_np.obj")
+        self.RDroneV, _, _, self.RDroneF, _, _= igl.read_obj("../resource/Holybro_np.obj")
         self.RoomV, _, _, self.RoomF, _, _= igl.read_obj("../resource/Room_Large_Zn.obj")
 
         self.DroneVOG = self.DroneV
@@ -58,13 +62,20 @@ class vis(Node):
         self.DroneVOG_Transpose = np.transpose(self.DroneVOG)
         self.DroneV = np.transpose(np.dot(drone_rot_swap, self.DroneVOG_Transpose))
         self.DroneVOG = self.DroneV
+        
+        self.RDroneVOG = self.RDroneV
+        self.RDroneVOG_Transpose = np.transpose(self.RDroneVOG)
+        self.RDroneV = np.transpose(np.dot(drone_rot_swap, self.RDroneVOG_Transpose))
+        self.RDroneVOG = self.RDroneV
 
         # Register the mesh with polyscope
         Drone_sur = ps.register_surface_mesh("Drone", self.DroneV, self.DroneF)
+        Real_Drone_sur = ps.register_surface_mesh("Real_Drone", self.RDroneV, self.RDroneF)
         Room_sur = ps.register_surface_mesh("Room", self.RoomV, self.RoomF)
 
         # you can also access the structure by name
         ps.get_surface_mesh("Drone").set_color([0.2, 0.2, 0.2])
+        ps.get_surface_mesh("Real_Drone").set_color([0.5, 0.1, 0.1])
         ps.get_surface_mesh("Room").set_color([0.8, 0.8, 0.8])
 
         ps.set_user_callback(self.vis_callback)
@@ -112,7 +123,9 @@ class vis(Node):
         self.drone_state_msg = msg
         self.states[12] = self.drone_state_msg.drone_is_flying
         self.states[13] = self.drone_state_msg.drone_is_landed
-        self.Drone_pos = [self.drone_state_msg.actual_drone_position.x, self.drone_state_msg.actual_drone_position.y, self.drone_state_msg.actual_drone_position.z]
+        self.real_Drone_pos = [self.drone_state_msg.actual_drone_position.x, self.drone_state_msg.actual_drone_position.y, self.drone_state_msg.actual_drone_position.z]
+        real_Drone_orientation = pyq.Quaternion(self.drone_state_msg.actual_drone_orientation.w, self.drone_state_msg.actual_drone_orientation.x, self.drone_state_msg.actual_drone_orientation.y, self.drone_state_msg.actual_drone_orientation.z)
+        self.real_drone_rm = real_Drone_orientation.rotation_matrix
         if self.drone_state_msg.running:
             self.states[10] = True
             self.states[11] = False
@@ -142,6 +155,8 @@ class vis(Node):
     def sim_state_callback(self, msg):
         self.get_logger().info('I heard: "%s"' % msg)
         self.sim_state_msg = msg
+        self.sim_Drone_pos = [self.sim_state_msg.position.x, self.sim_state_msg.position.y, self.sim_state_msg.position.z]
+        self.sim_drone_rm = self.sim_state_msg.rotation_matrix
         if self.sim_state_msg.running:
             self.states[6] = True
             self.states[7] = False
@@ -305,11 +320,20 @@ class vis(Node):
         drows = self.DroneVOG.shape[0]
         d = np.ones((drows))
         DroneVnew = np.zeros((drows, 3))
-        DroneVnew[:, 0] = -self.Drone_pos[0] * d
-        DroneVnew[:, 1] = (self.Drone_pos[2]-5) * d
-        DroneVnew[:, 2] = self.Drone_pos[1] * d
-        self.DroneV = np.transpose(np.dot(self.drone_rm, np.transpose(self.DroneVOG))) + (1000 * DroneVnew)
+        DroneVnew[:, 0] = -self.sim_Drone_pos[0] * d
+        DroneVnew[:, 1] = (self.sim_Drone_pos[2]-5) * d
+        DroneVnew[:, 2] = self.sim_Drone_pos[1] * d
+        self.DroneV = np.transpose(np.dot(self.sim_drone_rm, np.transpose(self.DroneVOG))) + (1000 * DroneVnew)
         ps.get_surface_mesh("Drone").update_vertex_positions(self.DroneV)
+        
+        rdrows = self.RDroneVOG.shape[0]
+        rd = np.ones((rdrows))
+        RDroneVnew = np.zeros((rdrows, 3))
+        RDroneVnew[:, 0] = -self.real_Drone_pos[0] * rd
+        RDroneVnew[:, 1] = (self.real_Drone_pos[2]-5) * rd
+        RDroneVnew[:, 2] = self.real_Drone_pos[1] * rd
+        self.RDroneV = np.transpose(np.dot(self.real_drone_rm, np.transpose(self.RDroneVOG))) + (1000 * RDroneVnew)
+        ps.get_surface_mesh("Real_Drone").update_vertex_positions(self.RDroneV)
         
     
 # spins up and down nodes

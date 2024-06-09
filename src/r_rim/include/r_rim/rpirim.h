@@ -77,25 +77,28 @@ namespace PRIM {
 	private:
 		void timer_callback() {
 			// what ever code to run every timer iteration
-			if (run) {
-				this->PRIMstep();
-			}
 			// publishs the PRIM data
 			commsmsgs::msg::Rrimpub msg{};
 			msg.header.stamp = this->now();
 			msg.running = run;
-			msg.phin_list.x = phin_list[0];
-			msg.phin_list.y = phin_list[1];
-			msg.phin_list.z = phin_list[2];
-			msg.phin_dot_list.x = dot_phin_list[0];
-			msg.phin_dot_list.y = dot_phin_list[1];
-			msg.phin_dot_list.z = dot_phin_list[2];
-			msg.actual_drone_position.x = ADP[0];
-			msg.actual_drone_position.y = ADP[1];
-			msg.actual_drone_position.z = ADP[2];
-			msg.rrim_freq = freq;
-			msg.rrim_count = count;
-			msg.rrim_time = loop_time.count();
+			if (run) {
+				//this->PRIMstep();
+				// msg.phin_list.x = phin_list[0];
+				// msg.phin_list.y = phin_list[1];
+				// msg.phin_list.z = phin_list[2];
+				// msg.phin_dot_list.x = dot_phin_list[0];
+				// msg.phin_dot_list.y = dot_phin_list[1];
+				// msg.phin_dot_list.z = dot_phin_list[2];
+				msg.actual_drone_position.x = ADP[0];
+				msg.actual_drone_position.y = ADP[1];
+				msg.actual_drone_position.z = ADP[2];
+				msg.rbsim_position.x = DP[0];
+				msg.rbsim_position.y = DP[1];
+				msg.rbsim_position.z = DP[2];
+				// msg.rrim_freq = freq;
+				// msg.rrim_count = count;
+				// msg.rrim_time = loop_time.count();
+			}
 			prim_publisher_->publish(msg);
 		}
 		// subscibers and publishers

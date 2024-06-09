@@ -39,11 +39,11 @@ void RPI::rpicomms::vehicle_accel_callback(const geometry_msgs::msg::AccelStampe
 }
 
 // subscriber to recieve the ddc from the bmn comp
-void RPI::rpicomms::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg)
+void RPI::rpicomms::prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg)
 {
-	drone_position_cmd[0] = msg->desired_drone_position.x;
-	drone_position_cmd[1] = msg->desired_drone_position.y;
-	drone_position_cmd[2] = msg->desired_drone_position.z;
+	drone_position_cmd[0] = msg->rbsim_position.x;
+	drone_position_cmd[1] = msg->rbsim_position.y;
+	drone_position_cmd[2] = msg->rbsim_position.z;
 }
 
 // subscriber to recieve the gui controls from the gui

@@ -12,6 +12,7 @@ bool running
 geometry_msgs/Vector3 phin_list
 geometry_msgs/Vector3 phin_dot_list
 # subbed by rbsim node
+geometry_msgs/Point rbsim_position
 geometry_msgs/Point actual_drone_position
 
 # frequency data of loops

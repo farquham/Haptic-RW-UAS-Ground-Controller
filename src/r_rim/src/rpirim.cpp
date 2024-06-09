@@ -110,28 +110,28 @@ void PRIM::prim::rpi_callback(const commsmsgs::msg::Rpicommspub::UniquePtr & msg
 // callback for the rbquadsim subscriber
 void PRIM::prim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
 	DP = {msg->position.x, msg->position.y, msg->position.z};
-	Eigen::SparseMatrix<double> vgtemp;
-	PRIM::prim::msg_to_matrix(msg->vg, &vgtemp);
-	v_g = vgtemp.toDense();
+	// Eigen::SparseMatrix<double> vgtemp;
+	// PRIM::prim::msg_to_matrix(msg->vg, &vgtemp);
+	// v_g = vgtemp.toDense();
 
-	if (r_type == 2) {
-		fd = {msg->drag.x, msg->drag.y, msg->drag.z};
-		fg = {msg->gravity.x, msg->gravity.y, msg->gravity.z};
-		fi = {msg->interaction.x, msg->interaction.y, msg->interaction.z};
-		// sparse stuff
-		PRIM::prim::msg_to_matrix(msg->ac, &Ac);
-		PRIM::prim::msg_to_matrix(msg->m_inv, &M_hat_inv);
-		// update the rigidbody system matrices
-		rb_update(&DP, &ADP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
-	}
-	else {
-		// for ZOH and FOH
-		dot_phin_list = Ai * v_g;
-		R_vec = DP - ADP;
-		phin_list[0] = R_vec[0];
-		phin_list[1] = R_vec[1];
-		phin_list[2] = R_vec[2];
-	}
+	// if (r_type == 2) {
+	// 	fd = {msg->drag.x, msg->drag.y, msg->drag.z};
+	// 	fg = {msg->gravity.x, msg->gravity.y, msg->gravity.z};
+	// 	fi = {msg->interaction.x, msg->interaction.y, msg->interaction.z};
+	// 	// sparse stuff
+	// 	PRIM::prim::msg_to_matrix(msg->ac, &Ac);
+	// 	PRIM::prim::msg_to_matrix(msg->m_inv, &M_hat_inv);
+	// 	// update the rigidbody system matrices
+	// 	rb_update(&DP, &ADP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &lambda_i, &Pc_hat, &v_g_old, h_com1, &fi);
+	// }
+	// else {
+	// 	// for ZOH and FOH
+	// 	dot_phin_list = Ai * v_g;
+	// 	R_vec = DP - ADP;
+	// 	phin_list[0] = R_vec[0];
+	// 	phin_list[1] = R_vec[1];
+	// 	phin_list[2] = R_vec[2];
+	// }
 }
 
 // callback for logsetup subscriber to get correct rim type

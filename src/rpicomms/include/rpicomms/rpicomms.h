@@ -17,7 +17,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <stdint.h>
 #include "commsmsgs/msg/rpicommspub.hpp"
-#include "commsmsgs/msg/brimpub.hpp"
+#include "commsmsgs/msg/rrimpub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
 #include "commsmsgs/msg/guicontrols.hpp"
 
@@ -36,7 +36,7 @@ namespace RPI {
 			float desired_frequency = this->get_parameter("desired_frequency").as_double();
 
 			// subscribers for recieving ddc from bmn comp
-			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&rpicomms::brim_callback, this, std::placeholders::_1));
+			rrim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&rpicomms::prim_callback, this, std::placeholders::_1));
 			guicontrols_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&rpicomms::guicontrols_callback, this, std::placeholders::_1));
 
 			// publishers for send ddc to rpi companion comp
@@ -83,7 +83,7 @@ namespace RPI {
 		rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr vehicle_pose_subscriber_;
 		rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr vehicle_twist_subscriber_;
 		rclcpp::Subscription<geometry_msgs::msg::AccelStamped>::SharedPtr vehicle_accel_subscriber_;
-		rclcpp::Subscription<commsmsgs::msg::Brimpub>::SharedPtr brim_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::Rrimpub>::SharedPtr rrim_subscriber_;
 		rclcpp::Subscription<commsmsgs::msg::Guicontrols>::SharedPtr guicontrols_subscriber_;
 		//rclcpp::Subscription<commsmsgs::msg::rbquadsimpub>::SharedPtr rbquad_subscriber_;
 		rclcpp::Publisher<commsmsgs::msg::Rpicommspub>::SharedPtr rpicomms_publisher_;
@@ -97,7 +97,7 @@ namespace RPI {
 		void vehicle_pose_callback(const geometry_msgs::msg::PoseStamped::UniquePtr & msg);
 		void vehicle_twist_callback(const geometry_msgs::msg::TwistStamped::UniquePtr & msg);
 		void vehicle_accel_callback(const geometry_msgs::msg::AccelStamped::UniquePtr & msg);
-		void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
+		void prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg);
 		void publish_vehicle_state();
 		void guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
 
