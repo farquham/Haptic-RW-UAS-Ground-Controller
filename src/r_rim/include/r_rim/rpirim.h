@@ -95,6 +95,8 @@ namespace PRIM {
 				msg.rbsim_position.x = DP[0];
 				msg.rbsim_position.y = DP[1];
 				msg.rbsim_position.z = DP[2];
+				//RCLCPP_INFO(this->get_logger(), "Publishing actual drone position: x: %f y: %f z: %f", ADP[0], ADP[1], ADP[2]);
+				//RCLCPP_INFO(this->get_logger(), "Publishing rbsim position: x: %f y: %f z: %f", DP[0], DP[1], DP[2]);
 				// msg.rrim_freq = freq;
 				// msg.rrim_count = count;
 				// msg.rrim_time = loop_time.count();
@@ -147,8 +149,7 @@ namespace PRIM {
 		void RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h);	
 
 		// ros msg translation helpers
-		void msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout);
-		
+		void msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout);		
 		
 		// RIM variables
 		// sparse matrices used for rigidbody projection calculations

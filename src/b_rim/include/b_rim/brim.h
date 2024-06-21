@@ -95,6 +95,9 @@ namespace BRIM {
 			msg.brim_freq = freq;
 			msg.brim_count = count;
 			msg.brim_time = loop_time.count();
+			//RCLCPP_INFO(this->get_logger(), "Publishing phin list: x: %f y: %f z: %f", phin_list[0], phin_list[1], phin_list[2]);
+			//RCLCPP_INFO(this->get_logger(), "Publishing phin dot list: x: %f y: %f z: %f", dot_phin_list[0], dot_phin_list[1], dot_phin_list[2]);
+			//RCLCPP_INFO(this->get_logger(), "Publishing desired drone position: x: %f y: %f z: %f", DDP[0], DDP[1], DDP[2]);
 			brim_publisher_->publish(msg);
 		}
 		// subscibers and publishers
@@ -143,7 +146,7 @@ namespace BRIM {
 		void RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h);	
 
 		// ros msg translation helpers
-		void msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout);
+		void msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout);
 		
 		
 		// RIM variables

@@ -21,9 +21,9 @@ geometry_msgs/Vector3 angular_velocity
 Matrixthreef rotation_matrix
 
 # sparse matrices
-std_msgs/Float64MultiArray m_inv
-std_msgs/Float64MultiArray ac
-std_msgs/Float64MultiArray vg
+float64[768] m_inv
+float64[768] ac
+float64[768] vg
 
 # contact state data
 bool contact

@@ -122,7 +122,7 @@ class vis(Node):
 
     # handle the mocap data
     def drone_state_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+        #self.get_logger().info('I heard: "%s"' % msg)
         self.drone_state_msg = msg
         self.states[12] = self.drone_state_msg.drone_is_flying
         self.states[13] = self.drone_state_msg.drone_is_landed
@@ -138,14 +138,14 @@ class vis(Node):
         
     # handle the log state data
     def log_state_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+        #self.get_logger().info('I heard: "%s"' % msg)
         self.log_state_msg = msg
         self.states[0] = self.log_state_msg.opened
         self.states[1] = self.log_state_msg.closed
         
     # handle the rrim state data
     def rrim_state_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+        #self.get_logger().info('I heard: "%s"' % msg)
         self.rrim_state_msg = msg
         if self.rrim_state_msg.running:
             self.states[8] = True
@@ -156,7 +156,7 @@ class vis(Node):
         
     # handle the sim state data
     def sim_state_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+        #self.get_logger().info('I heard: "%s"' % msg)
         self.sim_state_msg = msg
         self.sim_Drone_pos = [self.sim_state_msg.position.x, self.sim_state_msg.position.y, self.sim_state_msg.position.z]
         self.sim_drone_rm = self.sim_state_msg.rotation_matrix
@@ -169,7 +169,7 @@ class vis(Node):
         
     # handle the brim state data
     def brim_state_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+        #self.get_logger().info('I heard: "%s"' % msg)
         self.brim_state_msg = msg
         if self.brim_state_msg.running:
             self.states[4] = True
@@ -180,7 +180,7 @@ class vis(Node):
         
     # handle the bmn state data
     def bmn_state_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg)
+        #self.get_logger().info('I heard: "%s"' % msg)
         self.bmn_state_msg = msg
         if self.bmn_state_msg.running:
             self.states[2] = True
@@ -233,10 +233,12 @@ class vis(Node):
         changed_r, self.rim_type = ps.imgui.Combo("RIM Type", self.rim_type, ["RIM0", "RIM1", "RIM2", "RIM3"])
         
         # logs controls, first thing to activate and last to close
+        #self.get_logger().info("control commands sent open_logs: %d close_logs: %d clear_logs: %d start sim: %d stop sim: %d reset sim: %d start bmn: %d stop bmn: %d reset bmn: %d start rpicomms: %d stop rpicomms: %d reset rpicomms: %d takeoff: %d land: %d" % (self.controls[0], self.controls[1], self.controls[2], self.controls[3], self.controls[4], self.controls[5], self.controls[6], self.controls[7], self.controls[8], self.controls[9], self.controls[10], self.controls[11], self.controls[12], self.controls[13]))
+        #self.get_logger().info("state values logs running: %d logs stopped: %d bmn running: %d bmn stopped: %d brim running: %d brim stopped: %d sim running: %d sim stopped: %d rrim running: %d rrim stopped: %d rpicomms running: %d rpicomms stopped: %d irl flying: %d irl landed: %d" % (self.states[0], self.states[1], self.states[2], self.states[3], self.states[4], self.states[5], self.states[6], self.states[7], self.states[8], self.states[9], self.states[10], self.states[11], self.states[12], self.states[13]))
         # name logs button
         # if button pressed and logs are currently closed
         if (ps.imgui.Button("Name Logs") and self.states[1]):
-            print("Naming Logs")
+            self.get_logger().info('Naming Logs')
             # publish the log setup message
             msg = Logsetup()
             msg.header.stamp = self.get_clock().now().to_msg()
@@ -249,7 +251,7 @@ class vis(Node):
         # open logs button
         # if button pressed and logs are currently closed
         if (ps.imgui.Button("Open Logs") and self.states[1]):
-            print("Opening Logs")
+            self.get_logger().info('Opening Logs')
             self.controls[0] = True
             self.controls[1] = False
             self.controls[2] = False
@@ -257,7 +259,7 @@ class vis(Node):
         # close logs button
         # if button pressed and logs are currently open
         if (ps.imgui.Button("Close Logs") and self.states[0]):
-            print("Closing Logs")
+            self.get_logger().info('Closing Logs')
             self.controls[0] = False
             self.controls[1] = True
             self.controls[2] = False        
@@ -265,16 +267,19 @@ class vis(Node):
         # sim controls, first after logs to activate, last before logs to close
         # start simulation button
         # if button pressed and sim is currently closed and logs are open already
-        if (ps.imgui.Button("Start Simulation") and self.states[7] and self.states[0]):
-            print("Starting Simulation")
+        # self.states = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
+        #if (ps.imgui.Button("Start Simulation") and self.states[7] and self.states[0]):
+        if (ps.imgui.Button("Start Simulation")):
+            self.get_logger().info('Starting Simulation')
             self.controls[3] = True
             self.controls[4] = False
             self.controls[5] = False
         
         # stop simulation button
         # if button pressed and sim is currently open and bmn/brim is closed and rpicomms/rrim is closed
-        if (ps.imgui.Button("Stop Simulation") and self.states[6] and self.states[5] and self.states[3] and self.states[11] and self.states[9]):
-            print("Stopping Simulation")
+        #if (ps.imgui.Button("Stop Simulation") and self.states[6] and self.states[5] and self.states[3] and self.states[11] and self.states[9]):
+        if (ps.imgui.Button("Stop Simulation")):
+            self.get_logger().info('Stopping Simulation')
             self.controls[3] = False
             self.controls[4] = True
             self.controls[5] = False            
@@ -282,16 +287,18 @@ class vis(Node):
         # bmn and brim controls, have to be activated after sim, stopped before sim, open bmn first and close brim first
         # start bmn button
         # if button pressed and bmn/brim is closed and sim is started already
-        if (ps.imgui.Button("Start BMN") and self.states[5] and self.states[3] and self.states[6]):
-            print("Starting BMN")
+        #if (ps.imgui.Button("Start BMN") and self.states[5] and self.states[3] and self.states[6]):
+        if (ps.imgui.Button("Start BMN")):
+            self.get_logger().info('Starting BMN')
             self.controls[6] = True
             self.controls[7] = False
             self.controls[8] = False
             
         # stop bmn button
         # if button pressed and bmn/brim is open
-        if (ps.imgui.Button("Stop BMN") and self.states[4] and self.states[2]):
-            print("Stopping BMN")
+        #if (ps.imgui.Button("Stop BMN") and self.states[4] and self.states[2]):
+        if (ps.imgui.Button("Stop BMN")):
+            self.get_logger().info('Stopping BMN')
             self.controls[6] = False
             self.controls[7] = True
             self.controls[8] = False
@@ -299,16 +306,18 @@ class vis(Node):
         # rpicomms and rrim controls, have to activate after sim, stopped before sim, open rpicomms first and close rrim first
         # start rpicomms button
         # if button pressed and rpicomms/rrim is closed and sim is started already
-        if (ps.imgui.Button("Start Rpicomms") and self.states[11] and self.states[9] and self.states[6]):
-            print("Starting Rpicomms")
+        #if (ps.imgui.Button("Start Rpicomms") and self.states[11] and self.states[9] and self.states[6]):
+        if (ps.imgui.Button("Start Rpicomms")):
+            self.get_logger().info('Starting Rpicomms')
             self.controls[9] = True
             self.controls[10] = False
             self.controls[11] = False
             
         # stop rpicomms button
         # if button pressed and rpicomms/rrim is open
-        if (ps.imgui.Button("Stop Rpicomms") and self.states[10] and self.states[8]):
-            print("Stopping Rpicomms")
+        #if (ps.imgui.Button("Stop Rpicomms") and self.states[10] and self.states[8]):
+        if (ps.imgui.Button("Stop Rpicomms")):
+            self.get_logger().info('Stopping Rpicomms')
             self.controls[9] = False
             self.controls[10] = True
             self.controls[11] = False        

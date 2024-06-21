@@ -30,7 +30,7 @@ namespace RBsystem {
 		// constructor for the rigid body system
 		RBsystem() : Node("rb_quad_sim_node")
 		{
-			this->declare_parameter("freqsim", 1000.0);
+			this->declare_parameter("freqsim", 100.0);
 			this->declare_parameter("h", 0.0);
 			this->declare_parameter("g_p", std::vector<float>{0.0, 0.0, 0.0});
 			this->declare_parameter("l", 0.0);
@@ -240,9 +240,9 @@ namespace RBsystem {
 			msg.rotation_matrix.m32 = drone.get_state().r_mat(2, 1);
 			msg.rotation_matrix.m33 = drone.get_state().r_mat(2, 2);
 
-			RBH::matrix_to_msg(&M_mat_inv, &msg.m_inv);
-			RBH::matrix_to_msg(&An_mat, &msg.ac);
-			RBH::matrix_to_msg(&global_vel, &msg.vg);
+			RBH::matrix_to_msg(M_mat_inv, msg.m_inv);
+			RBH::matrix_to_msg(An_mat, msg.ac);
+			RBH::matrix_to_msg(global_vel, msg.vg);
 
 			msg.contact = contact;
 			msg.pre_contact = pre_contact;
@@ -250,6 +250,11 @@ namespace RBsystem {
 			msg.no_contact = no_contact;
 			msg.sim_freq = freq;
 
+			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Position: %f %f %f", msg.position.x, msg.position.y, msg.position.z);
+			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Velocity: %f %f %f", msg.velocity.x, msg.velocity.y, msg.velocity.z);
+			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Acceleration: %f %f %f", msg.acceleration.x, msg.acceleration.y, msg.acceleration.z);
+			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Orientation: %f %f %f %f", msg.orientation.w, msg.orientation.x, msg.orientation.y, msg.orientation.z);
+			
 			// publish the message
 			rbquadsim_publisher_->publish(msg);
 		}

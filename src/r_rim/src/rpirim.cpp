@@ -141,6 +141,7 @@ void PRIM::prim::logsetup_callback(const commsmsgs::msg::Logsetup::UniquePtr & m
 
 // callback for the guicontrols subscriber
 void PRIM::prim::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
+	//RCLCPP_INFO(this->get_logger(), "prim guicontrols callback start: %d stop: %d", msg->start_rpicomms, msg->stop_rpicomms);
     if ((msg->start_rpicomms) && (!(msg->stop_rpicomms))){
         run = true;
     }
@@ -347,18 +348,18 @@ void PRIM::prim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 }
 
 // function to convert a ros msg to a sparse matrix
-void PRIM::prim::msg_to_matrix(std_msgs::msg::Float64MultiArray min, Eigen::SparseMatrix<double>* mout) {
-	int rows = min.data[0];
-	int cols = min.data[1];
-	int size = min.data[2];
+void PRIM::prim::msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout) {
+	int rows = min[0];
+	int cols = min[1];
+	int size = min[2];
 	float data = 0.0;
 	int i,j = 0;
 	std::vector< Eigen::Triplet<double> > tripletList;
 	tripletList.reserve(size-1);
 	for (int k = 1; k < size; k++) {
-		data = min.data[k * 3 + 2];
-		i = min.data[k * 3 + 0];
-		j = min.data[k * 3 + 1];
+		data = min[k * 3 + 2];
+		i = min[k * 3 + 0];
+		j = min[k * 3 + 1];
 		if (data != 0) {
 			tripletList.push_back(Eigen::Triplet<double>(i, j, data));
 		}

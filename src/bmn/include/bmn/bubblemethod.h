@@ -107,6 +107,8 @@ namespace BMN {
 				msg.desired_drone_position.y = D_D_C[1];
 				msg.desired_drone_position.z = D_D_C[2];
 				msg.bmn_freq = freq;
+				RCLCPP_INFO(this->get_logger(), "Publishing interface force: x: %f y: %f z: %f", iforce_list[0], iforce_list[1], iforce_list[2]);
+				RCLCPP_INFO(this->get_logger(), "Publishing desired drone position: x: %f y: %f z: %f", D_D_C[0], D_D_C[1], D_D_C[2]);
     			bmn_publisher_->publish(msg);
 			}
 			// subscibers and publishers

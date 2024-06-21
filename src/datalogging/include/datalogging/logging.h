@@ -77,7 +77,7 @@ namespace datalogging {
 		std::atomic<uint64_t> timestamp_;   //!< common synced timestamped
 
         bool logs_open = false;
-        bool logs_closed = false;
+        bool logs_closed = true;
         bool logs_cleared = false;
 
         bool sim_running = false;
