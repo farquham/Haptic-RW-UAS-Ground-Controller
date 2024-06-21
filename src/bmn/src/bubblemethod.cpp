@@ -58,6 +58,7 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     h = 1/fbmn;
     w_c = { -0.02, -0.15, 0.1 };
     rest = 0.025;
+    Inverse_object_ptr = &Inverse_object;
     BMN::bmnav::centerDevice(Inverse_object);
 }
 
@@ -132,7 +133,8 @@ void BMN::bmnav::centerDevice(API::Devices::Inverse3 Inverse_object) {
 }
 
 // takes a step in the simulation updating the position of the drone and the velocity ball then returns the sims current state
-void BMN::bmnav::BMNstep(API::Devices::Inverse3 Inverse_object) {
+void BMN::bmnav::BMNstep(API::Devices::Inverse3* Inverse_objecto) {
+    auto Inverse_object = *Inverse_objecto;
     if ((phins.norm() > phinmax)) {
         maxVa = vachange * maxVai;
     } else {
@@ -146,7 +148,9 @@ void BMN::bmnav::BMNstep(API::Devices::Inverse3 Inverse_object) {
     requested.force[0] = forces[0];
     requested.force[1] = forces[1];
     requested.force[2] = forces[2];
+    std::cout << "before error" << std::endl;
     state = Inverse_object.EndEffectorForce(requested);
+    std::cout << "after error" << std::endl;
     raw_positions = { state.position[0], state.position[1], state.position[2] };
     velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
 
@@ -204,14 +208,14 @@ void BMN::bmnav::BMNstep(API::Devices::Inverse3 Inverse_object) {
     D_D_C = V_B_C + positions;
 
     // frequency limiter
-	std::chrono::duration<double> dt = clocky::now() - start_time;
-	freq = 1 / dt.count();
-    while (freq > (1/h))
-    {
-        dt = clocky::now() - start_time;
-        freq = 1 / dt.count();
-    }
-    start_time = clocky::now();
+	// std::chrono::duration<double> dt = clocky::now() - start_time;
+	// freq = 1 / dt.count();
+    // while (freq > (1/h))
+    // {
+    //     dt = clocky::now() - start_time;
+    //     freq = 1 / dt.count();
+    // }
+    // start_time = clocky::now();
 
     // if (count % 100 == 0) {
     //     // std::cout << "phins: " << phins[0] << ", " << phins[1] << ", " << phins[2] << std::endl;

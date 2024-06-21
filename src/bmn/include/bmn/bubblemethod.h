@@ -94,9 +94,9 @@ namespace BMN {
 		private:
 			void timer_callback(API::Devices::Inverse3 Inverse_object) {
 				// what ever code to run every timer iteration
-				if (run) {
-					this->BMNstep(Inverse_object);
-				}
+				//if (run) {
+					this->BMNstep(Inverse_object_ptr);
+				//}
 				commsmsgs::msg::Bmnpub msg{};
 				msg.header.stamp = this->now();
 				msg.running = run;
@@ -128,7 +128,7 @@ namespace BMN {
 			// safety function to center the end effector
 			void centerDevice(API::Devices::Inverse3 Inverse_object);
 			// the main function for the bmn simulation which loops until the user stops it
-			void BMNstep(API::Devices::Inverse3 Inverse_object);
+			void BMNstep(API::Devices::Inverse3* Inverse_objecto);
 
 			// callback for the brim subscriber
 			void brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg);
@@ -158,7 +158,7 @@ namespace BMN {
 			// fields for class
 			// inverse stuff
 			std::string comm;
-			//API::Devices::Inverse3 Inverse_object;
+			API::Devices::Inverse3* Inverse_object_ptr;
 			double h;
 			Eigen::Vector3d w_c;
 			double rest;

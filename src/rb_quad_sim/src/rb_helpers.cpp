@@ -366,10 +366,11 @@ void RBH::matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double,768>&
 	int i,j = 0;
 	min.makeCompressed();
 	int size = min.nonZeros() + 1;
-	//int size_needed = (size * 3) + 3;
+	int size_needed = (size * 3) + 3;
 	mout[0] = min.rows();
 	mout[1] = min.cols();
 	mout[2] = size;
+	// RCLCPP_INFO(logger, "Size needed: %d", size_needed);
 	// RCLCPP_INFO(logger, "Size: %d", size);
 	// RCLCPP_INFO(logger, "rows: %d", min.rows());
 	// RCLCPP_INFO(logger, "cols: %d", min.cols());

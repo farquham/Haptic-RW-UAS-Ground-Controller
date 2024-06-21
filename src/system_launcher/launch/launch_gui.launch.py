@@ -47,17 +47,9 @@ def generate_launch_description():
    return LaunchDescription([
       visualization_node,
       logging_node,
+      bubble_method_node,
       bmn_rim_node,
       rb_sim_node,
       rpi_rim_node,
       rpi_comms_node
    ])
-   #   return LaunchDescription([
-   #    visualization_node,
-   #    logging_node,
-   #    bubble_method_node,
-   #    bmn_rim_node,
-   #    rb_sim_node,
-   #    rpi_rim_node,
-   #    rpi_comms_node
-   # ])
