@@ -12,6 +12,7 @@
 #include "quadcopter.h"
 
 // include the ros2 stuff
+#include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64_multi_array.hpp>
 
 namespace RBH {
@@ -54,7 +55,7 @@ namespace RBH {
 	void sparse_replace4(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matrix4d* t_replace, int row, int col);
 
 	void msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout);
-	void matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double,768>& mout);
+	void matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double,768>& mout, rclcpp::Logger logger);
 }
 
 #endif

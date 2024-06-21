@@ -8,7 +8,6 @@ void BRIM::brim::initbrim(float fr, int fcom1, int rim_type, float xlim, float y
 	const int size = 42;
 	const int dim = 3;
 	// initialize the sparse matrices
-	RCLCPP_INFO(this->get_logger(), "Initializing BRIM sparse");
 	Ac = Eigen::SparseMatrix <double>(6, size);
 	M_hat_inv = Eigen::SparseMatrix <double>(size, size);
 	Pc_hat = Eigen::SparseMatrix <double>(size, size);
@@ -19,7 +18,6 @@ void BRIM::brim::initbrim(float fr, int fcom1, int rim_type, float xlim, float y
 	IPMi = Eigen::SparseMatrix <double>(size, size);
 
 	// set all dense matrices to zero
-	RCLCPP_INFO(this->get_logger(), "Initializing BRIM dense");
 	M_tilde = Eigen::Matrix <double, dim, dim>::Zero();
 	M_tilde_inv = Eigen::Matrix <double, dim, dim>::Zero();
 	lambda_tilde = Eigen::Matrix <double, dim, 1>::Zero();
@@ -114,22 +112,20 @@ void BRIM::brim::bmn_callback(const commsmsgs::msg::Bmnpub::UniquePtr & msg) {
 void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
 	DP = {msg->position.x, msg->position.y, msg->position.z};
 	Eigen::SparseMatrix<double> vgtemp;
-	RCLCPP_INFO(this->get_logger(), "vg check");
+	vgtemp = Eigen::SparseMatrix<double>(1, 42);
 	BRIM::brim::msg_to_matrix(msg->vg, &vgtemp);
-	RCLCPP_INFO(this->get_logger(), "vg msg finished");
-	auto vgdtemp = vgtemp.toDense();
-	RCLCPP_INFO(this->get_logger(), "vg dense finished");
-	RCLCPP_INFO(this->get_logger(), "vg dense output: %f %f %f", vgdtemp(0));
-	v_g = vgdtemp.transpose();
+	v_g = vgtemp.toDense().transpose();
+	//RCLCPP_INFO(this->get_logger(), "vg dense finished");
+
 
 	if (r_type == 2) {
 		fd = {msg->drag.x, msg->drag.y, msg->drag.z};
 		fg = {msg->gravity.x, msg->gravity.y, msg->gravity.z};
 		fi = {msg->interaction.x, msg->interaction.y, msg->interaction.z};
 		// sparse stuff
-		RCLCPP_INFO(this->get_logger(), "Ac check");
+		//RCLCPP_INFO(this->get_logger(), "Ac check");
 		BRIM::brim::msg_to_matrix(msg->ac, &Ac);
-		RCLCPP_INFO(this->get_logger(), "M_hat_inv check");
+		//RCLCPP_INFO(this->get_logger(), "M_hat_inv check");
 		BRIM::brim::msg_to_matrix(msg->m_inv, &M_hat_inv);
 		// update the rigidbody system matrices
 		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &Pc_hat, &v_g_old, h_com1, &fi);
@@ -358,25 +354,27 @@ void BRIM::brim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 
 // function to convert a ros msg to a sparse matrix
 void BRIM::brim::msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout) {
-	RCLCPP_INFO(this->get_logger(), "msg_to_matrix start");
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix start");
 	int rows = min[0];
 	int cols = min[1];
 	int size = min[2];
+	//RCLCPP_INFO(this->get_logger(), "rows: %d", rows);
+	//RCLCPP_INFO(this->get_logger(), "cols: %d", cols);
+	//RCLCPP_INFO(this->get_logger(), "size: %d", size);
 	float data = 0.0;
 	int i,j = 0;
-	RCLCPP_INFO(this->get_logger(), "msg_to_matrix reserve");
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix reserve");
 	std::vector< Eigen::Triplet<double> > tripletList;
 	tripletList.reserve(size-1);
-	RCLCPP_INFO(this->get_logger(), "msg_to_matrix loop");
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix loop");
 	for (int k = 1; k < size; k++) {
-		data = min[k * 3 + 2];
 		i = min[k * 3 + 0];
 		j = min[k * 3 + 1];
-		if (data != 0) {
-			tripletList.push_back(Eigen::Triplet<double>(i, j, data));
-		}
+		data = min[k * 3 + 2];
+		//RCLCPP_INFO(this->get_logger(), "triplet out: %d %d %f", i, j, data);
+		tripletList.push_back(Eigen::Triplet<double>(i, j, data));
 	}
-	RCLCPP_INFO(this->get_logger(), "msg_to_matrix setFromTriplets");
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix setFromTriplets");
 	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
-	RCLCPP_INFO(this->get_logger(), "msg_to_matrix end");
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix end");
 }

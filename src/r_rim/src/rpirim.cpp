@@ -349,20 +349,27 @@ void PRIM::prim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 
 // function to convert a ros msg to a sparse matrix
 void PRIM::prim::msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout) {
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix start");
 	int rows = min[0];
 	int cols = min[1];
 	int size = min[2];
+	//RCLCPP_INFO(this->get_logger(), "rows: %d", rows);
+	//RCLCPP_INFO(this->get_logger(), "cols: %d", cols);
+	//RCLCPP_INFO(this->get_logger(), "size: %d", size);
 	float data = 0.0;
 	int i,j = 0;
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix reserve");
 	std::vector< Eigen::Triplet<double> > tripletList;
 	tripletList.reserve(size-1);
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix loop");
 	for (int k = 1; k < size; k++) {
-		data = min[k * 3 + 2];
 		i = min[k * 3 + 0];
 		j = min[k * 3 + 1];
-		if (data != 0) {
-			tripletList.push_back(Eigen::Triplet<double>(i, j, data));
-		}
+		data = min[k * 3 + 2];
+		//RCLCPP_INFO(this->get_logger(), "triplet out: %d %d %f", i, j, data);
+		tripletList.push_back(Eigen::Triplet<double>(i, j, data));
 	}
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix setFromTriplets");
 	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
+	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix end");
 }

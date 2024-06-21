@@ -240,9 +240,10 @@ namespace RBsystem {
 			msg.rotation_matrix.m32 = drone.get_state().r_mat(2, 1);
 			msg.rotation_matrix.m33 = drone.get_state().r_mat(2, 2);
 
-			RBH::matrix_to_msg(M_mat_inv, msg.m_inv);
-			RBH::matrix_to_msg(An_mat, msg.ac);
-			RBH::matrix_to_msg(global_vel, msg.vg);
+			RBH::matrix_to_msg(global_vel, msg.vg, this->get_logger());
+			RBH::matrix_to_msg(An_mat, msg.ac, this->get_logger());
+			RBH::matrix_to_msg(M_mat_inv, msg.m_inv, this->get_logger());
+
 
 			msg.contact = contact;
 			msg.pre_contact = pre_contact;

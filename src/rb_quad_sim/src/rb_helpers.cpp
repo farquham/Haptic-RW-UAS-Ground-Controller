@@ -350,37 +350,40 @@ void RBH::msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>*
 	std::vector< Eigen::Triplet<double> > tripletList;
 	tripletList.reserve(size-1);
 	for (int k = 1; k < size; k++) {
-		data = min[k * 3 + 2];
 		i = min[k * 3 + 0];
 		j = min[k * 3 + 1];
-		if (data != 0) {
-			tripletList.push_back(Eigen::Triplet<double>(i, j, data));
-		}
+		data = min[k * 3 + 2];
+		tripletList.push_back(Eigen::Triplet<double>(i, j, data));
 	}
 	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
 }
 
-// // function to convert from a sparse matrix to a ros msg
-void RBH::matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double,768>& mout) {
+// function to convert from a sparse matrix to a ros msg
+void RBH::matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double,768>& mout, rclcpp::Logger logger) {
 	//std::array<double,216>* mout;
 	//double* mout = (double*)malloc(216 * sizeof(double));
 	float data = 0.0;
 	int i,j = 0;
+	min.makeCompressed();
 	int size = min.nonZeros() + 1;
-	auto values = min.valuePtr();
-	auto inner = min.innerIndexPtr();
-	auto outer = min.outerIndexPtr();
 	//int size_needed = (size * 3) + 3;
-	//std::cout << "size needed: " << size_needed << std::endl;
 	mout[0] = min.rows();
 	mout[1] = min.cols();
 	mout[2] = size;
-	for (size_t k = 1; k < size; k++) {
-		data = values[k];
-		i = inner[k];
-		j = outer[k];
-		mout[k * 3 + 0] = i;
-		mout[k * 3 + 1] = j;
-		mout[k * 3 + 2] = data;
+	// RCLCPP_INFO(logger, "Size: %d", size);
+	// RCLCPP_INFO(logger, "rows: %d", min.rows());
+	// RCLCPP_INFO(logger, "cols: %d", min.cols());
+	// RCLCPP_INFO(logger, "inner length: %d", min.innerSize());
+	// RCLCPP_INFO(logger, "outer length: %d", min.outerSize());
+	for (int k = 0; k<min.outerSize(); ++k) {
+		for (Eigen::SparseMatrix<double>::InnerIterator it(min,k); it; ++it) {
+			data = it.value();
+			i = it.row();
+			j = it.col();
+			//RCLCPP_INFO(logger, "triplet in i: %d j: %d data: %f", i, j, data);
+			mout[(k+1) * 3 + 0] = i;
+			mout[(k+1) * 3 + 1] = j;
+			mout[(k+1) * 3 + 2] = data;
+		}
 	}
 }
