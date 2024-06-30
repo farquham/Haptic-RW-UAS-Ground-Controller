@@ -4,8 +4,34 @@
 // using namespace std::chrono_literals;
 // typedef std::chrono::high_resolution_clock clocky;
 
+// brim callback processing
+void BMN::bmnav::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg) {
+    phins = { msg->phin_list.x, msg->phin_list.y, msg->phin_list.z };
+    dot_phins = { msg->phin_dot_list.x, msg->phin_dot_list.y, msg->phin_dot_list.z };
+}
+
+// rbquadsim callback processing
+void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
+    con = msg->contact;
+    precon = msg->pre_contact;
+    postcon = msg->post_contact;
+    ncon = msg->no_contact;
+    A_D_C = { msg->position.x, msg->position.y, msg->position.z };
+}
+
+// guictl callback processing
+void BMN::bmnav::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
+    if ((msg->start_bmn) && (!(msg->stop_bmn))){
+        run = true;
+    }
+    else if ((msg->stop_bmn) && (!(msg->start_bmn))){
+        run = false;
+    }
+}
+
+
 // starts up the bmn class
-void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange, API::Devices::Inverse3 Inverse_object){
+BMN::bubblemethodnavigation::bubblemethodnavigation(float fbmn, double k_b, double k_i, double d_i, double v_s, double p_s, double b_r, double c_r, double a_d, double v_l, double f_s, double flimx, double flimy, double flimz, double phin_max, double vmaxchange, double PSchange, double VSchange){
     // loop var init
     raw_positions.setZero();
 	velocities.setZero();
@@ -58,12 +84,10 @@ void BMN::bmnav::initbmn(float fbmn, double k_b, double k_i, double d_i, double 
     h = 1/fbmn;
     w_c = { -0.02, -0.15, 0.1 };
     rest = 0.025;
-    Inverse_object_ptr = &Inverse_object;
-    BMN::bmnav::centerDevice(Inverse_object);
 }
 
 // fetches the port the inverse is connected too
-std::string BMN::bmnav::inverse3_setup() {
+std::string BMN::bubblemethodnavigation::inverse3_setup() {
     // find the port the inverse is connected too
     std::string portreturn;
     auto list = API::Devices::DeviceDetection::DetectInverse3s();
@@ -78,8 +102,55 @@ std::string BMN::bmnav::inverse3_setup() {
     return portreturn;
 }
 
+// function that runs inverse thread
+void BMN::bubblemethodnavigation::Inverse_Connection(BMN::data_pipe* ptr, std::mutex* lock){
+    // inverse startup
+    comm = BMN::bubblemethodnavigation::inverse3_setup();
+    API::IO::SerialStream stream{ comm.c_str() };
+    API::Devices::Inverse3 Inverse_object{&stream};
+
+    start_time = clocky::now();
+
+    // center the device
+    BMN::bubblemethodnavigation::centerDevice(Inverse_object);
+
+    // loop to run the inverse haptic device
+    while (true) {
+        // check if the simulation is running
+        if (run) {
+            // take a step in the simulation
+            BMN::bubblemethodnavigation::BMNstep(Inverse_object);
+        }
+        // send and receive data pipe data
+        lock->lock();
+        //out
+        ptr->interface_force_list = iforce_list;
+        ptr->desired_drone_position = D_D_C;
+        ptr->frequency = freq;
+        //in
+        run = ptr->running;
+        con = ptr->contact;
+        precon = ptr->pre_contact;
+        postcon = ptr->post_contact;
+        ncon = ptr->no_contact;
+        phins = ptr->phin_distance;
+        dot_phins = ptr->phin_velocity;
+        A_D_C = ptr->simulated_drone_position;
+        lock->unlock();
+        // frequency limiter
+        std::chrono::duration<double> dt = clocky::now() - start_time;
+        freq = 1 / dt.count();
+        while (freq > (1/h))
+        {
+            dt = clocky::now() - start_time;
+            freq = 1 / dt.count();
+        }
+        start_time = clocky::now();
+    }
+}
+
 // helper function that runs at the beginning to guide the user to the center of the workspace region before starting the simulation
-void BMN::bmnav::centerDevice(API::Devices::Inverse3 Inverse_object) {
+void BMN::bubblemethodnavigation::centerDevice(API::Devices::Inverse3 Inverse_object) {
     // wake up the inverse and fetch info
     auto info = Inverse_object.DeviceWakeup();
     std::fprintf(stdout,
@@ -133,8 +204,7 @@ void BMN::bmnav::centerDevice(API::Devices::Inverse3 Inverse_object) {
 }
 
 // takes a step in the simulation updating the position of the drone and the velocity ball then returns the sims current state
-void BMN::bmnav::BMNstep(API::Devices::Inverse3* Inverse_objecto) {
-    auto Inverse_object = *Inverse_objecto;
+void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object) {
     if ((phins.norm() > phinmax)) {
         maxVa = vachange * maxVai;
     } else {
@@ -158,24 +228,24 @@ void BMN::bmnav::BMNstep(API::Devices::Inverse3* Inverse_objecto) {
     abs_positions = positions + V_B_C;
 
     // Force calculations
-    BMN::bmnav::force_restitution(&w_c, &raw_positions, &bub_rad, &stiff_bk, &rforces);
-    BMN::bmnav::force_interface(&stiff_k, &damp_b, &con_rad, &phins, &dot_phins, &iforces, &iforce_list);
+    BMN::bubblemethodnavigation::force_restitution(&w_c, &raw_positions, &bub_rad, &stiff_bk, &rforces);
+    BMN::bubblemethodnavigation::force_interface(&stiff_k, &damp_b, &con_rad, &phins, &dot_phins, &iforces, &iforce_list);
     forces = rforces + iforces;
-    BMN::bmnav::force_scaling(&forces, &flims, &fscale);
-    BMN::bmnav::force_scaling(&iforce_list, &flims, &fscale);
+    BMN::bubblemethodnavigation::force_scaling(&forces, &flims, &fscale);
+    BMN::bubblemethodnavigation::force_scaling(&iforce_list, &flims, &fscale);
 
     // bubble method region checking and handling
-    boundary = BMN::bmnav::pos_check(&w_c, &raw_positions, &bub_rad);
+    boundary = BMN::bubblemethodnavigation::pos_check(&w_c, &raw_positions, &bub_rad);
     double temp = h * v_scale;
     if (boundary == false) {
-        BMN::bmnav::velocity_applied(&w_c, &raw_positions, &bub_rad, 100, &Va);
+        BMN::bubblemethodnavigation::velocity_applied(&w_c, &raw_positions, &bub_rad, 100, &Va);
         magVa = Va.norm();
         if (magVa > maxVa) {
             Va = { (maxVa / magVa) * Va[0], (maxVa / magVa) * Va[1] , (maxVa / magVa) * Va[2] };
-            BMN::bmnav::RK4_vec_update(&V_B_C, Va, temp);
+            BMN::bubblemethodnavigation::RK4_vec_update(&V_B_C, Va, temp);
         }
         else {
-            BMN::bmnav::RK4_vec_update(&V_B_C, Va, temp);
+            BMN::bubblemethodnavigation::RK4_vec_update(&V_B_C, Va, temp);
         }
     }
 
@@ -207,16 +277,6 @@ void BMN::bmnav::BMNstep(API::Devices::Inverse3* Inverse_objecto) {
     // adds the position of the virtual velocity ball to the relative posiiton of the drone
     D_D_C = V_B_C + positions;
 
-    // frequency limiter
-	// std::chrono::duration<double> dt = clocky::now() - start_time;
-	// freq = 1 / dt.count();
-    // while (freq > (1/h))
-    // {
-    //     dt = clocky::now() - start_time;
-    //     freq = 1 / dt.count();
-    // }
-    // start_time = clocky::now();
-
     // if (count % 100 == 0) {
     //     // std::cout << "phins: " << phins[0] << ", " << phins[1] << ", " << phins[2] << std::endl;
     //     // std::cout << "dot phins: " << dot_phins[0] << ", " << dot_phins[1] << ", " << dot_phins[2] << std::endl;
@@ -229,33 +289,8 @@ void BMN::bmnav::BMNstep(API::Devices::Inverse3* Inverse_objecto) {
     //i += 1;
 }
 
-// brim callback processing
-void BMN::bmnav::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg) {
-    phins = { msg->phin_list.x, msg->phin_list.y, msg->phin_list.z };
-    dot_phins = { msg->phin_dot_list.x, msg->phin_dot_list.y, msg->phin_dot_list.z };
-}
-
-// rbquadsim callback processing
-void BMN::bmnav::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePtr & msg) {
-    con = msg->contact;
-    precon = msg->pre_contact;
-    postcon = msg->post_contact;
-    ncon = msg->no_contact;
-    A_D_C = { msg->position.x, msg->position.y, msg->position.z };
-}
-
-// guictl callback processing
-void BMN::bmnav::guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg) {
-    if ((msg->start_bmn) && (!(msg->stop_bmn))){
-        run = true;
-    }
-    else if ((msg->stop_bmn) && (!(msg->start_bmn))){
-        run = false;
-    }
-}
-
 // function to calculate the force of contact using RIM
-void BMN::bmnav::force_interface(double* stiff, double* damp, double* act_dis, Eigen::Matrix<double, 3, 1>* phins, Eigen::Matrix<double, 3, 1>* dot_phins, Eigen::Vector3d* force, Eigen::Vector3d* force_list) {
+void BMN::bubblemethodnavigation::force_interface(double* stiff, double* damp, double* act_dis, Eigen::Matrix<double, 3, 1>* phins, Eigen::Matrix<double, 3, 1>* dot_phins, Eigen::Vector3d* force, Eigen::Vector3d* force_list) {
     double diff = 0;
     double raw_force = 0;
     // checks if the distance exceeds the activation distance and if so calculates the force
@@ -287,7 +322,7 @@ void BMN::bmnav::force_interface(double* stiff, double* damp, double* act_dis, E
 }
 
 // function to calculate the force of restitution felt by the user when in the velocity control region of the bubble naviation
-void BMN::bmnav::force_restitution(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* radius, double* stiffness, Eigen::Vector3d* force) {
+void BMN::bubblemethodnavigation::force_restitution(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* radius, double* stiffness, Eigen::Vector3d* force) {
     Eigen::Vector3d direction;
     Eigen::Vector3d diff;
     // checks if the end effector is within the velocity control region and if so calculates the force
@@ -304,7 +339,7 @@ void BMN::bmnav::force_restitution(Eigen::Vector3d* center, Eigen::Vector3d* dev
 }
 
 // function to scale/filter forces sent to inverse 3
-void BMN::bmnav::force_scaling(Eigen::Vector3d* Force, Eigen::Vector3d* lims, double* scale) {
+void BMN::bubblemethodnavigation::force_scaling(Eigen::Vector3d* Force, Eigen::Vector3d* lims, double* scale) {
     (*Force) *= (*scale);
     // if any force is greater than its limit than set it to the limit
     if (abs((*Force)[0]) > (*lims)[0]) {
@@ -320,7 +355,7 @@ void BMN::bmnav::force_scaling(Eigen::Vector3d* Force, Eigen::Vector3d* lims, do
 
 // helper function to calculate the proper velocity to apply to the velocity ball given the postion of the end effector compared to the surface of
 // the postion control region
-void BMN::bmnav::velocity_applied(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* radius, double scaling, Eigen::Vector3d* Va) {
+void BMN::bubblemethodnavigation::velocity_applied(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* radius, double scaling, Eigen::Vector3d* Va) {
     Eigen::Vector3d direction;
     Eigen::Vector3d diff;
     // find the direction of the velocity
@@ -333,7 +368,7 @@ void BMN::bmnav::velocity_applied(Eigen::Vector3d* center, Eigen::Vector3d* devi
 }
 
 // helper function to calculate whether the end effector is close enough to the workspace center before starting the simulation
-bool BMN::bmnav::start_check(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* radiusdead) {
+bool BMN::bubblemethodnavigation::start_check(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* radiusdead) {
     // find distance between the end effector and the workspace center
     Eigen::Vector3d diff;
     diff = ((*device_pos) - (*center));
@@ -348,7 +383,7 @@ bool BMN::bmnav::start_check(Eigen::Vector3d* center, Eigen::Vector3d* device_po
 }
 
 // helper function to check if the end effector is within the postion control region of the bubble navigation
-bool BMN::bmnav::pos_check(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* bound_rad) {
+bool BMN::bubblemethodnavigation::pos_check(Eigen::Vector3d* center, Eigen::Vector3d* device_pos, double* bound_rad) {
     // find distance between the end effector and the workspace center
     Eigen::Vector3d diff;
     diff = ((*device_pos) - (*center));
@@ -363,7 +398,7 @@ bool BMN::bmnav::pos_check(Eigen::Vector3d* center, Eigen::Vector3d* device_pos,
 }
 
 // helper function for RK4_vec_update
-void BMN::bmnav::RK4_update(double* xn, double* xn_dot, double* h) {
+void BMN::bubblemethodnavigation::RK4_update(double* xn, double* xn_dot, double* h) {
     // k1
     double k1 = (*xn_dot);
 
@@ -384,7 +419,7 @@ void BMN::bmnav::RK4_update(double* xn, double* xn_dot, double* h) {
 }
 
 // function that entire system can use to do Runge Kutta 4 integration updates on 3 vecs
-void BMN::bmnav::RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h) {
+void BMN::bubblemethodnavigation::RK4_vec_update(Eigen::Vector3d* xn, Eigen::Vector3d xn_dot, double h) {
 	int len = (*xn).rows();
 	double cur_out = 0.0;
 	double cur_xn_dot = 0.0;
