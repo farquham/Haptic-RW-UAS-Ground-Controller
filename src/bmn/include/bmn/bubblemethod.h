@@ -157,9 +157,6 @@ namespace BMN {
 	};
 }
 
-
-void bmnsetup(BMN::data_pipe* ptr, std::mutex* lock);
-
 namespace BMN {
 	class bmnav : public rclcpp::Node {
 		public:
@@ -231,6 +228,8 @@ namespace BMN {
 				ptr->VSchange = VSchange;
 				lock->unlock();
 
+				RCLCPP_INFO(this->get_logger(), "parameters: freqbmn: %f, k_b: %f, k_i: %f, d_i: %f, v_s: %f, p_s: %f, b_r: %f, c_r: %f, a_d: %f, v_l: %f, f_s: %f, flimx: %f, flimy: %f, flimz: %f, phin_max: %f, vmaxchange: %f, PSchange: %f, VSchange: %f", freqbmn, k_b, k_i, d_i, v_s, p_s, b_r, c_r, a_d, v_l, f_s, flimx, flimy, flimz, phin_max, vmaxchange, PSchange, VSchange);
+
 				RCLCPP_INFO(this->get_logger(), "BMN Node has been started");
 
 				auto time = 1000ms / freqbmn;
@@ -267,8 +266,10 @@ namespace BMN {
 				msg.desired_drone_position.y = D_D_C[1];
 				msg.desired_drone_position.z = D_D_C[2];
 				msg.bmn_freq = freq;
-				//RCLCPP_INFO(this->get_logger(), "Publishing interface force: x: %f y: %f z: %f", iforce_list[0], iforce_list[1], iforce_list[2]);
-				//RCLCPP_INFO(this->get_logger(), "Publishing desired drone position: x: %f y: %f z: %f", D_D_C[0], D_D_C[1], D_D_C[2]);
+				if(run){
+					//RCLCPP_INFO(this->get_logger(), "Publishing interface force: x: %f y: %f z: %f", iforce_list[0], iforce_list[1], iforce_list[2]);
+					//RCLCPP_INFO(this->get_logger(), "Publishing desired drone position: x: %f y: %f z: %f", D_D_C[0], D_D_C[1], D_D_C[2]);
+				}
     			bmn_publisher_->publish(msg);
 			}
 			// subscibers and publishers
@@ -328,9 +329,13 @@ int main(int argc, char * argv[]) {
 
 	rclcpp::init(argc, argv);
 
-	std::thread th1(bmnsetup, ptr, &lock);
+	std::thread th1(nodespinup, ptr, &lock);
 
-	std::thread th2(nodespinup, ptr, &lock);
+	for (int i = 0; i < 5; i++) {
+		std::this_thread::sleep_for(1s);
+	}
+
+	std::thread th2(bmnsetup, ptr, &lock);
 
 	th1.join();
 

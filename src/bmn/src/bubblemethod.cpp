@@ -69,7 +69,7 @@ BMN::bubblemethodnavigation::bubblemethodnavigation(float fbmn, double k_b, doub
     vachange = vmaxchange;
     posspringadj = PSchange;
     velspringadj = VSchange;
-    flims = flims;
+    flims = { flimx, flimy, flimz };
     fscale = f_s;
     p_scale = p_s;
 	v_scale = v_s;
@@ -84,6 +84,8 @@ BMN::bubblemethodnavigation::bubblemethodnavigation(float fbmn, double k_b, doub
     h = 1/fbmn;
     w_c = { -0.02, -0.15, 0.1 };
     rest = 0.025;
+
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "BMN initialized with the following parameters: k_i=%f, d_i=%f, k_b=%f, b_r=%f, c_r=%f, a_d=%f, v_l=%f, phin_max=%f, vmaxchange=%f, PSchange=%f, VSchange=%f, flims=%f, f_s=%f, p_s=%f, v_s=%f, fbmn=%f", k_i, d_i, k_b, b_r, c_r, a_d, v_l, phin_max, vmaxchange, PSchange, VSchange, flims, f_s, p_s, v_s, fbmn);
 }
 
 // fetches the port the inverse is connected too
@@ -114,13 +116,14 @@ void BMN::bubblemethodnavigation::Inverse_Connection(BMN::data_pipe* ptr, std::m
     // center the device
     BMN::bubblemethodnavigation::centerDevice(Inverse_object);
 
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "BMN centered");
+
     // loop to run the inverse haptic device
     while (true) {
         // check if the simulation is running
         if (run) {
             // take a step in the simulation
             BMN::bubblemethodnavigation::BMNstep(Inverse_object);
-            //RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "BMN step taken");
         }
         // send and receive data pipe data
         lock->lock();
@@ -139,14 +142,14 @@ void BMN::bubblemethodnavigation::Inverse_Connection(BMN::data_pipe* ptr, std::m
         A_D_C = ptr->simulated_drone_position;
         lock->unlock();
         // frequency limiter
-        std::chrono::duration<double> dt = clocky::now() - start_time;
-        freq = 1 / dt.count();
-        while (freq > (1/h))
-        {
-            dt = clocky::now() - start_time;
-            freq = 1 / dt.count();
-        }
-        start_time = clocky::now();
+        // std::chrono::duration<double> dt = clocky::now() - start_time;
+        // freq = 1 / dt.count();
+        // while (freq > (1/h))
+        // {
+        //     dt = clocky::now() - start_time;
+        //     freq = 1 / dt.count();
+        // }
+        // start_time = clocky::now();
     }
 }
 
@@ -219,9 +222,7 @@ void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object)
     requested.force[0] = forces[0];
     requested.force[1] = forces[1];
     requested.force[2] = forces[2];
-    std::cout << "before error" << std::endl;
     state = Inverse_object.EndEffectorForce(requested);
-    std::cout << "after error" << std::endl;
     raw_positions = { state.position[0], state.position[1], state.position[2] };
     velocities = { state.velocity[0], state.velocity[1], state.velocity[2] };
 
@@ -277,6 +278,14 @@ void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object)
     // calculates the change in drone and velocity ball position
     // adds the position of the virtual velocity ball to the relative posiiton of the drone
     D_D_C = V_B_C + positions;
+
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "forces: %f, %f, %f", forces[0], forces[1], forces[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "raw_positions: %f, %f, %f", raw_positions[0], raw_positions[1], raw_positions[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "positions: %f, %f, %f", positions[0], positions[1], positions[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "abs_positions: %f, %f, %f", abs_positions[0], abs_positions[1], abs_positions[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "velocities: %f, %f, %f", velocities[0], velocities[1], velocities[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "V_B_C: %f, %f, %f", V_B_C[0], V_B_C[1], V_B_C[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "D_D_C: %f, %f, %f", D_D_C[0], D_D_C[1], D_D_C[2]);
 
     // if (count % 100 == 0) {
     //     // std::cout << "phins: " << phins[0] << ", " << phins[1] << ", " << phins[2] << std::endl;
@@ -342,6 +351,8 @@ void BMN::bubblemethodnavigation::force_restitution(Eigen::Vector3d* center, Eig
 // function to scale/filter forces sent to inverse 3
 void BMN::bubblemethodnavigation::force_scaling(Eigen::Vector3d* Force, Eigen::Vector3d* lims, double* scale) {
     (*Force) *= (*scale);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "forces: %f, %f, %f", (*Force)[0], (*Force)[1], (*Force)[2]);
+    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "lims: %f, %f, %f", (*lims)[0], (*lims)[1], (*lims)[2]);
     // if any force is greater than its limit than set it to the limit
     if (abs((*Force)[0]) > (*lims)[0]) {
         (*Force)[0] = (*lims)[0] * copysignf(1, (*Force)[0]);

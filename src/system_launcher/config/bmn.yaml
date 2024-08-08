@@ -11,9 +11,9 @@
     a_d: 0.2         # activation distance
     v_l: 1.2         # velocity limit
     f_s: 1.0         # force scaling
-    flimx: 6.0       # force limit
-    flimy: 6.0       # force limit
-    flimz: 6.0       # force limit
+    flimx: 10.0       # force limit
+    flimy: 10.0       # force limit
+    flimz: 10.0       # force limit
     phin_max: 0.4    # max phin before adjusting vmax
     vmaxchange: 10.0 # max change in vmax
     PSchange: 0.2    # change spring constants in position region
