@@ -67,6 +67,8 @@ namespace BRIM {
 			// I dont know for some reason we need a pause here
 			for (int i = 0; i < 100; i++) {}
 
+			RCLCPP_INFO(this->get_logger(), "BRIM Node Started");
+
 			start_time = clocky::now();
 
 			auto time = 1000ms / freqrim;

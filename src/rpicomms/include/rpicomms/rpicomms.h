@@ -64,6 +64,8 @@ namespace RPI {
 			// initrpicomms();
 			run = false;
 
+			RCLCPP_INFO(this->get_logger(), "RPI Comms Node Started");
+
 			// desired frequency to run the timer at
 			auto time = 1000ms / desired_frequency;
 

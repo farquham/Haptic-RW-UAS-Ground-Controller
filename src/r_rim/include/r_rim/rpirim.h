@@ -68,6 +68,8 @@ namespace PRIM {
 			// I dont know for some reason we need a pause here
 			for (int i = 0; i < 100; i++) {}
 
+			RCLCPP_INFO(this->get_logger(), "PRIM Node Started");
+
 			start_time = clocky::now();
 
 			auto time = 1000ms / freqrim;

@@ -96,7 +96,7 @@ std::string BMN::bubblemethodnavigation::inverse3_setup() {
         portreturn = port.c_str();
     }
     if (list.empty()) {
-        fprintf(stderr, "no inverse3 detected\n");
+        std::fprintf(stderr, "no inverse3 detected\n");
     }
     // return it
     return portreturn;
@@ -120,6 +120,7 @@ void BMN::bubblemethodnavigation::Inverse_Connection(BMN::data_pipe* ptr, std::m
         if (run) {
             // take a step in the simulation
             BMN::bubblemethodnavigation::BMNstep(Inverse_object);
+            //RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "BMN step taken");
         }
         // send and receive data pipe data
         lock->lock();
@@ -198,7 +199,7 @@ void BMN::bubblemethodnavigation::centerDevice(API::Devices::Inverse3 Inverse_ob
 
         //// outputs the current state to the user
         if (count % 1000 == 0) {
-            std::cout << "Not yet within position control region" << std::endl;
+	        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Not yet within position control region");
         }
     }
 }
