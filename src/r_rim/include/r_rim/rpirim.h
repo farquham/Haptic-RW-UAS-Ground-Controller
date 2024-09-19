@@ -97,8 +97,8 @@ namespace PRIM {
 				msg.rbsim_position.x = DP[0];
 				msg.rbsim_position.y = DP[1];
 				msg.rbsim_position.z = DP[2];
-				//RCLCPP_INFO(this->get_logger(), "Publishing actual drone position: x: %f y: %f z: %f", ADP[0], ADP[1], ADP[2]);
-				//RCLCPP_INFO(this->get_logger(), "Publishing rbsim position: x: %f y: %f z: %f", DP[0], DP[1], DP[2]);
+				RCLCPP_INFO(this->get_logger(), "Publishing actual drone position: x: %f y: %f z: %f", ADP[0], ADP[1], ADP[2]);
+				RCLCPP_INFO(this->get_logger(), "Publishing rbsim position: x: %f y: %f z: %f", DP[0], DP[1], DP[2]);
 				// msg.rrim_freq = freq;
 				// msg.rrim_count = count;
 				// msg.rrim_time = loop_time.count();

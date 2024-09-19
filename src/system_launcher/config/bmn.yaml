@@ -1,7 +1,7 @@
 /bmn/sim:
   ros__parameters:
     freqbmn: 1000.0  # refresh rate of bubble method nav loop
-    k_b: 30.0        # stiffness of the bubble
+    k_b: 50.0        # stiffness of the bubble
     k_i: 100.0       # stiffness of the interface
     d_i: 10.0        # damping of the interface
     v_s: 3.0         # velocity scaling

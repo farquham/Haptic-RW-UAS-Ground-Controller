@@ -253,6 +253,7 @@ namespace RBsystem {
 			msg.no_contact = no_contact;
 			msg.sim_freq = freq;
 
+			//RCLCPP_INFO(this->get_logger(), "Desired Drone Position: %f %f %f", DDP[0], DDP[1], DDP[2]);
 			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Position: %f %f %f", msg.position.x, msg.position.y, msg.position.z);
 			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Velocity: %f %f %f", msg.velocity.x, msg.velocity.y, msg.velocity.z);
 			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Acceleration: %f %f %f", msg.acceleration.x, msg.acceleration.y, msg.acceleration.z);

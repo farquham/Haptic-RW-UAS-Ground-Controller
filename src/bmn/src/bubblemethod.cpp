@@ -240,7 +240,7 @@ void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object)
     boundary = BMN::bubblemethodnavigation::pos_check(&w_c, &raw_positions, &bub_rad);
     double temp = h * v_scale;
     if (boundary == false) {
-        BMN::bubblemethodnavigation::velocity_applied(&w_c, &raw_positions, &bub_rad, 100, &Va);
+        BMN::bubblemethodnavigation::velocity_applied(&w_c, &raw_positions, &bub_rad, 10, &Va);
         magVa = Va.norm();
         if (magVa > maxVa) {
             Va = { (maxVa / magVa) * Va[0], (maxVa / magVa) * Va[1] , (maxVa / magVa) * Va[2] };
@@ -351,8 +351,8 @@ void BMN::bubblemethodnavigation::force_restitution(Eigen::Vector3d* center, Eig
 // function to scale/filter forces sent to inverse 3
 void BMN::bubblemethodnavigation::force_scaling(Eigen::Vector3d* Force, Eigen::Vector3d* lims, double* scale) {
     (*Force) *= (*scale);
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "forces: %f, %f, %f", (*Force)[0], (*Force)[1], (*Force)[2]);
-    RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "lims: %f, %f, %f", (*lims)[0], (*lims)[1], (*lims)[2]);
+    //RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "forces: %f, %f, %f", (*Force)[0], (*Force)[1], (*Force)[2]);
+    //RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "lims: %f, %f, %f", (*lims)[0], (*lims)[1], (*lims)[2]);
     // if any force is greater than its limit than set it to the limit
     if (abs((*Force)[0]) > (*lims)[0]) {
         (*Force)[0] = (*lims)[0] * copysignf(1, (*Force)[0]);

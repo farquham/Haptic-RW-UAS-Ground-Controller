@@ -9,9 +9,9 @@
     In: [0.023142, 0.0, 0.0,
         0.0, 0.064328, 0.0,
         0.0, 0.0, 0.056522]  # inertia matrix
-    mass: 1.5       # mass of drone
+    mass: 1.693       # mass of drone
     con_rad: 0.5    # radius of drone
-    prop_dia: 0.254   # diameter of propeller
+    prop_dia: 0.254   # diameter of propellelf.ext_cmd_publisher_.publish(Point(x=self.ext_setpoier
     kprop: 0.0000012843          # prop k value will need to divide by 1.2*prop_dia^4
     bprop: 0.0000000180137       # prop b value will need to divide by 1.2*prop_dia^5
     xypdis: 0.177     # xy position of propellers
@@ -22,7 +22,7 @@
               12.0, 3.0, 1.5, 
               6.27, 52.27, 45.0, 
               15.68]  # PID limits, first 3 will need to be converted from deg to rads
-    kp: [1.13, 1.18, 0.59]  # proportional gains
+    kp: [1.13, 1.18, 1.0]  # proportional gains
     kvp: [2.79, 3.51, 7.74]  # proportional velocity gains
     kvi: [0.19, 0.49, -2.85]  # integral velocity gains
     kvd: [0.042, 0.14, 0.11]  # derivative velocity gains

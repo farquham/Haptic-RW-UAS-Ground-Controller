@@ -23,8 +23,8 @@ void RPI::rpicomms::vehicle_pose_callback(const geometry_msgs::msg::PoseStamped:
 	drone_orientation_actual[1] = msg->pose.orientation.y;
 	drone_orientation_actual[2] = msg->pose.orientation.z;
 	drone_orientation_actual[3] = msg->pose.orientation.w;
-	RCLCPP_INFO(this->get_logger(), "Recieved drone position: x: %f y: %f z: %f", drone_position_actual[0], drone_position_actual[1], drone_position_actual[2]);
-	RCLCPP_INFO(this->get_logger(), "Recieved drone orientation: x: %f y: %f z: %f w: %f", drone_orientation_actual[0], drone_orientation_actual[1], drone_orientation_actual[2], drone_orientation_actual[3]);
+	// RCLCPP_INFO(this->get_logger(), "Recieved drone position: x: %f y: %f z: %f", drone_position_actual[0], drone_position_actual[1], drone_position_actual[2]);
+	// RCLCPP_INFO(this->get_logger(), "Recieved drone orientation: x: %f y: %f z: %f w: %f", drone_orientation_actual[0], drone_orientation_actual[1], drone_orientation_actual[2], drone_orientation_actual[3]);
 }
 
 void RPI::rpicomms::vehicle_twist_callback(const geometry_msgs::msg::TwistStamped::UniquePtr & msg)
@@ -32,7 +32,7 @@ void RPI::rpicomms::vehicle_twist_callback(const geometry_msgs::msg::TwistStampe
 	drone_velocity_actual[0] = msg->twist.angular.x;
 	drone_velocity_actual[1] = msg->twist.angular.y;
 	drone_velocity_actual[2] = msg->twist.angular.z;
-	RCLCPP_INFO(this->get_logger(), "Recieved drone angular velocity: x: %f y: %f z: %f", drone_velocity_actual[0], drone_velocity_actual[1], drone_velocity_actual[2]);
+	// RCLCPP_INFO(this->get_logger(), "Recieved drone angular velocity: x: %f y: %f z: %f", drone_velocity_actual[0], drone_velocity_actual[1], drone_velocity_actual[2]);
 }
 
 void RPI::rpicomms::vehicle_accel_callback(const geometry_msgs::msg::AccelStamped::UniquePtr & msg)
@@ -40,7 +40,7 @@ void RPI::rpicomms::vehicle_accel_callback(const geometry_msgs::msg::AccelStampe
 	drone_acceleration_actual[0] = msg->accel.linear.x;
 	drone_acceleration_actual[1] = msg->accel.linear.y;
 	drone_acceleration_actual[2] = msg->accel.linear.z;
-	RCLCPP_INFO(this->get_logger(), "Recieved drone linear acceleration: x: %f y: %f z: %f", drone_acceleration_actual[0], drone_acceleration_actual[1], drone_acceleration_actual[2]);
+	// RCLCPP_INFO(this->get_logger(), "Recieved drone linear acceleration: x: %f y: %f z: %f", drone_acceleration_actual[0], drone_acceleration_actual[1], drone_acceleration_actual[2]);
 }
 
 // subscriber to recieve the ddc from the bmn comp
