@@ -4,15 +4,17 @@
 // Position P controller
 void QH::Pos_Controller(Eigen::Vector3d* DDP, Eigen::Vector3d* vel_sp, Eigen::Vector3d* global_pos, PID_params* con_params) {
 	// complete controller step
-	//std::cout << "DDP: " << (*DDP)[0] << ", " << (*DDP)[1] << ", " << (*DDP)[2] << std::endl;
-	//std::cout << "global_pos: " << (*global_pos)[0] << ", " << (*global_pos)[1] << ", " << (*global_pos)[2] << std::endl;
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "DDP: %f, %f, %f", (*DDP)[0], (*DDP)[1], (*DDP)[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "global_pos: %f, %f, %f", (*global_pos)[0], (*global_pos)[1], (*global_pos)[2]);
 	Eigen::Vector3d vel_sp_pos = (*DDP - *global_pos).cwiseProduct(con_params->kp_pos);
 	// account for feedforward term
 	*vel_sp = vel_sp_pos;
 	// constrain velocities to ensure they remain within physcial limits
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "vel_sp: %f, %f, %f", (*vel_sp)[0], (*vel_sp)[1], (*vel_sp)[2]);
 	Eigen::Vector2d vel_sp_xy = QH::ConstrainXY(vel_sp_pos.block(0,0,2,1), (*vel_sp-vel_sp_pos).block(0,0,2,1), con_params->lim_vel_horz);
 	double vel_sp_z = ((*vel_sp)[2] < -1*con_params->lim_vel_down) ? -1*con_params->lim_vel_down : (((*vel_sp)[2] > con_params->lim_vel_up) ? con_params->lim_vel_up : (*vel_sp)[2]);
 	*vel_sp = {vel_sp_xy[0], vel_sp_xy[1], vel_sp_z};
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "vel_sp final: %f, %f, %f", (*vel_sp)[0], (*vel_sp)[1], (*vel_sp)[2]);
 }
 
 // Velocity PID controller
@@ -24,8 +26,8 @@ void QH::Vel_Controller(Eigen::Vector3d* vel_int, Eigen::Vector3d* vel_dot, Eige
 	//veldt_calc(vel_dot, _vel_dot, _vel, global_vel, step_size);
 
 	// complete controller step
-	//std::cout << "vel sp: " << (*vel_sp)[0] << ", " << (*vel_sp)[1] << ", " << (*vel_sp)[2] << std::endl;
-	//std::cout << "global_vel: " << (*global_vel)[0] << ", " << (*global_vel)[1] << ", " << (*global_vel)[2] << std::endl;
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "vel sp: %f, %f, %f", (*vel_sp)[0], (*vel_sp)[1], (*vel_sp)[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "global_vel: %f, %f, %f", (*global_vel)[0], (*global_vel)[1], (*global_vel)[2]);
 	Eigen::Vector3d vel_err = *vel_sp - *global_vel;
 	Eigen::Vector3d acc_sp_vel = vel_err.cwiseProduct(con_params->kp_vel) + (*vel_int).cwiseProduct(con_params->ki_vel) - (*vel_dot).cwiseProduct(con_params->kd_vel);
 	// account for feedforward term
@@ -33,10 +35,11 @@ void QH::Vel_Controller(Eigen::Vector3d* vel_int, Eigen::Vector3d* vel_dot, Eige
 	(*acc_sp)[1] = acc_sp_vel[1];
 	(*acc_sp)[2] += acc_sp_vel[2];
 
-	//std::cout << "vel err: " << vel_err[0] << ", " << vel_err[1] << ", " << vel_err[2] << std::endl;
-	//std::cout << "vel int: " << (*vel_int)[0] << ", " << (*vel_int)[1] << ", " << (*vel_int)[2] << std::endl;
-	//std::cout << "vel dot: " << (*vel_dot)[0] << ", " << (*vel_dot)[1] << ", " << (*vel_dot)[2] << std::endl;
-	//std::cout << "acc sp: " << (*acc_sp)[0] << ", " << (*acc_sp)[1] << ", " << (*acc_sp)[2] << std::endl;
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "vel err: %f, %f, %f", vel_err[0], vel_err[1], vel_err[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "vel int: %f, %f, %f", (*vel_int)[0], (*vel_int)[1], (*vel_int)[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "vel dot: %f, %f, %f", (*vel_dot)[0], (*vel_dot)[1], (*vel_dot)[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "acc sp: %f, %f, %f", (*acc_sp)[0], (*acc_sp)[1], (*acc_sp)[2]);
+
 	(*_vel_dot) = vel_err;
 
 	// acceleration conrol equations
@@ -102,11 +105,11 @@ void QH::Vel_Controller(Eigen::Vector3d* vel_int, Eigen::Vector3d* vel_dot, Eige
 	// }
 
 	if ((*no_contact) && (std::abs(((*vel_int).norm())) > (*con_lims)[0]) && (std::abs(vel_err.norm()) < (*con_lims)[1])) {
-		std::cout << "vel int reset!!!" << std::endl;
+		RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Resetting vel_int");
 		*vel_int = {0, 0, 0};
 	}
 
-	//std::cout << "thr sp: " << (*thr_sp)[0] << ", " << (*thr_sp)[1] << ", " << (*thr_sp)[2] << std::endl;
+	RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "thr sp: %f, %f, %f", (*thr_sp)[0], (*thr_sp)[1], (*thr_sp)[2]);
 }
 
 // Acceleration "controller" helper for vel control

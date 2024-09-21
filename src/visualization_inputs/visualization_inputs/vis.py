@@ -242,7 +242,7 @@ class visualizations():
         
         root_folder = os.getcwd()
         # Load a mesh
-        self.RoomV, self.RoomF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Room_Large_Zn.obj"))
+        self.RoomV, self.RoomF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Room_3m.obj"))
         self.DroneV, self.DroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
         self.RDroneV, self.RDroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
 
@@ -409,7 +409,7 @@ class visualizations():
         d = np.ones((drows))
         DroneVnew = np.zeros((drows, 3))
         DroneVnew[:, 0] = -self.sim_pos[0] * d
-        DroneVnew[:, 1] = (self.sim_pos[2]-5) * d
+        DroneVnew[:, 1] = (self.sim_pos[2]-1.25) * d
         DroneVnew[:, 2] = self.sim_pos[1] * d
         #self.node_logger.info("sim drone position: %f %f %f" % (-self.sim_pos[0], self.sim_pos[2]-5, self.sim_pos[1]))
         sim_rm = np.array(self.sim_rm[:]).reshape(3, 3)
@@ -420,7 +420,7 @@ class visualizations():
         rd = np.ones((rdrows))
         RDroneVnew = np.zeros((rdrows, 3))
         RDroneVnew[:, 0] = -self.real_pos[0] * rd
-        RDroneVnew[:, 1] = (self.real_pos[2]-5) * rd
+        RDroneVnew[:, 1] = (self.real_pos[2]-1.25) * rd
         RDroneVnew[:, 2] = self.real_pos[1] * rd
         real_rm = np.array(self.real_rm[:]).reshape(3, 3)
         self.RDroneV = np.transpose(np.dot(real_rm, np.transpose(self.RDroneVOG))) + (1000 * RDroneVnew)

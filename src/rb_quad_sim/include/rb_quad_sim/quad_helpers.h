@@ -5,6 +5,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
+#include <rclcpp/rclcpp.hpp>
 
 namespace QH{
     // struct to hold all the attitude setpoint info
