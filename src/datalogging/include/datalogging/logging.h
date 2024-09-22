@@ -35,7 +35,9 @@ namespace datalogging {
             // setup rosbag writer
             writer_ = std::make_unique<rosbag2_cpp::Writer>();
             auto time = clocky::now();
-            auto save_location = "DataLog/" + std::to_string(time.time_since_epoch().count());
+            auto date = std::chrono::system_clock::to_time_t(time);
+            auto log_file = std::to_string(date);
+            auto save_location = "DataLog/" + log_file;
             writer_->open(save_location);
 
             // control subscriber

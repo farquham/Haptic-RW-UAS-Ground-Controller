@@ -7,6 +7,7 @@ import igl
 import pyquaternion as pyq
 import os
 import multiprocessing as mp
+import random
 
 from std_msgs.msg import String
 import time
@@ -89,6 +90,7 @@ class vis(Node):
         self._sim_drone_rm[:] = [1, 0, 0, 0, 1, 0, 0, 0, 1]
         self._real_drone_pos[:] = [0.0, 0.0, 0.0]
         self._real_drone_rm[:] = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+        self._cmd_drone_pos = [0.0, 0.0, 0.0]
         self._update.value = 0
         self._setup_logs.value = 0
         
@@ -104,6 +106,7 @@ class vis(Node):
                   self._sim_drone_rm, 
                   self._real_drone_pos, 
                   self._real_drone_rm,
+                  self._cmd_drone_pos,
                   self._update,
                   self._setup_logs,
                   self.get_logger()
@@ -118,12 +121,30 @@ class vis(Node):
             msg.participant_id = self._participant_id.value
             msg.experiment_id = self._experiment_id.value
             if self._movement_type.value == 0:
-                msg.movement_type = "FM"
+                msg.movement_type = "GMT"
             elif self._movement_type.value == 1:
-                msg.movement_type = "GM"
-            msg.rim_type = self._rim_type.value
+                msg.movement_type = "CT"
+            msg.rim_type = self.cosim_randomize(self._participant_id.value, self._movement_type.value, self._rim_type.value)
             self.log_setup_pub.publish(msg)
             self._setup_logs.value = 0
+            
+    def cosim_randomize(self, part_id, move_type, rim_type):
+        # if rim option selected don't randomize as this run is for dev purposes
+        if rim_type == 3:
+            out = 2
+        # if any of the other three options are selected pseudo randomize the output according to part_id, move_type, and rim_type
+        # must always output the same result for a given set of inputs
+        else:
+            # pseudo randomize the output
+            norm_1 = part_id % 3
+            norm_2 = move_type
+            norm_3 = rim_type % 3
+            random.seed(part_id)
+            randomness = random.randint(0, 2)
+            out = (norm_1 + norm_2 + norm_3 + randomness) % 3      
+            
+        # out must be 0 ZOH, 1 FOH, or 2 RIM
+        return out
             
     def gui_callback(self):
         if self._update.value:
@@ -193,6 +214,7 @@ class vis(Node):
     def bmn_state_callback(self, msg):
         #self.get_logger().info('I heard: "%s"' % msg)
         self.bmn_state_msg = msg
+        self._cmd_drone_pos = [self.bmn_state_msg.desired_drone_position.x, self.bmn_state_msg.desired_drone_position.y, self.bmn_state_msg.desired_drone_position.z]
         if self.bmn_state_msg.running:
             self._states[2] = True
             self._states[3] = False
@@ -222,7 +244,7 @@ class vis(Node):
         self.gui_controls_pub.publish(msg)
         
 class visualizations():
-    def __init__(self, pid, eid, mt, rt, cls, sts, sp, sr, rp, rr, up, sl, logger):
+    def __init__(self, pid, eid, mt, rt, cls, sts, sp, sr, rp, rr, cp, up, sl, logger):
         # class vars
         self.part_id = pid
         self.exp_id = eid
@@ -236,6 +258,7 @@ class visualizations():
         self.sim_rm = sr
         self.real_pos = rp
         self.real_rm = rr
+        self.cmd_pos = cp
         self.updatetrue = up
         self.logsetuptrue = sl
         self.node_logger = logger
@@ -294,19 +317,23 @@ class visualizations():
         ps.imgui.SetWindowFontScale(1.5)
         ps.imgui.SetWindowPos([10, 10])
         
+        ps.imgui.Text("Command Position: %f %f %f" % (self.cmd_pos[0], self.cmd_pos[1], self.cmd_pos[2]))
+        ps.imgui.Text("Simulated Position: %f %f %f" % (self.sim_pos[0], self.sim_pos[1], self.sim_pos[2]))
+        ps.imgui.Text("Real Position: %f %f %f" % (self.real_pos[0], self.real_pos[1], self.real_pos[2]))
+        
         # participant id iput box
         changed_pi, self.part_id.value = ps.imgui.InputInt("Participant Number", self.part_id.value)
         # experiment id input box
         changed_ei, self.exp_id.value = ps.imgui.InputInt("Experiment Number", self.exp_id.value)
         # test direction select menu
-        changed_m, self.move_type.value= ps.imgui.Combo("Movement Type", self.move_type.value, ["Free Movement", "Guided Movement"])
+        changed_m, self.move_type.value= ps.imgui.Combo("Task Type", self.move_type.value, ["Guided Movement Task", "Contact Task"])
         # if self.mtnum == 0:
         #     self.move_type = "FM"
         # else:
         #     self.move_type = "GM"
             
         # rim type select menu
-        changed_r, self.r_type.value = ps.imgui.Combo("RIM Type", self.r_type.value, ["RIM0", "RIM1", "RIM2", "RIM3"])
+        changed_r, self.r_type.value = ps.imgui.Combo("CoSim Type", self.r_type.value, ["CoSim1", "CoSim2", "CoSim3", "RIM"])
         
         # logs controls, first thing to activate and last to close
         #self.node_logger.info("control commands sent open_logs: %d close_logs: %d clear_logs: %d start sim: %d stop sim: %d reset sim: %d start bmn: %d stop bmn: %d reset bmn: %d start rpicomms: %d stop rpicomms: %d reset rpicomms: %d takeoff: %d land: %d" % (self.controls[0], self.controls[1], self.controls[2], self.controls[3], self.controls[4], self.controls[5], self.controls[6], self.controls[7], self.controls[8], self.controls[9], self.controls[10], self.controls[11], self.controls[12], self.controls[13]))

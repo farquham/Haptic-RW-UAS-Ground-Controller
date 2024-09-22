@@ -48,8 +48,8 @@
         0.0, 1.0, 0.0,
         0.0, 0.0, -1.0,
         0.0, 0.0, 1.0]  # normal unit vectors
-    poswall: 5.0 # position of wall
-    negwall: -5.0 # position of wall
+    poswall: 1.5 # position of wall
+    negwall: -1.5 # position of wall
     d: [-1.0, 1.0, -1.0, 1.0, -2.0, 0.0]  # distance from origin for each wall; i1*poswall, i2*negwall, i3*poswall, i4*negwall, i5*poswall
     stiff: 100.0      # stiffness
     damp: 10.0       # damping
