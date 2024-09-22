@@ -63,6 +63,7 @@ namespace RPI {
 			// init node vars
 			// initrpicomms();
 			run = false;
+			land_counter = 0;
 
 			RCLCPP_INFO(this->get_logger(), "RPI Comms Node Started");
 
@@ -96,6 +97,7 @@ namespace RPI {
 
 		// series of functions needed to operate the publisher
 		void publish_trajectory_setpoint();
+		bool time_to_land(Eigen::Vector3d cmd_pos, Eigen::Vector3d current_pos);
 		void vehicle_pose_callback(const geometry_msgs::msg::PoseStamped::UniquePtr & msg);
 		void vehicle_twist_callback(const geometry_msgs::msg::TwistStamped::UniquePtr & msg);
 		void vehicle_accel_callback(const geometry_msgs::msg::AccelStamped::UniquePtr & msg);
@@ -108,6 +110,8 @@ namespace RPI {
 		Eigen::Vector4d drone_orientation_actual;
 		Eigen::Vector3d drone_velocity_actual;
 		Eigen::Vector3d drone_acceleration_actual;
+
+		int land_counter;
 
 		bool run;
 	};

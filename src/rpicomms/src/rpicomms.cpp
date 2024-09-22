@@ -5,12 +5,54 @@
 //  */
 void RPI::rpicomms::publish_trajectory_setpoint()
 {
-	geometry_msgs::msg::Point msg{};
-	msg.x = drone_position_cmd[0];
-	msg.y = drone_position_cmd[1];
-	msg.z = drone_position_cmd[2];
-	//this->get_logger()->info("Publishing setpoint: x: " + std::to_string(msg.x) + " y: " + std::to_string(msg.y) + " z: " + std::to_string(msg.z));
-	setpoint_publisher_->publish(msg);
+	// if the drone position has yet to be relayed do nothing
+	if ((drone_position_actual[0] == 0.0) && (drone_position_actual[1] == 0.0) && (drone_position_actual[2] == 0.0)) {
+		return;
+	// if the drone position command is set to takeoff then set the setpoint to the current position plus 1m in the z direction
+	} else if ((drone_position_cmd[0] == 0.0) && (drone_position_cmd[1] == 0.0) && (drone_position_cmd[2] == 1.0)) {
+		geometry_msgs::msg::Point msg{};
+		msg.x = drone_position_cmd[0] + drone_position_actual[0];
+		msg.y = drone_position_cmd[1] + drone_position_actual[1];
+		msg.z = drone_position_cmd[2] + drone_position_actual[2];
+		//this->get_logger()->info("Publishing setpoint: x: " + std::to_string(msg.x) + " y: " + std::to_string(msg.y) + " z: " + std::to_string(msg.z));
+		setpoint_publisher_->publish(msg);
+	// if the drone is attempting to land then send the land setpoint to the rpi
+	} else if (this->time_to_land(drone_position_cmd, drone_position_actual)) {
+		geometry_msgs::msg::Point msg{};
+		msg.x = 1000.0;
+		msg.y = 1000.0;
+		msg.z = 1000.0;
+		//this->get_logger()->info("Publishing setpoint: x: " + std::to_string(msg.x) + " y: " + std::to_string(msg.y) + " z: " + std::to_string(msg.z));
+		setpoint_publisher_->publish(msg);
+	// otherwise behave normally and send the setpoint to the rpi
+	} else {
+		geometry_msgs::msg::Point msg{};
+		msg.x = drone_position_cmd[0];
+		msg.y = drone_position_cmd[1];
+		msg.z = drone_position_cmd[2];
+		//this->get_logger()->info("Publishing setpoint: x: " + std::to_string(msg.x) + " y: " + std::to_string(msg.y) + " z: " + std::to_string(msg.z));
+		setpoint_publisher_->publish(msg);
+	}
+}
+
+bool RPI::rpicomms::time_to_land(Eigen::Vector3d cmd_pos, Eigen::Vector3d current_pos) {
+	Eigen::Vector3d zeros = {0.0, 0.0, 0.25};
+	Eigen::Vector3d zero_diff = cmd_pos - zeros;
+	Eigen::Vector3d current_diff = cmd_pos - current_pos;
+	if (zero_diff.norm() < 0.15) {
+		if (current_diff.norm() < 0.15) {
+			land_counter++;
+		} else {
+			land_counter = 0;
+		}
+	} else {
+		land_counter = 0;
+	}
+	if (land_counter > 100) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 // subscriber to recieve the drone position, velocity and acceleration from the rpi companion comp
