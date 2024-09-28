@@ -231,7 +231,7 @@ void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object)
 
     // Force calculations
     BMN::bubblemethodnavigation::force_restitution(&w_c, &raw_positions, &bub_rad, &stiff_bk, &rforces);
-    BMN::bubblemethodnavigation::force_interface(&stiff_k, &damp_b, &con_rad, &phins, &dot_phins, &iforces, &iforce_list);
+    BMN::bubblemethodnavigation::force_interface(&stiff_k, &damp_b, &act_dis, &phins, &dot_phins, &iforces, &iforce_list);
     forces = rforces + iforces;
     BMN::bubblemethodnavigation::force_scaling(&forces, &flims, &fscale);
     BMN::bubblemethodnavigation::force_scaling(&iforce_list, &flims, &fscale);

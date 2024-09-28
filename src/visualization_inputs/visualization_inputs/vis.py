@@ -158,7 +158,9 @@ class vis(Node):
         self._states[12] = self.drone_state_msg.drone_is_flying
         self._states[13] = self.drone_state_msg.drone_is_landed
         self._real_drone_pos[:] = [self.drone_state_msg.actual_drone_position.x, self.drone_state_msg.actual_drone_position.y, self.drone_state_msg.actual_drone_position.z]
-        real_Drone_orientation = pyq.Quaternion(self.drone_state_msg.actual_drone_orientation.w, self.drone_state_msg.actual_drone_orientation.x, self.drone_state_msg.actual_drone_orientation.y, self.drone_state_msg.actual_drone_orientation.z)
+        # reorganize quats to match visualization frame
+        real_Drone_orientation = pyq.Quaternion(self.drone_state_msg.actual_drone_orientation.w, -self.drone_state_msg.actual_drone_orientation.x, self.drone_state_msg.actual_drone_orientation.z, self.drone_state_msg.actual_drone_orientation.y)
+        # turn into flattened rotation matrix, row major
         self._real_drone_rm[:] = [real_Drone_orientation.rotation_matrix[0][0], real_Drone_orientation.rotation_matrix[0][1], real_Drone_orientation.rotation_matrix[0][2], real_Drone_orientation.rotation_matrix[1][0], real_Drone_orientation.rotation_matrix[1][1], real_Drone_orientation.rotation_matrix[1][2], real_Drone_orientation.rotation_matrix[2][0], real_Drone_orientation.rotation_matrix[2][1], real_Drone_orientation.rotation_matrix[2][2]]
         if self.drone_state_msg.running:
             self._states[10] = True
@@ -449,6 +451,7 @@ class visualizations():
         RDroneVnew[:, 0] = -self.real_pos[0] * rd
         RDroneVnew[:, 1] = (self.real_pos[2]-1.25) * rd
         RDroneVnew[:, 2] = self.real_pos[1] * rd
+        # hopefully reshaping the rotation matrix is consistent between the two drones
         real_rm = np.array(self.real_rm[:]).reshape(3, 3)
         self.RDroneV = np.transpose(np.dot(real_rm, np.transpose(self.RDroneVOG))) + (1000 * RDroneVnew)
         ps.get_surface_mesh("Real_Drone").update_vertex_positions(self.RDroneV)
