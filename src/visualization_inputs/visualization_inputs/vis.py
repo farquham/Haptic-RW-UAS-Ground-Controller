@@ -32,6 +32,7 @@ class vis(Node):
     _rim_type = mp.Value('i', 0)
     _controls = mp.Array('b', 14)
     _states = mp.Array('b', 14)
+    _target_pos = mp.Array('d', 3)
     _sim_drone_pos = mp.Array('d', 3)
     _sim_drone_rm = mp.Array('d', 9)
     _real_drone_pos = mp.Array('d', 3)
@@ -86,6 +87,7 @@ class vis(Node):
         self._controls[:] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
         self._states[:] = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
+        self._target_pos[:] = [0.0, 0.0, 0.0]
         self._sim_drone_pos[:] = [0.0, 0.0, 0.0]
         self._sim_drone_rm[:] = [1, 0, 0, 0, 1, 0, 0, 0, 1]
         self._real_drone_pos[:] = [0.0, 0.0, 0.0]
@@ -102,6 +104,7 @@ class vis(Node):
                   self._rim_type, 
                   self._controls, 
                   self._states, 
+                  self._target_pos,
                   self._sim_drone_pos, 
                   self._sim_drone_rm, 
                   self._real_drone_pos, 
@@ -192,6 +195,7 @@ class vis(Node):
         #self.get_logger().info('I heard: "%s"' % msg)
         #self.get_logger().info('I heard position: "%f %f %f"' % (msg.position.x, msg.position.y, msg.position.z))
         self.sim_state_msg = msg
+        self._target_pos[:] = [self.sim_state_msg.target_position.x, self.sim_state_msg.target_position.y, self.sim_state_msg.target_position.z]
         self._sim_drone_pos[:] = [self.sim_state_msg.position.x, self.sim_state_msg.position.y, self.sim_state_msg.position.z]
         self._sim_drone_rm[:] = [self.sim_state_msg.rotation_matrix.m11, self.sim_state_msg.rotation_matrix.m12, self.sim_state_msg.rotation_matrix.m13, self.sim_state_msg.rotation_matrix.m21, self.sim_state_msg.rotation_matrix.m22, self.sim_state_msg.rotation_matrix.m23, self.sim_state_msg.rotation_matrix.m31, self.sim_state_msg.rotation_matrix.m32, self.sim_state_msg.rotation_matrix.m33]
         if self.sim_state_msg.running:
@@ -256,6 +260,7 @@ class visualizations():
         self.ctrls = cls
         # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
         self.sts = sts
+        self.target_pos = sp
         self.sim_pos = sp
         self.sim_rm = sr
         self.real_pos = rp
@@ -270,6 +275,7 @@ class visualizations():
         self.RoomV, self.RoomF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Room_3m.obj"))
         self.DroneV, self.DroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
         self.RDroneV, self.RDroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
+        self.targetV, self.targetF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Target.obj"))
 
         self.DroneVOG = self.DroneV
         drone_rot_swap = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
@@ -281,6 +287,11 @@ class visualizations():
         self.RDroneVOG_Transpose = np.transpose(self.RDroneVOG)
         self.RDroneV = np.transpose(np.dot(drone_rot_swap, self.RDroneVOG_Transpose))
         self.RDroneVOG = self.RDroneV
+        
+        self.targetVOG = self.targetV
+        self.targetVOG_Transpose = np.transpose(self.targetVOG)
+        self.targetV = np.transpose(np.dot(drone_rot_swap, self.targetVOG_Transpose))
+        self.targetVOG = self.targetV
         
         # Initialize the polyscope window
         ps.set_autocenter_structures(True)
@@ -296,11 +307,13 @@ class visualizations():
         Drone_sur = ps.register_surface_mesh("Drone", self.DroneV, self.DroneF)
         Real_Drone_sur = ps.register_surface_mesh("Real_Drone", self.RDroneV, self.RDroneF)
         Room_sur = ps.register_surface_mesh("Room", self.RoomV, self.RoomF)
+        target_sur = ps.register_surface_mesh("target", self.targetV, self.targetF)
 
         # you can also access the structure by name
         ps.get_surface_mesh("Drone").set_color([0.2, 0.2, 0.2])
         ps.get_surface_mesh("Real_Drone").set_color([0.5, 0.1, 0.1])
         ps.get_surface_mesh("Room").set_color([0.8, 0.8, 0.8])
+        ps.get_surface_mesh("target").set_color([0.5, 0.0, 0.0])
 
         ps.set_user_callback(self.vis_callback)
         # Show the GUI
@@ -445,6 +458,7 @@ class visualizations():
         self.DroneV = np.transpose(np.dot(sim_rm, np.transpose(self.DroneVOG))) + (1000 * DroneVnew)
         ps.get_surface_mesh("Drone").update_vertex_positions(self.DroneV)
         
+        # update irl drone visualization
         rdrows = self.RDroneVOG.shape[0]
         rd = np.ones((rdrows))
         RDroneVnew = np.zeros((rdrows, 3))
@@ -455,8 +469,17 @@ class visualizations():
         real_rm = np.array(self.real_rm[:]).reshape(3, 3)
         self.RDroneV = np.transpose(np.dot(real_rm, np.transpose(self.RDroneVOG))) + (1000 * RDroneVnew)
         ps.get_surface_mesh("Real_Drone").update_vertex_positions(self.RDroneV)
-       
         
+        # update target position guide visualization
+        trows = self.targetV.shape[0]
+        t = np.ones((trows))
+        targetVnew = np.zeros((trows, 3))
+        targetVnew[:, 0] = -self.target_pos[0] * t
+        targetVnew[:, 1] = (self.target_pos[2]-1.25) * t
+        targetVnew[:, 2] = self.target_pos[1] * t
+        self.targetV = self.targetVOG + (1000 * targetVnew)
+        ps.get_surface_mesh("target").update_vertex_positions(self.targetV)
+         
 # spins up and down nodes
 def main(args=None):
     rclpy.init(args=args)

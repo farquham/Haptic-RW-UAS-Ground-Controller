@@ -12,6 +12,10 @@ geometry_msgs/Vector3 position
 geometry_msgs/Vector3 velocity
 geometry_msgs/Vector3 acceleration
 
+# guided motion path data
+geometry_msgs/Vector3 target_position
+geometry_msgs/Vector3 target_velocity
+
 # drone state data other
 geometry_msgs/Vector3 drag
 geometry_msgs/Vector3 gravity
