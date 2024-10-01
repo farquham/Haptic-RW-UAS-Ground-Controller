@@ -103,7 +103,7 @@ class vis(Node):
                   self._movement_type, 
                   self._rim_type, 
                   self._controls, 
-                  self._states, 
+                  self._states,
                   self._target_pos,
                   self._sim_drone_pos, 
                   self._sim_drone_rm, 
@@ -250,7 +250,7 @@ class vis(Node):
         self.gui_controls_pub.publish(msg)
         
 class visualizations():
-    def __init__(self, pid, eid, mt, rt, cls, sts, sp, sr, rp, rr, cp, up, sl, logger):
+    def __init__(self, pid, eid, mt, rt, cls, sts, tp, sp, sr, rp, rr, cp, up, sl, logger):
         # class vars
         self.part_id = pid
         self.exp_id = eid
@@ -260,7 +260,7 @@ class visualizations():
         self.ctrls = cls
         # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
         self.sts = sts
-        self.target_pos = sp
+        self.target_pos = tp
         self.sim_pos = sp
         self.sim_rm = sr
         self.real_pos = rp

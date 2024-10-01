@@ -20,6 +20,7 @@
 #include "commsmsgs/msg/rrimpub.hpp"
 #include "commsmsgs/msg/rbquadsimpub.hpp"
 #include "commsmsgs/msg/guicontrols.hpp"
+#include "commsmsgs/msg/logsetup.hpp"
 
 typedef std::chrono::high_resolution_clock clocky;
 using namespace std::chrono_literals;
@@ -101,7 +102,8 @@ namespace RBsystem {
 			brim_subscriber_ = this->create_subscription<commsmsgs::msg::Brimpub>("/GC/out/brim", 10, std::bind(&RBsystem::brim_callback, this, std::placeholders::_1));
 			prim_subscriber_ = this->create_subscription<commsmsgs::msg::Rrimpub>("/GC/out/prim", 10, std::bind(&RBsystem::prim_callback, this, std::placeholders::_1));
 			guicontrols_subscriber_ = this->create_subscription<commsmsgs::msg::Guicontrols>("/GC/internal/guictrls", 10, std::bind(&RBsystem::guicontrols_callback, this, std::placeholders::_1));
-			
+			logs_subscriber_ = this->create_subscription<commsmsgs::msg::Logsetup>("/GC/internal/logsetup", 10, std::bind(&RBsystem::logsetup_callback, this, std::placeholders::_1));
+
 			rbquadsim_publisher_ = this->create_publisher<commsmsgs::msg::Rbquadsimpub>("/GC/out/rbquadsim", 10);
 
 			// auto timer_callback = [this]() -> void {
@@ -253,6 +255,14 @@ namespace RBsystem {
 			msg.no_contact = no_contact;
 			msg.sim_freq = freq;
 
+			// guided motion target info updating
+			msg.target_position.x = Target_Position[0];
+			msg.target_position.y = Target_Position[1];
+			msg.target_position.z = Target_Position[2];
+			msg.target_velocity.x = Target_Velocity[0];
+			msg.target_velocity.y = Target_Velocity[1];
+			msg.target_velocity.z = Target_Velocity[2];
+
 			//RCLCPP_INFO(this->get_logger(), "Desired Drone Position: %f %f %f", DDP[0], DDP[1], DDP[2]);
 			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Position: %f %f %f", msg.position.x, msg.position.y, msg.position.z);
 			//RCLCPP_INFO(this->get_logger(), "Publishing Simulated Drone Velocity: %f %f %f", msg.velocity.x, msg.velocity.y, msg.velocity.z);
@@ -267,6 +277,7 @@ namespace RBsystem {
 		rclcpp::Subscription<commsmsgs::msg::Rrimpub>::SharedPtr prim_subscriber_;
 		rclcpp::Publisher<commsmsgs::msg::Rbquadsimpub>::SharedPtr rbquadsim_publisher_;
 		rclcpp::Subscription<commsmsgs::msg::Guicontrols>::SharedPtr guicontrols_subscriber_;
+		rclcpp::Subscription<commsmsgs::msg::Logsetup>::SharedPtr logs_subscriber_;
 
 		rclcpp::TimerBase::SharedPtr timer_pub_;
 
@@ -284,6 +295,8 @@ namespace RBsystem {
 		void prim_callback(const commsmsgs::msg::Rrimpub::UniquePtr & msg);
 		// callback for the guicontrols subscriber
 		void guicontrols_callback(const commsmsgs::msg::Guicontrols::UniquePtr & msg);
+		// callback for the logsetup subscriber to get movement type info
+		void logsetup_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg);
 
 		// fill the sparse matrices to avoid errors
 		void fill_matrices();
@@ -291,6 +304,11 @@ namespace RBsystem {
 		void plane_interaction(Eigen::SparseMatrix<double>* vel_imposed, Eigen::Vector3d* Int_for, Eigen::Matrix<double, 6, 1>* phins, Eigen::Matrix<double, 6, 1>* dphins, Eigen::Vector3d* Li, Eigen::SparseMatrix<double>* mat_An, Eigen::SparseMatrix<double>* mat_dot_An, Eigen::SparseMatrix<double>* mat_M, Eigen::SparseMatrix<double>* mat_inv_M, Eigen::SparseMatrix<double>* mat_dot_M, Eigen::SparseMatrix<double>* mat_star_M, Eigen::SparseMatrix<double>* mat_O, Eigen::SparseMatrix<double>* mat_star_O, Eigen::SparseMatrix<double>* mat_N, Eigen::SparseMatrix<double>* mat_dot_N, Eigen::SparseMatrix<double>* vel_body, RBH::planes* eqns_plane, Quadcopter::UAS* Udrone, double stiffness, double damping, double s_s, bool* contact, bool* pre_contact, bool* post_contact, bool* no_contact);
 		// solve the plane interaction problem
 		void interface_solution_CR(Eigen::Matrix <double, 6, 1>* nlambda, Eigen::SparseMatrix<double>* mat_M, Eigen::SparseMatrix<double>* mat_inv_M, Eigen::SparseMatrix<double>* mat_dot_M, Eigen::SparseMatrix<double>* mat_An, Eigen::SparseMatrix<double>* mat_dot_An, Eigen::SparseMatrix<double>* mat_O, Eigen::Matrix <double, 6, 1>* dphins, Eigen::Matrix <double, 6, 1>* phins, double s_s, Eigen::SparseMatrix<double>* V);
+
+		// update the guided motion task
+		void guided_motion_update();
+		// update the contact task
+		void contact_task_update();
 
 		// structs
 		Quadcopter::UAS drone;
@@ -363,6 +381,16 @@ namespace RBsystem {
 		Eigen::Matrix <double, 1, 6> droneCrvel;
 		Eigen::Vector3d pos_diff;
 		Eigen::MatrixXd velimp;
+
+		// target variables for guided motion
+		std::string m_type;
+		Eigen::Vector3d Target_Position;
+		Eigen::Vector3d Target_Velocity;
+		int waypoint_num;
+		bool target_done;
+		int waypoint_counter;
+		int waypoint_delay;
+		bool start_waypoints;
 
 		std::chrono::_V2::system_clock::time_point start_time;
 		std::chrono::duration<double> loop_time;

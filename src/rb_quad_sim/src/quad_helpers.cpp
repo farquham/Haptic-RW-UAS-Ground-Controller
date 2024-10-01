@@ -109,7 +109,7 @@ void QH::Vel_Controller(Eigen::Vector3d* vel_int, Eigen::Vector3d* vel_dot, Eige
 		*vel_int = {0, 0, 0};
 	}
 
-	RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "thr sp: %f, %f, %f", (*thr_sp)[0], (*thr_sp)[1], (*thr_sp)[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "thr sp: %f, %f, %f", (*thr_sp)[0], (*thr_sp)[1], (*thr_sp)[2]);
 }
 
 // Acceleration "controller" helper for vel control

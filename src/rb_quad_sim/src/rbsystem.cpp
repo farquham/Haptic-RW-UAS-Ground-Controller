@@ -72,6 +72,16 @@ void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props,
 	droneCrvel = { 0,0,0,0,0,0 };
 	pos_diff = { 0,0,0 };
 
+	// initialize guided motion variables
+	Target_Position = { 0,0,1.0 };
+	Target_Velocity = { 0,0,0 };
+	m_type = "GMT";
+	waypoint_num = 0;
+	target_done = false;
+	waypoint_counter = 0;
+	waypoint_delay = 0;
+	start_waypoints = false;
+
 	// fills the sparse matrices with zeros where there will be values
 	fill_matrices();
 	// fills the mass matrix as it doesn't change during the simulation
@@ -203,6 +213,26 @@ void RBsystem::RBsystem::RBstep() {
 		// drone state update
 		drone.update_state();
 		Lambda_i = dgout.F_internal;
+	}
+
+	Eigen::Vector3d DDP_diff = DDP - {0.0, 0.0, 1.0};
+	if (DDP_diff.norm() > 0.01) {
+		start_waypoints = true;
+	}
+
+	if (start_waypoints == true){
+		if (waypoint_delay < 100) {
+			waypoint_delay += 1;
+		} else {
+			// update the guided motion
+			if (m_type == "GMT") {
+				// guided motion task update
+				guided_motion_update();
+			} else if (m_type == "CT") {
+				// contact task update
+				contact_task_update();
+			}
+		}
 	}
 
 	// outputs the drones body frame velocities
@@ -408,6 +438,160 @@ void RBsystem::RBsystem::interface_solution_CR(Eigen::Matrix <double, 6, 1>* nla
 	//std::cout << "V: " << Vlocal << std::endl;
 }
 
+// updates the guided motion task visuals for the user to follow when completing that task
+void RBsystem::RBsystem::guided_motion_update() {
+	// max allowed horizontal vel is 12.0, max allowed vertical vel up is 3.0, max allowed vertical vel down is 1.5
+	// will guide movement at 50% of max???
+	double h_vel = 1.0;
+	double up_vel = 1.0;
+	double down_vel = 1.0;
+
+	// guided motion task option 1, isolated axes movement
+	// first move up 1m, then move back down 1m, then move left 1m, then move right 1m, then move forward 1m, then move back 1m, then move right 1m, then move left 1m, then move back 1m, then move forward 1m, finally move down 1m and land
+	std::vector<Eigen::Vector3d> waypoint_set_1 = { {0,0,1.0}, {0,0,2.0}, {0,0,1.0}, {-1.0,0,1.0}, {0.0,0,1.0}, {0.0,1.0,1.0}, {0.0,0,1.0}, {1.0,0,1.0}, {0.0,0,1.0}, {0.0,-1.0,1.0}, {0.0,0,1.0}, {0.0,0,0.0} };
+	// guided motion task option 2, combined axes movement
+	// first move up and right 1m, then move down and left 1m, then move left and forward 1m, then move right and back 1m, then move forward and right 1m, then move back and left 1m, then move left and forward 1m, then move right 1m, finally move down 1m and land
+	std::vector<Eigen::Vector3d> waypoint_set_2 = { {0,0,1.0}, {1.0,0.0,2.0}, {-1.0,0.0,1.0}, {0.0,1.0,1.0}, {1.0,0.0,1.0}, {0.0,-1.0,1.0}, {-1.0,0.0,1.0}, {0.0,0.0,1.0}, {0.0,0.0,0.0} };
+
+	// decide which waypoint set to use
+	std::vector<Eigen::Vector3d> waypoint_set = waypoint_set_1;
+	if (target_done == false) {
+		if (waypoint_num > (waypoint_set.size()-1)) {
+			target_done = true;
+		}
+		// update target velocity and position based on the current waypoint
+		Eigen::Vector3d target_diff = waypoint_set[waypoint_num] - Target_Position;
+		if (target_diff.norm() < 0.05) {
+			Target_Position = waypoint_set[waypoint_num];
+			if (waypoint_num >= waypoint_set.size()) {
+				target_done = true;
+			} else {
+				waypoint_num += 1;
+			}
+		} else {
+			// update the target velocity based on which axis the waypoint and target position are different
+			// x axis
+			if (std::abs(target_diff[0]) > 0.05) {
+				if (target_diff[0] > 0) {
+					Target_Velocity[0] = h_vel;
+				} else {
+					Target_Velocity[0] = -1 * h_vel;
+				}
+			} else {
+				Target_Velocity[0] = 0;
+			}
+			// y axis
+			if (std::abs(target_diff[1]) > 0.05) {
+				if (target_diff[1] > 0) {
+					Target_Velocity[1] = h_vel;
+				} else {
+					Target_Velocity[1] = -1 * h_vel;
+				}
+			} else {
+				Target_Velocity[1] = 0;
+			}
+			// z axis
+			if (std::abs(target_diff[2]) > 0.05) {
+				if (target_diff[2] > 0) {
+					Target_Velocity[2] = up_vel;
+				} else {
+					Target_Velocity[2] = -1 * down_vel;
+				}
+			} else {
+				Target_Velocity[2] = 0;
+			}
+			// update the target position based on the target velocity and the step size
+			Target_Position = Target_Position + (Target_Velocity * step_size);
+		}
+	}
+
+
+	return;
+}
+
+// updates the contact task visuals for the user to follow when completing that task
+void RBsystem::RBsystem::contact_task_update() {
+	// max allowed horizontal vel is 12.0, max allowed vertical vel up is 3.0, max allowed vertical vel down is 1.5
+	// will guide movement at 50% of max???	
+	double h_vel = 1.0;
+	double up_vel = 1.0;
+	double down_vel = 1.0;
+
+	// contact task, contact with wall on left of drone and maintain stability to "land"
+	// move left 1.5m to wall, get drone to stay "still", land drone
+	std::vector<Eigen::Vector3d> contact_waypoint_set = { {0.0,0.0,1.0}, { -1.5,0.0,1.0 }, { -1.5,0.0,1.0 }, { -1.5,0.0,0.0 } };
+
+	// update target velocity and position based on the current waypoint
+	if (target_done == false){
+		if (waypoint_num > (contact_waypoint_set.size()-1)) {
+				target_done = true;
+		}
+		Eigen::Vector3d target_diff = contact_waypoint_set[waypoint_num] - Target_Position;
+		Eigen::Vector3d waypoint_diff = { 1.0,1.0,1.0 };
+		if (waypoint_num > 0) {
+			waypoint_diff = contact_waypoint_set[waypoint_num] - contact_waypoint_set[waypoint_num - 1];
+		}
+		// RCLCPP_INFO(this->get_logger(), "Target Position: %f, %f, %f", Target_Position[0], Target_Position[1], Target_Position[2]);
+		// RCLCPP_INFO(this->get_logger(), "Contact Waypoint: %f, %f, %f", contact_waypoint_set[waypoint_num][0], contact_waypoint_set[waypoint_num][1], contact_waypoint_set[waypoint_num][2]);
+		// RCLCPP_INFO(this->get_logger(), "waypoint diff: %f, %f, %f", waypoint_diff[0], waypoint_diff[1], waypoint_diff[2]);
+		if (waypoint_diff.norm() < 0.05) {
+			Target_Velocity = { 0,0,0 };
+			Target_Position = contact_waypoint_set[waypoint_num];
+			// wait 10 seconds for the drone to "land" then move on to the next waypoint
+			if (waypoint_counter > 1000) {
+				waypoint_num += 1;
+			} else {
+				waypoint_counter += 1;
+			}
+		} else if (target_diff.norm() < 0.05) {
+			Target_Position = contact_waypoint_set[waypoint_num];
+			if (waypoint_num > (contact_waypoint_set.size()-1)) {
+				target_done = true;
+				RCLCPP_INFO(this->get_logger(), "Contact Task Complete");
+			} else {
+				waypoint_num += 1;
+			}
+		} else {
+			// update the target velocity based on which axis the waypoint and target position are different
+			// x axis
+			if (std::abs(target_diff[0]) > 0.05) {
+				if (target_diff[0] > 0) {
+					Target_Velocity[0] = h_vel;
+				} else {
+					Target_Velocity[0] = -1 * h_vel;
+				}
+			} else {
+				Target_Velocity[0] = 0;
+			}
+			// y axis
+			if (std::abs(target_diff[1]) > 0.05) {
+				if (target_diff[1] > 0) {
+					Target_Velocity[1] = h_vel;
+				} else {
+					Target_Velocity[1] = -1 * h_vel;
+				}
+			} else {
+				Target_Velocity[1] = 0;
+			}
+			// z axis
+			if (std::abs(target_diff[2]) > 0.05) {
+				if (target_diff[2] > 0) {
+					Target_Velocity[2] = up_vel;
+				} else {
+					Target_Velocity[2] = -1 * down_vel;
+				}
+			} else {
+				Target_Velocity[2] = 0;
+			}
+			// update the target position based on the target velocity and the step size
+			Target_Position = Target_Position + (Target_Velocity * step_size);
+		}
+	}
+	
+	
+	return;
+}
+
 // brim callback
 void RBsystem::RBsystem::brim_callback(const commsmsgs::msg::Brimpub::UniquePtr & msg) {
 	DDP[0] = msg->desired_drone_position.x;
@@ -428,4 +612,9 @@ void RBsystem::RBsystem::guicontrols_callback(const commsmsgs::msg::Guicontrols:
     else if ((msg->stop_simulation) && (!(msg->start_simulation))){
         run = false;
     }
+}
+
+// callback for the logsetup subscriber to get motion type info
+void RBsystem::RBsystem::logsetup_callback(const commsmsgs::msg::Logsetup::UniquePtr & msg) {
+	m_type = msg->movement_type;
 }

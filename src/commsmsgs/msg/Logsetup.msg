@@ -9,7 +9,7 @@ int32 participant_id
 # experiment id number
 int32 experiment_id
 
-# movement type id (free movement = FM, guided movement = GM)
+# movement type id (Guided Movement Task = GMT, Contact Task = CT)
 string movement_type
 
 # rim type id (ZOH = 0, FOH = 1, RIM = 2, RIM+ = 3)
