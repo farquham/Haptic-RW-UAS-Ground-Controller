@@ -34,10 +34,12 @@ namespace datalogging {
 		{
             // setup rosbag writer
             writer_ = std::make_unique<rosbag2_cpp::Writer>();
-            auto time = clocky::now();
-            auto date = std::chrono::system_clock::to_time_t(time);
-            auto log_file = std::to_string(date);
-            auto save_location = "DataLog/" + log_file;
+            auto time = std::chrono::system_clock::now();
+            auto time_t = std::chrono::system_clock::to_time_t(time);
+            std::stringstream date_out;
+            date_out << std::put_time(std::localtime(&time_t), "%Y-%m-%d_%H-%M-%S");
+            auto save_location = "DataLog/" + date_out.str();
+            RCLCPP_INFO(this->get_logger(), "Saving logs to: %s", save_location.c_str());
             writer_->open(save_location);
 
             // control subscriber

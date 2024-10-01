@@ -215,7 +215,7 @@ void RBsystem::RBsystem::RBstep() {
 		Lambda_i = dgout.F_internal;
 	}
 
-	Eigen::Vector3d DDP_diff = DDP - Eigen::Vector3d{0.0, 0.0, 1.0};
+	Eigen::Vector3d DDP_diff = DDP - Eigen::Vector3d{0.0, 0.0, 0.0};
 	if (DDP_diff.norm() > 0.01) {
 		start_waypoints = true;
 	}
