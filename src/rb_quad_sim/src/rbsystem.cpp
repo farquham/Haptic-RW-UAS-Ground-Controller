@@ -6,6 +6,7 @@ typedef std::chrono::high_resolution_clock clocky;
 void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props, RBH::planes* planes, double h, double stiff, double damp) {
 	// initialize the drone and planes
 	drone = Quadcopter::UAS(drone_props, h);
+	drone_path = Quadcopter::UAS(drone_props, h);
 	plane_eqns = *planes;
 
 	// system sparse matrices
@@ -73,6 +74,7 @@ void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props,
 	pos_diff = { 0,0,0 };
 
 	// initialize guided motion variables
+	Current_Waypoint = { 0,0,1.0 };
 	Target_Position = { 0,0,1.0 };
 	Target_Velocity = { 0,0,0 };
 	m_type = "GMT";
@@ -81,6 +83,8 @@ void RBsystem::RBsystem::initrb(float freqsim, Quadcopter::dr_prop* drone_props,
 	waypoint_counter = 0;
 	waypoint_delay = 0;
 	start_waypoints = false;
+	dummy_contacts = false;
+	dummy_nocontact = true;
 
 	// fills the sparse matrices with zeros where there will be values
 	fill_matrices();
@@ -455,15 +459,19 @@ void RBsystem::RBsystem::guided_motion_update() {
 
 	// decide which waypoint set to use
 	std::vector<Eigen::Vector3d> waypoint_set = waypoint_set_1;
+	// RCLCPP_INFO(this->get_logger(), "waypoint diff: %f, %f, %f", waypoint_diff[0], waypoint_diff[1], waypoint_diff[2]);
+
 	if (target_done == false) {
-		if (waypoint_num > (waypoint_set.size()-1)) {
+		if (waypoint_num > (waypoint_set.size())) {
 			target_done = true;
 		}
 		// update target velocity and position based on the current waypoint
-		Eigen::Vector3d target_diff = waypoint_set[waypoint_num] - Target_Position;
+		Eigen::Vector3d target_diff = Current_Waypoint - Target_Position;
 		if (target_diff.norm() < 0.05) {
-			Target_Position = waypoint_set[waypoint_num];
-			if (waypoint_num >= waypoint_set.size()) {
+			// Target_Position = waypoint_set[waypoint_num];
+			Current_Waypoint = waypoint_set[waypoint_num];
+			RCLCPP_INFO(this->get_logger(), "Current Waypoint: %f, %f, %f", Current_Waypoint[0], Current_Waypoint[1], Current_Waypoint[2]);
+			if (waypoint_num > waypoint_set.size()) {
 				target_done = true;
 			} else {
 				waypoint_num += 1;
@@ -471,37 +479,52 @@ void RBsystem::RBsystem::guided_motion_update() {
 		} else {
 			// update the target velocity based on which axis the waypoint and target position are different
 			// x axis
-			if (std::abs(target_diff[0]) > 0.05) {
-				if (target_diff[0] > 0) {
-					Target_Velocity[0] = h_vel;
-				} else {
-					Target_Velocity[0] = -1 * h_vel;
-				}
-			} else {
-				Target_Velocity[0] = 0;
-			}
-			// y axis
-			if (std::abs(target_diff[1]) > 0.05) {
-				if (target_diff[1] > 0) {
-					Target_Velocity[1] = h_vel;
-				} else {
-					Target_Velocity[1] = -1 * h_vel;
-				}
-			} else {
-				Target_Velocity[1] = 0;
-			}
-			// z axis
-			if (std::abs(target_diff[2]) > 0.05) {
-				if (target_diff[2] > 0) {
-					Target_Velocity[2] = up_vel;
-				} else {
-					Target_Velocity[2] = -1 * down_vel;
-				}
-			} else {
-				Target_Velocity[2] = 0;
-			}
-			// update the target position based on the target velocity and the step size
-			Target_Position = Target_Position + (Target_Velocity * step_size);
+			// if (std::abs(target_diff[0]) > 0.05) {
+			// 	if (target_diff[0] > 0) {
+			// 		Target_Velocity[0] = h_vel;
+			// 	} else {
+			// 		Target_Velocity[0] = -1 * h_vel;
+			// 	}
+			// } else {
+			// 	Target_Velocity[0] = 0;
+			// }
+			// // y axis
+			// if (std::abs(target_diff[1]) > 0.05) {
+			// 	if (target_diff[1] > 0) {
+			// 		Target_Velocity[1] = h_vel;
+			// 	} else {
+			// 		Target_Velocity[1] = -1 * h_vel;
+			// 	}
+			// } else {
+			// 	Target_Velocity[1] = 0;
+			// }
+			// // z axis
+			// if (std::abs(target_diff[2]) > 0.05) {
+			// 	if (target_diff[2] > 0) {
+			// 		Target_Velocity[2] = up_vel;
+			// 	} else {
+			// 		Target_Velocity[2] = -1 * down_vel;
+			// 	}
+			// } else {
+			// 	Target_Velocity[2] = 0;
+			// }
+			// // update the target position based on the target velocity and the step size
+			// Target_Position = Target_Position + (Target_Velocity * step_size);
+
+			// PID control instead of direct velocity control
+			// RCLCPP_INFO(this->get_logger(), "Target Position updating");
+			// RCLCPP_INFO(this->get_logger(), "Target Position: %f, %f, %f", Target_Position[0], Target_Position[1], Target_Position[2]);
+			// RCLCPP_INFO(this->get_logger(), "Current Waypoint: %f, %f, %f", Current_Waypoint[0], Current_Waypoint[1], Current_Waypoint[2]);
+			//drone control update
+			drone_path.Controller(&Current_Waypoint, &dummy_contacts, &dummy_contacts, &dummy_contacts, &dummy_nocontact);
+			drone_path.Mixer();
+			// drone dynamics update
+			Fid = drone_path.wind_force(&Wvv);
+			dgout = drone_path.Accelerator(&Fid);
+			// drone state update
+			drone_path.update_state();
+			Target_Velocity = drone_path.get_state().g_vel;
+			Target_Position = drone_path.get_state().g_pos;
 		}
 	}
 
@@ -523,71 +546,86 @@ void RBsystem::RBsystem::contact_task_update() {
 
 	// update target velocity and position based on the current waypoint
 	if (target_done == false){
-		if (waypoint_num > (contact_waypoint_set.size()-1)) {
+		if (waypoint_num > (contact_waypoint_set.size())) {
 				target_done = true;
 		}
-		Eigen::Vector3d target_diff = contact_waypoint_set[waypoint_num] - Target_Position;
+		Eigen::Vector3d target_diff = Current_Waypoint - Target_Position;
 		Eigen::Vector3d waypoint_diff = { 1.0,1.0,1.0 };
 		if (waypoint_num > 0) {
-			waypoint_diff = contact_waypoint_set[waypoint_num] - contact_waypoint_set[waypoint_num - 1];
+			waypoint_diff = Current_Waypoint - contact_waypoint_set[waypoint_num];
 		}
 		// RCLCPP_INFO(this->get_logger(), "Target Position: %f, %f, %f", Target_Position[0], Target_Position[1], Target_Position[2]);
 		// RCLCPP_INFO(this->get_logger(), "Contact Waypoint: %f, %f, %f", contact_waypoint_set[waypoint_num][0], contact_waypoint_set[waypoint_num][1], contact_waypoint_set[waypoint_num][2]);
 		// RCLCPP_INFO(this->get_logger(), "waypoint diff: %f, %f, %f", waypoint_diff[0], waypoint_diff[1], waypoint_diff[2]);
-		if (waypoint_diff.norm() < 0.05) {
-			Target_Velocity = { 0,0,0 };
-			Target_Position = contact_waypoint_set[waypoint_num];
-			// wait 10 seconds for the drone to "land" then move on to the next waypoint
-			if (waypoint_counter > 1000) {
-				waypoint_num += 1;
-			} else {
-				waypoint_counter += 1;
-			}
-		} else if (target_diff.norm() < 0.05) {
-			Target_Position = contact_waypoint_set[waypoint_num];
-			if (waypoint_num > (contact_waypoint_set.size()-1)) {
+		if (target_diff.norm() < 0.05) {
+			// Target_Position = contact_waypoint_set[waypoint_num];
+			Current_Waypoint = contact_waypoint_set[waypoint_num];
+			RCLCPP_INFO(this->get_logger(), "Current Waypoint: %f, %f, %f", Current_Waypoint[0], Current_Waypoint[1], Current_Waypoint[2]);
+			if (waypoint_num > (contact_waypoint_set.size())) {
 				target_done = true;
 				RCLCPP_INFO(this->get_logger(), "Contact Task Complete");
+			} else if (waypoint_diff.norm() < 0.05) {
+				// Target_Velocity = { 0,0,0 };
+				// Target_Position = contact_waypoint_set[waypoint_num];
+				RCLCPP_INFO(this->get_logger(), "waypoint counter: %d", waypoint_counter);
+				// wait 10 seconds for the drone to "land" then move on to the next waypoint
+				if (waypoint_counter > 1000) {
+					RCLCPP_INFO(this->get_logger(), "waypoint wait done");
+					waypoint_num += 1;
+				} else {
+					waypoint_counter += 1;
+				}
 			} else {
 				waypoint_num += 1;
 			}
 		} else {
 			// update the target velocity based on which axis the waypoint and target position are different
 			// x axis
-			if (std::abs(target_diff[0]) > 0.05) {
-				if (target_diff[0] > 0) {
-					Target_Velocity[0] = h_vel;
-				} else {
-					Target_Velocity[0] = -1 * h_vel;
-				}
-			} else {
-				Target_Velocity[0] = 0;
-			}
-			// y axis
-			if (std::abs(target_diff[1]) > 0.05) {
-				if (target_diff[1] > 0) {
-					Target_Velocity[1] = h_vel;
-				} else {
-					Target_Velocity[1] = -1 * h_vel;
-				}
-			} else {
-				Target_Velocity[1] = 0;
-			}
-			// z axis
-			if (std::abs(target_diff[2]) > 0.05) {
-				if (target_diff[2] > 0) {
-					Target_Velocity[2] = up_vel;
-				} else {
-					Target_Velocity[2] = -1 * down_vel;
-				}
-			} else {
-				Target_Velocity[2] = 0;
-			}
-			// update the target position based on the target velocity and the step size
-			Target_Position = Target_Position + (Target_Velocity * step_size);
+			// if (std::abs(target_diff[0]) > 0.05) {
+			// 	if (target_diff[0] > 0) {
+			// 		Target_Velocity[0] = h_vel;
+			// 	} else {
+			// 		Target_Velocity[0] = -1 * h_vel;
+			// 	}
+			// } else {
+			// 	Target_Velocity[0] = 0;
+			// }
+			// // y axis
+			// if (std::abs(target_diff[1]) > 0.05) {
+			// 	if (target_diff[1] > 0) {
+			// 		Target_Velocity[1] = h_vel;
+			// 	} else {
+			// 		Target_Velocity[1] = -1 * h_vel;
+			// 	}
+			// } else {
+			// 	Target_Velocity[1] = 0;
+			// }
+			// // z axis
+			// if (std::abs(target_diff[2]) > 0.05) {
+			// 	if (target_diff[2] > 0) {
+			// 		Target_Velocity[2] = up_vel;
+			// 	} else {
+			// 		Target_Velocity[2] = -1 * down_vel;
+			// 	}
+			// } else {
+			// 	Target_Velocity[2] = 0;
+			// }
+			// // update the target position based on the target velocity and the step size
+			// Target_Position = Target_Position + (Target_Velocity * step_size);
+
+			// PID control instead of direct velocity control
+			//drone control update
+			drone_path.Controller(&Current_Waypoint, &dummy_contacts, &dummy_contacts, &dummy_contacts, &dummy_nocontact);
+			drone_path.Mixer();
+			// drone dynamics update
+			Fid = drone_path.wind_force(&Wvv);
+			dgout = drone_path.Accelerator(&Fid);
+			// drone state update
+			drone_path.update_state();
+			Target_Velocity = drone_path.get_state().g_vel;
+			Target_Position = drone_path.get_state().g_pos;
 		}
 	}
-	
 	
 	return;
 }

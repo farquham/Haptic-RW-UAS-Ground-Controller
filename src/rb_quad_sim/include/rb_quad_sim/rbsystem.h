@@ -312,6 +312,7 @@ namespace RBsystem {
 
 		// structs
 		Quadcopter::UAS drone;
+		Quadcopter::UAS drone_path;
 		RBH::planes plane_eqns;
 
 		// Sparse Matrices
@@ -384,6 +385,9 @@ namespace RBsystem {
 
 		// target variables for guided motion
 		std::string m_type;
+		bool dummy_contacts;
+		bool dummy_nocontact;
+		Eigen::Vector3d Current_Waypoint;
 		Eigen::Vector3d Target_Position;
 		Eigen::Vector3d Target_Velocity;
 		int waypoint_num;
