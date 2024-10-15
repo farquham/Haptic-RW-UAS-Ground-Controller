@@ -3,6 +3,13 @@
 
 // include eigen dense and sparse and alse the quadcopter class
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include <filesystem>
+#include <unistd.h>
+#include <limits.h>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 #include <Eigen/SparseQR>
@@ -310,6 +317,9 @@ namespace RBsystem {
 		// update the contact task
 		void contact_task_update();
 
+		//helper for reading path csvs
+		std::vector<std::vector<float>> readCSV(const std::string& filename);
+
 		// structs
 		Quadcopter::UAS drone;
 		Quadcopter::UAS drone_path;
@@ -395,6 +405,9 @@ namespace RBsystem {
 		int waypoint_counter;
 		int waypoint_delay;
 		bool start_waypoints;
+
+		std::vector<std::vector<float>> GMT_path;
+		std::vector<std::vector<float>> CT_path;
 
 		std::chrono::_V2::system_clock::time_point start_time;
 		std::chrono::duration<double> loop_time;

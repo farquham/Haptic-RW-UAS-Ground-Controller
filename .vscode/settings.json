@@ -81,7 +81,8 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "filesystem": "cpp"
     },
     "python.autoComplete.extraPaths": [
         "/home/farquham/Desktop/GC_ros2_ws/Haptic-RW-UAS-Ground-Controller/install/visualizationInputs/lib/python3.10/site-packages",
