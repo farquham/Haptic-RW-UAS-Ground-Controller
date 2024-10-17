@@ -30,7 +30,7 @@ class vis(Node):
     _experiment_id = mp.Value('i', 0)
     _movement_type = mp.Value('i', 0)
     _rim_type = mp.Value('i', 0)
-    _controls = mp.Array('b', 14)
+    _controls = mp.Array('b', 15)
     _states = mp.Array('b', 14)
     _target_pos = mp.Array('d', 3)
     _sim_drone_pos = mp.Array('d', 3)
@@ -239,6 +239,7 @@ class vis(Node):
         msg.start_simulation = bool(self._controls[3])
         msg.stop_simulation = bool(self._controls[4])
         msg.reset_simulation = bool(self._controls[5])
+        msg.start_guide = bool(self._controls[14])
         msg.start_bmn = bool(self._controls[6])
         msg.stop_bmn = bool(self._controls[7])
         msg.reset_bmn = bool(self._controls[8])
@@ -439,7 +440,13 @@ class visualizations():
             self.node_logger.info('Stopping Rpicomms')
             self.ctrls[9] = False
             self.ctrls[10] = True
-            self.ctrls[11] = False        
+            self.ctrls[11] = False  
+        
+        # start guide button
+        # if button is pressed
+        if (ps.imgui.Button("Start Guide")):
+            self.node_logger.info('Starting Guide')
+            self.ctrls[14] = True      
         
         ps.imgui.PopItemWidth()
         ps.imgui.End()

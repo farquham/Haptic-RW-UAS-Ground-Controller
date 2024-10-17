@@ -266,17 +266,19 @@ void RBsystem::RBsystem::RBstep() {
 		start_waypoints = true;
 	}
 
-	if (start_waypoints == true){
-		if (waypoint_delay < 100) {
-			waypoint_delay += 1;
-		} else {
-			// update the guided motion
-			if (m_type == "GMT") {
-				// guided motion task update
-				guided_motion_update();
-			} else if (m_type == "CT") {
-				// contact task update
-				contact_task_update();
+	if (start_guided_motion == true) {
+		if (start_waypoints == true){
+			if (waypoint_delay < 100) {
+				waypoint_delay += 1;
+			} else {
+				// update the guided motion
+				if (m_type == "GMT") {
+					// guided motion task update
+					guided_motion_update();
+				} else if (m_type == "CT") {
+					// contact task update
+					contact_task_update();
+				}
 			}
 		}
 	}
@@ -549,6 +551,9 @@ void RBsystem::RBsystem::guicontrols_callback(const commsmsgs::msg::Guicontrols:
     else if ((msg->stop_simulation) && (!(msg->start_simulation))){
         run = false;
     }
+	if (msg->start_guide) {
+		start_guided_motion = true;
+	}
 }
 
 // callback for the logsetup subscriber to get motion type info

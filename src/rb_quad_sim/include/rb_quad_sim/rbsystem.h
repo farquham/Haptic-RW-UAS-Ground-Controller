@@ -394,6 +394,7 @@ namespace RBsystem {
 		Eigen::MatrixXd velimp;
 
 		// target variables for guided motion
+		bool start_guided_motion;
 		std::string m_type;
 		bool dummy_contacts;
 		bool dummy_nocontact;

@@ -12,6 +12,7 @@ bool clear_logs
 bool start_simulation
 bool stop_simulation
 bool reset_simulation
+bool start_guide
 
 # start, stop, and reset the bmn and brim loops
 bool start_bmn
