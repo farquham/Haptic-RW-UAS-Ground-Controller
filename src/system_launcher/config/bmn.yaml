@@ -9,7 +9,7 @@
     b_r: 0.05        # bubble radius
     c_r: 0.5         # contact radius
     a_d: 0.2         # activation distance
-    v_l: 1.2         # velocity limit
+    v_l: 15.0         # velocity limit
     f_s: 1.0         # force scaling
     flimx: 10.0       # force limit
     flimy: 10.0       # force limit

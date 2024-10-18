@@ -30,8 +30,8 @@ void BRIM::brim::initbrim(float fr, int fcom1, int rim_type, float xlim, float y
 	R_vec = Eigen::Vector3d::Zero();
 	R_vec_est = Eigen::Vector3d::Zero();
 	R_tilde_mat = Eigen::Matrix3d::Zero();
-	DDP = {0,0,1.0};
-	DP = {0,0,1.0};
+	DDP = {0,0,1.5};
+	DP = {0,0,1.5};
 	M_temp_offset = Eigen::Matrix3d::Zero();
 
 	fg = Eigen::Vector3d::Zero();

@@ -30,8 +30,8 @@ void PRIM::prim::initprim(float fr, int fcom1, int fcom2, int rim_type, float xl
 	R_vec = Eigen::Vector3d::Zero();
 	R_vec_est = Eigen::Vector3d::Zero();
 	R_tilde_mat = Eigen::Matrix3d::Zero();
-	ADP = {0,0,1.0};
-	DP = {0,0,1.0};
+	ADP = {0,0,1.5};
+	DP = {0,0,1.5};
 	M_temp_offset = Eigen::Matrix3d::Zero();
 
 	fg = Eigen::Vector3d::Zero();

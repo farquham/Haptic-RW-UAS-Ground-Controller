@@ -39,9 +39,9 @@ BMN::bubblemethodnavigation::bubblemethodnavigation(float fbmn, double k_b, doub
 	abs_positions.setZero();
 	forces.setZero();
 	Va.setZero();
-    D_D_C = { 0, 0, 1.0 };
-    V_B_C = { 0, 0, 1.0 };
-    A_D_C = { 0, 0, 1.0 };
+    D_D_C = { 0, 0, 1.5 };
+    V_B_C = { 0, 0, 1.5 };
+    A_D_C = { 0, 0, 1.5 };
 	phins.setZero();
 	dot_phins.setZero();
 	rforces.setZero();
@@ -82,7 +82,7 @@ BMN::bubblemethodnavigation::bubblemethodnavigation(float fbmn, double k_b, doub
     postcon = false;
 
     h = 1/fbmn;
-    w_c = { -0.02, -0.15, 0.1 };
+    w_c = { -0.02, -0.15, 0.15 };
     rest = 0.025;
 
     RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "BMN initialized with the following parameters: k_i=%f, d_i=%f, k_b=%f, b_r=%f, c_r=%f, a_d=%f, v_l=%f, phin_max=%f, vmaxchange=%f, PSchange=%f, VSchange=%f, flims=%f, f_s=%f, p_s=%f, v_s=%f, fbmn=%f", k_i, d_i, k_b, b_r, c_r, a_d, v_l, phin_max, vmaxchange, PSchange, VSchange, flims, f_s, p_s, v_s, fbmn);
@@ -240,8 +240,9 @@ void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object)
     boundary = BMN::bubblemethodnavigation::pos_check(&w_c, &raw_positions, &bub_rad);
     double temp = h * v_scale;
     if (boundary == false) {
-        BMN::bubblemethodnavigation::velocity_applied(&w_c, &raw_positions, &bub_rad, 10, &Va);
+        BMN::bubblemethodnavigation::velocity_applied(&w_c, &raw_positions, &bub_rad, 100, &Va);
         magVa = Va.norm();
+        // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "VA: %f", magVa);
         if (magVa > maxVa) {
             Va = { (maxVa / magVa) * Va[0], (maxVa / magVa) * Va[1] , (maxVa / magVa) * Va[2] };
             BMN::bubblemethodnavigation::RK4_vec_update(&V_B_C, Va, temp);

@@ -37,6 +37,7 @@ class vis(Node):
     _sim_drone_rm = mp.Array('d', 9)
     _real_drone_pos = mp.Array('d', 3)
     _real_drone_rm = mp.Array('d', 9)
+    _cmd_drone_pos = mp.Array('d', 3)
     _update = mp.Value('b', 0)
     _setup_logs = mp.Value('b', 0)
     
@@ -84,7 +85,7 @@ class vis(Node):
         self._movement_type.value = 0
         self._rim_type.value = 0
         # logs open, logs close, logs clear, sim start, sim stop, sim reset, bmn start, bmn stop, bmn reset, rpicomms start, rpicomms stop, rpicomms reset, irl drone takeoff, irl drone land
-        self._controls[:] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False]
+        self._controls[:] = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
         # logs running, logs stopped, bmn running, bmn stopped, brim running, brim stopped, sim running, sim stopped, rrim running, rrim stopped, rpicomms running, rpicomms stopped, irl flying, irl landed
         self._states[:] = [False, True, False, True, False, True, False, True, False, True, False, True, False, False]
         self._target_pos[:] = [0.0, 0.0, 0.0]
@@ -92,7 +93,7 @@ class vis(Node):
         self._sim_drone_rm[:] = [1, 0, 0, 0, 1, 0, 0, 0, 1]
         self._real_drone_pos[:] = [0.0, 0.0, 0.0]
         self._real_drone_rm[:] = [1, 0, 0, 0, 1, 0, 0, 0, 1]
-        self._cmd_drone_pos = [0.0, 0.0, 0.0]
+        self._cmd_drone_pos[:] = [0.0, 0.0, 0.0]
         self._update.value = 0
         self._setup_logs.value = 0
         
@@ -220,7 +221,7 @@ class vis(Node):
     def bmn_state_callback(self, msg):
         #self.get_logger().info('I heard: "%s"' % msg)
         self.bmn_state_msg = msg
-        self._cmd_drone_pos = [self.bmn_state_msg.desired_drone_position.x, self.bmn_state_msg.desired_drone_position.y, self.bmn_state_msg.desired_drone_position.z]
+        self._cmd_drone_pos[:] = [self.bmn_state_msg.desired_drone_position.x, self.bmn_state_msg.desired_drone_position.y, self.bmn_state_msg.desired_drone_position.z]
         if self.bmn_state_msg.running:
             self._states[2] = True
             self._states[3] = False
@@ -273,7 +274,7 @@ class visualizations():
         
         root_folder = os.getcwd()
         # Load a mesh
-        self.RoomV, self.RoomF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Room_3m.obj"))
+        self.RoomV, self.RoomF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Room_Full.obj"))
         self.DroneV, self.DroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
         self.RDroneV, self.RDroneF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Holybro_np.obj"))
         self.targetV, self.targetF = igl.read_triangle_mesh(os.path.join(root_folder, "Haptic-RW-UAS-Ground-Controller/src/visualization_inputs/resource", "Target.obj"))

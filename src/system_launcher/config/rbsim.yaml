@@ -2,7 +2,7 @@
   ros__parameters:
     freqsim: 100.0  # refresh rate of sim loop
     h: 0.01         # time step
-    g_p: [0.0, 0.0, 1.0]  # starting position of drone
+    g_p: [0.0, 0.0, 1.5]  # starting position of drone
     l: 0.3535          # length of drone
     w: 0.3535          # width of drone
     he: 0.306          # height of drone
@@ -10,7 +10,7 @@
         0.0, 0.064328, 0.0,
         0.0, 0.0, 0.056522]  # inertia matrix
     mass: 1.693       # mass of drone
-    con_rad: 0.5    # radius of drone
+    con_rad: 0.3    # radius of drone
     prop_dia: 0.254   # diameter of propellelf.ext_cmd_publisher_.publish(Point(x=self.ext_setpoier
     kprop: 0.0000012843          # prop k value will need to divide by 1.2*prop_dia^4
     bprop: 0.0000000180137       # prop b value will need to divide by 1.2*prop_dia^5
