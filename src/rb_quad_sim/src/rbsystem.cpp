@@ -531,7 +531,7 @@ void RBsystem::RBsystem::contact_task_update() {
 		if (waypoint_num > (CT_path.size())) {
 			target_done = true;
 		} else {
-			if (current_drone_diff.norm() < 0.25) {
+			if (current_drone_diff.norm() < 0.5) {
 				Eigen::Vector3d next_waypoint = {CT_path[waypoint_num][0], CT_path[waypoint_num][1], CT_path[waypoint_num][2]+0.5};
 				Eigen::Vector3d waypoint_diff = next_waypoint - Target_Position;
 				if (waypoint_diff.norm() < 0.1) {
