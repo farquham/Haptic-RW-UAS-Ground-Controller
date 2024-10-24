@@ -254,7 +254,9 @@ namespace RBsystem {
 			RBH::matrix_to_msg(global_vel, msg.vg, this->get_logger());
 			RBH::matrix_to_msg(An_mat, msg.ac, this->get_logger());
 			RBH::matrix_to_msg(M_mat_inv, msg.m_inv, this->get_logger());
-
+			// RCLCPP_INFO(this->get_logger(), "An_mat nonzeros: %d, rows: %d, cols: %d", An_mat.nonZeros(), An_mat.rows(), An_mat.cols());
+			// RCLCPP_INFO(this->get_logger(), "M_mat_inv nonzeros: %d, rows: %d, cols: %d", M_mat_inv.nonZeros(), M_mat_inv.rows(), M_mat_inv.cols());
+			// RCLCPP_INFO(this->get_logger(), "msg.ac: 0: %d, 1: %d, 2: %d", static_cast<int>(msg.ac[0]), static_cast<int>(msg.ac[1]), static_cast<int>(msg.ac[2]));
 
 			msg.contact = contact;
 			msg.pre_contact = pre_contact;

@@ -236,6 +236,9 @@ void BMN::bubblemethodnavigation::BMNstep(API::Devices::Inverse3 Inverse_object)
     BMN::bubblemethodnavigation::force_scaling(&forces, &flims, &fscale);
     BMN::bubblemethodnavigation::force_scaling(&iforce_list, &flims, &fscale);
 
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "phins: %f, %f, %f", phins[0], phins[1], phins[2]);
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "iforces: %f, %f, %f", iforces[0], iforces[1], iforces[2]);
+
     // bubble method region checking and handling
     boundary = BMN::bubblemethodnavigation::pos_check(&w_c, &raw_positions, &bub_rad);
     double temp = h * v_scale;

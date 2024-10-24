@@ -66,7 +66,7 @@ void BRIM::brim::BRIMstep() {
 	auto loop_start = clocky::now();
 
 	// setup all the RB stuff and get first time estimate run first 100 loops to ensure all the data was imported properly
-	if (i < 100) {
+	if (i < 1000) {
 		rb_setup(&Ac, &M_hat_inv, &Pc_hat, &I, &IPMi, &M_temp_offset);
 	}
 
@@ -123,10 +123,12 @@ void BRIM::brim::rbquadsim_callback(const commsmsgs::msg::Rbquadsimpub::UniquePt
 		fg = {msg->gravity.x, msg->gravity.y, msg->gravity.z};
 		fi = {msg->interaction.x, msg->interaction.y, msg->interaction.z};
 		// sparse stuff
-		//RCLCPP_INFO(this->get_logger(), "Ac check");
+		// RCLCPP_INFO(this->get_logger(), "Ac check");
 		BRIM::brim::msg_to_matrix(msg->ac, &Ac);
-		//RCLCPP_INFO(this->get_logger(), "M_hat_inv check");
+		// RCLCPP_INFO(this->get_logger(), "M_hat_inv check");
 		BRIM::brim::msg_to_matrix(msg->m_inv, &M_hat_inv);
+		// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Ac: nonzeros: %d, rows: %d, cols: %d", (Ac).nonZeros(), (Ac).rows(), (Ac).cols());
+		// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "M_hat_inv:nonzeros: %d, rows: %d, cols: %d", (M_hat_inv).nonZeros(), (M_hat_inv).rows(), (M_hat_inv).cols());
 		// update the rigidbody system matrices
 		rb_update(&DP, &DDP, &R_vec, &R_tilde_mat, &phin_list, &dot_phin_list, &Ai, &Ai_old, &Ai_dot, &IPMi, &v_g, h, &fd, &fg, &M_temp_offset, &M_tilde, &M_tilde_inv, &f_ext, &lambda_tilde, &Pc_hat, &v_g_old, h_com1, &fi);
 	}
@@ -219,23 +221,27 @@ void BRIM::brim::Interface_Jacobian(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, E
 
 // calculates Pc_hat which doesn't change during the simulation
 void BRIM::brim::rb_setup(Eigen::SparseMatrix<double>* Ac, Eigen::SparseMatrix<double>* M_hat_inv, Eigen::SparseMatrix<double>* Pc_hat, Eigen::SparseMatrix<double>* I, Eigen::SparseMatrix<double>* IPMi, Eigen::Matrix3d* M_temp_offset) {
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "M_hat_inv: nonzeros: %d, rows: %d, cols: %d", (*M_hat_inv).nonZeros(), (*M_hat_inv).rows(), (*M_hat_inv).cols());
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Ac: nonzeros: %d, rows: %d, cols: %d", (*Ac).nonZeros(), (*Ac).rows(), (*Ac).cols());
 	// find projected version of the inverse mass matrix
 	//std::cout << "Ac: " << (*Ac).block(0,0,6,42) << std::endl;
 	//std::cout << "M_hat_inv: " << (*M_hat_inv).block(0,0,42,42) << std::endl;
 	Eigen::Matrix<double, 6, 6> temp = (*Ac) * (*M_hat_inv) * (*Ac).transpose();
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "temp: %f, %f, %f, %f, %f, %f", temp(0,0), temp(1,1), temp(2,2), temp(3,3), temp(4,4), temp(5,5));
 	Eigen::Matrix<double, 6, 6> temp_inv = temp.inverse();
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "temp_inv: %f, %f, %f, %f, %f, %f", temp_inv(0,0), temp_inv(1,1), temp_inv(2,2), temp_inv(3,3), temp_inv(4,4), temp_inv(5,5));
 	Eigen::SparseMatrix <double> ts;
 	ts = Eigen::SparseMatrix <double>(6, 6);
 	ts = temp_inv.sparseView();
-	//std::cout << "ts: " << ts.block(0,0,6,6) << std::endl;
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "ts: %f, %f, %f", ts.coeffRef(0,0), ts.coeffRef(0,1), ts.coeffRef(0,2));
 	// use it to calculate the projection matrix
 	(*Pc_hat) = (*M_hat_inv) * (*Ac).transpose() * ts * (*Ac);
 	// find the inverse of the projection matrix
 	(*IPMi) = ((*I) - (*Pc_hat)) * (*M_hat_inv);
 	(*M_temp_offset) = Eigen::MatrixXd::Identity(3, 3) * 1e-08;
 
-	//std::cout << "Pc_hat: " << (*Pc_hat).block(0,0,42,42) << std::endl;
-	//std::cout << "IPMi: " << (*IPMi).block(0,0,42,42) << std::endl;
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Pc_hat: %f, %f, %f", (*Pc_hat).coeffRef(0,0), (*Pc_hat).coeffRef(0,1), (*Pc_hat).coeffRef(0,2));
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "IPMi: %f, %f, %f", (*IPMi).coeffRef(0,0), (*IPMi).coeffRef(0,1), (*IPMi).coeffRef(0,2));
 }
 
 // updates all the matrices that change when the interface jacobian changes
@@ -243,17 +249,23 @@ void BRIM::brim::rb_update(Eigen::Vector3d* DP, Eigen::Vector3d* DDP, Eigen::Vec
 	// updates the interface jacobian
 	Interface_Jacobian(DP, DDP, R_vec, R_tilde_mat, phin_list, Ai, Ai_old, Ai_dot, h);
 	(*dot_phin_list) = (*Ai) * (*v_g);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "dot_phin_list: %f, %f, %f", (*dot_phin_list)[0], (*dot_phin_list)[1], (*dot_phin_list)[2]);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "IPMi: %f, %f, %f", (*IPMi).coeffRef(0,0), (*IPMi).coeffRef(0,1), (*IPMi).coeffRef(0,2));
 	// updates the effective mass matrix
 	(*M_tilde_inv) = (*Ai) * (*IPMi) * (*Ai).transpose();
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "M_tilde_inv: %f, %f, %f", (*M_tilde_inv)(0,0), (*M_tilde_inv)(0,1), (*M_tilde_inv)(0,2));
 	(*M_tilde_inv) += (*M_temp_offset);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "M_tilde_inv: %f, %f, %f", (*M_tilde_inv)(0,0), (*M_tilde_inv)(0,1), (*M_tilde_inv)(0,2));
 	(*M_tilde) = (*M_tilde_inv).inverse();
 	(*M_tilde_inv) -= (*M_temp_offset);
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "M_tilde_inv: %f, %f, %f", (*M_tilde_inv)(0,0), (*M_tilde_inv)(0,1), (*M_tilde_inv)(0,2));
 
 	// updates the external force vector
 	(*f_ext)(0,0) = (*Drag)(0,0) + (*Gravity)(0,0) + (*Drone_Interaction)(0,0);
 	(*f_ext)(1,0) = (*Drag)(1,0) + (*Gravity)(1,0) + (*Drone_Interaction)(1,0);
 	(*f_ext)(2,0) = (*Drag)(2,0) + (*Gravity)(2,0) + (*Drone_Interaction)(2,0);
 	(*lambda_tilde) = (*M_tilde) * ((*Ai) * (*IPMi) * (*f_ext) + (*Ai_dot) * (*v_g) + (*Ai) * (*Pc_hat) * (((*v_g) - (*v_g_old)) / h_com1));
+	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "lambda_tilde: %f, %f, %f", (*lambda_tilde)[0], (*lambda_tilde)[1], (*lambda_tilde)[2]);
 	(*v_g_old) = (*v_g);
 }
 
@@ -270,12 +282,12 @@ void BRIM::brim::bmn_update(double* r_type, Eigen::Vector3d* phin_list, Eigen::V
 	// if using RIM then use the projected matrices to update the dot_phin and then phin
 	else if ((*r_type) == 2) {
 		Eigen::Vector3d temp = Eigen::Vector3d::Zero();
-		//std::cout << "lambda_tilde: " << (*lambda_tilde)[0] << ", " << (*lambda_tilde)[1] << ", " << (*lambda_tilde)[2] << std::endl;
-		//std::cout << "lambda_i: " << (*lambda_i)[0] << ", " << (*lambda_i)[1] << ", " << (*lambda_i)[2] << std::endl;
-		//std::cout << "M_tilde_inv: " << (*M_tilde_inv)(0,0) << ", " << (*M_tilde_inv)(0,1) << ", " << (*M_tilde_inv)(0,2) << std::endl;
+		// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "lambda_tilde: %f, %f, %f", (*lambda_tilde)[0], (*lambda_tilde)[1], (*lambda_tilde)[2]);
+    	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "lambda_i: %f, %f, %f", (*lambda_i)[0], (*lambda_i)[1], (*lambda_i)[2]);
+    	// RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "M_tilde_inv: %f, %f, %f", (*M_tilde_inv)(0,0), (*M_tilde_inv)(0,1), (*M_tilde_inv)(0,2));
 		temp = (*M_tilde_inv) * ((*lambda_tilde) + (*lambda_i));
 		//temp = (*M_tilde_inv) * ((*lambda_tilde));
-		//std::cout << "temp: " << temp[0] << ", " << temp[1] << ", " << temp[2] << std::endl;
+		// std::cout << "temp: " << temp[0] << ", " << temp[1] << ", " << temp[2] << std::endl;
 		BRIM::brim::RK4_vec_update(dot_phin_list, temp, h);
 		BRIM::brim::Vec3Lim(dot_phin_list, dx_lims);
 		BRIM::brim::RK4_vec_update(phin_list, *dot_phin_list, h);
@@ -353,28 +365,27 @@ void BRIM::brim::Vec3Lim(Eigen::Vector3d* vec, Eigen::Vector3d* lim) {
 }
 
 // function to convert a ros msg to a sparse matrix
-void BRIM::brim::msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout) {
-	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix start");
-	int rows = min[0];
-	int cols = min[1];
-	int size = min[2];
-	//RCLCPP_INFO(this->get_logger(), "rows: %d", rows);
-	//RCLCPP_INFO(this->get_logger(), "cols: %d", cols);
-	//RCLCPP_INFO(this->get_logger(), "size: %d", size);
-	float data = 0.0;
-	int i,j = 0;
-	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix reserve");
-	std::vector< Eigen::Triplet<double> > tripletList;
-	tripletList.reserve(size-1);
-	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix loop");
-	for (int k = 1; k < size; k++) {
-		i = min[k * 3 + 0];
-		j = min[k * 3 + 1];
-		data = min[k * 3 + 2];
-		//RCLCPP_INFO(this->get_logger(), "triplet out: %d %d %f", i, j, data);
-		tripletList.push_back(Eigen::Triplet<double>(i, j, data));
-	}
-	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix setFromTriplets");
-	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
-	//RCLCPP_INFO(this->get_logger(), "msg_to_matrix end");
+void BRIM::brim::msg_to_matrix(std::array<double, 768> min, Eigen::SparseMatrix<double>* mout) {
+    int rows = static_cast<int>(min[0]);
+    int cols = static_cast<int>(min[1]);
+    int size = static_cast<int>(min[2]);
+
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "mout: size: %i, rows: %i, cols: %i", size, rows, cols);
+
+    std::vector<Eigen::Triplet<double>> tripletList;
+    tripletList.reserve(size);
+
+    for (int k = 0; k < size; ++k) {
+        int i = static_cast<int>(min[(k * 3) + 3]);
+        int j = static_cast<int>(min[(k * 3) + 4]);
+        double data = min[(k * 3) + 5];
+
+        // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "i: %d, j: %d, data: %f", i, j, data);
+        tripletList.push_back(Eigen::Triplet<double>(i, j, data));
+    }
+
+    mout->resize(rows, cols); // Ensure the matrix is resized to the correct dimensions
+    mout->setFromTriplets(tripletList.begin(), tripletList.end());
+
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "mout: nonzeros: %li, rows: %li, cols: %li", mout->nonZeros(), mout->rows(), mout->cols());
 }

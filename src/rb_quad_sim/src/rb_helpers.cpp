@@ -341,50 +341,69 @@ void RBH::sparse_replace4(Eigen::SparseMatrix<double>* tb_replaced, Eigen::Matri
 
 // ADVANCED
 // function to convert a ros msg to a sparse matrix
-void RBH::msg_to_matrix(std::array<double,768> min, Eigen::SparseMatrix<double>* mout) {
-	int rows = min[0];
-	int cols = min[1];
-	int size = min[2];
-	float data = 0.0;
-	int i,j = 0;
-	std::vector< Eigen::Triplet<double> > tripletList;
-	tripletList.reserve(size-1);
-	for (int k = 1; k < size; k++) {
-		i = min[k * 3 + 0];
-		j = min[k * 3 + 1];
-		data = min[k * 3 + 2];
-		tripletList.push_back(Eigen::Triplet<double>(i, j, data));
-	}
-	(*mout).setFromTriplets(tripletList.begin(), tripletList.end());
+void RBH::msg_to_matrix(std::array<double, 768> min, Eigen::SparseMatrix<double>* mout) {
+    int rows = static_cast<int>(min[0]);
+    int cols = static_cast<int>(min[1]);
+    int size = static_cast<int>(min[2]);
+
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "mout: size: %i, rows: %i, cols: %i", size, rows, cols);
+
+    std::vector<Eigen::Triplet<double>> tripletList;
+    tripletList.reserve(size);
+
+    for (int k = 0; k < size; ++k) {
+        int i = static_cast<int>(min[(k * 3) + 3]);
+        int j = static_cast<int>(min[(k * 3) + 4]);
+        double data = min[(k * 3) + 5];
+
+        // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "i: %d, j: %d, data: %f", i, j, data);
+        tripletList.push_back(Eigen::Triplet<double>(i, j, data));
+    }
+
+    mout->resize(rows, cols); // Ensure the matrix is resized to the correct dimensions
+    mout->setFromTriplets(tripletList.begin(), tripletList.end());
+
+    // RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "mout: nonzeros: %li, rows: %li, cols: %li", mout->nonZeros(), mout->rows(), mout->cols());
 }
 
 // function to convert from a sparse matrix to a ros msg
-void RBH::matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double,768>& mout, rclcpp::Logger logger) {
-	//std::array<double,216>* mout;
-	//double* mout = (double*)malloc(216 * sizeof(double));
-	float data = 0.0;
-	int i,j = 0;
-	min.makeCompressed();
-	int size = min.nonZeros() + 1;
-	int size_needed = (size * 3) + 3;
-	mout[0] = min.rows();
-	mout[1] = min.cols();
-	mout[2] = size;
-	// RCLCPP_INFO(logger, "Size needed: %d", size_needed);
-	// RCLCPP_INFO(logger, "Size: %d", size);
-	// RCLCPP_INFO(logger, "rows: %d", min.rows());
-	// RCLCPP_INFO(logger, "cols: %d", min.cols());
-	// RCLCPP_INFO(logger, "inner length: %d", min.innerSize());
-	// RCLCPP_INFO(logger, "outer length: %d", min.outerSize());
-	for (int k = 0; k<min.outerSize(); ++k) {
-		for (Eigen::SparseMatrix<double>::InnerIterator it(min,k); it; ++it) {
-			data = it.value();
-			i = it.row();
-			j = it.col();
-			//RCLCPP_INFO(logger, "triplet in i: %d j: %d data: %f", i, j, data);
-			mout[(k+1) * 3 + 0] = i;
-			mout[(k+1) * 3 + 1] = j;
-			mout[(k+1) * 3 + 2] = data;
-		}
-	}
+void RBH::matrix_to_msg(Eigen::SparseMatrix<double> min, std::array<double, 768>& mout, rclcpp::Logger logger) {
+    min.makeCompressed();
+    int size = min.nonZeros();
+    int size_needed = (size * 3) + 3;
+
+    if (size_needed > mout.size()) {
+        RCLCPP_ERROR(logger, "Array size exceeded while converting matrix to message.");
+        return;
+    }
+
+    mout[0] = static_cast<double>(min.rows());
+    mout[1] = static_cast<double>(min.cols());
+    mout[2] = static_cast<double>(size);
+
+	// RCLCPP_INFO(logger, "SPACING");
+	// RCLCPP_INFO(logger, "SPACING");
+	// RCLCPP_INFO(logger, "SPACING");
+	// RCLCPP_INFO(logger, "SPACING");
+	// RCLCPP_INFO(logger, "SPACING");
+	// RCLCPP_INFO(logger, "SPACING");
+
+    // RCLCPP_INFO(logger, "size out: %d, rows out: %d, cols out: %d", static_cast<int>(mout[2]), static_cast<int>(mout[0]), static_cast<int>(mout[1]));
+    // RCLCPP_INFO(logger, "non zeros: %li, rows: %li, cols: %li", min.nonZeros(), min.rows(), min.cols());
+
+    int index = 3; // Start filling from the 4th element
+    for (int k = 0; k < min.outerSize(); ++k) {
+        for (Eigen::SparseMatrix<double>::InnerIterator it(min, k); it; ++it) {
+            if (index + 2 < mout.size()) {
+                mout[index] = static_cast<double>(it.row());
+                mout[index + 1] = static_cast<double>(it.col());
+                mout[index + 2] = it.value();
+                // RCLCPP_INFO(logger, "triplet out i: %d j: %d data: %f", static_cast<int>(mout[index]), static_cast<int>(mout[index + 1]), mout[index + 2]);
+                index += 3;
+            } else {
+                RCLCPP_ERROR(logger, "Array size exceeded while converting matrix to message.");
+                return;
+            }
+        }
+    }
 }
