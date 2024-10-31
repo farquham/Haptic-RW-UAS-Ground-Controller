@@ -9,10 +9,10 @@ void RPI::rpicomms::publish_trajectory_setpoint()
 	if ((drone_position_actual[0] == 0.0) && (drone_position_actual[1] == 0.0) && (drone_position_actual[2] == 0.0)) {
 		return;
 	// if the drone position command is set to takeoff then set the setpoint to the current position plus 1m in the z direction
-	} else if ((drone_position_cmd[0] == 0.0) && (drone_position_cmd[1] == 0.0) && (drone_position_cmd[2] == 1.0)) {
+	} else if ((drone_position_cmd[0] == 0.0) && (drone_position_cmd[1] == 0.0) && (drone_position_cmd[2] == 1.5)) {
 		geometry_msgs::msg::Point msg{};
-		msg.x = drone_position_cmd[0] + drone_position_actual[0];
-		msg.y = drone_position_cmd[1] + drone_position_actual[1];
+		msg.x = -1 * drone_position_cmd[1] - drone_position_actual[1];
+		msg.y = drone_position_cmd[0] + drone_position_actual[0];
 		msg.z = drone_position_cmd[2] + drone_position_actual[2];
 		//this->get_logger()->info("Publishing setpoint: x: " + std::to_string(msg.x) + " y: " + std::to_string(msg.y) + " z: " + std::to_string(msg.z));
 		setpoint_publisher_->publish(msg);
@@ -27,8 +27,8 @@ void RPI::rpicomms::publish_trajectory_setpoint()
 	// otherwise behave normally and send the setpoint to the rpi
 	} else {
 		geometry_msgs::msg::Point msg{};
-		msg.x = drone_position_cmd[0];
-		msg.y = drone_position_cmd[1];
+		msg.x = -1 * drone_position_cmd[1];
+		msg.y = drone_position_cmd[0];
 		msg.z = drone_position_cmd[2];
 		//this->get_logger()->info("Publishing setpoint: x: " + std::to_string(msg.x) + " y: " + std::to_string(msg.y) + " z: " + std::to_string(msg.z));
 		setpoint_publisher_->publish(msg);
@@ -39,7 +39,7 @@ bool RPI::rpicomms::time_to_land(Eigen::Vector3d cmd_pos, Eigen::Vector3d curren
 	Eigen::Vector3d zeros = {0.0, 0.0, 0.25};
 	Eigen::Vector3d zero_diff = cmd_pos - zeros;
 	Eigen::Vector3d current_diff = cmd_pos - current_pos;
-	if (zero_diff.norm() < 0.15) {
+	if ((zero_diff.norm() < 0.15) || (current_pos[2] < 0.4)) {
 		if (current_diff.norm() < 0.15) {
 			land_counter++;
 		} else {
@@ -58,8 +58,8 @@ bool RPI::rpicomms::time_to_land(Eigen::Vector3d cmd_pos, Eigen::Vector3d curren
 // subscriber to recieve the drone position, velocity and acceleration from the rpi companion comp
 void RPI::rpicomms::vehicle_pose_callback(const geometry_msgs::msg::PoseStamped::UniquePtr & msg)
 {
-	drone_position_actual[0] = msg->pose.position.x;
-	drone_position_actual[1] = msg->pose.position.y;
+	drone_position_actual[0] = msg->pose.position.y;
+	drone_position_actual[1] = -1 * msg->pose.position.x;
 	drone_position_actual[2] = msg->pose.position.z;
 	drone_orientation_actual[0] = msg->pose.orientation.x;
 	drone_orientation_actual[1] = msg->pose.orientation.y;

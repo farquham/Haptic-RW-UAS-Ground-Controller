@@ -516,7 +516,30 @@ void RBsystem::RBsystem::guided_motion_update() {
 				}
 			}
 		}
+	} else {
+		if (waypoint_num > (GMT_path.size())) {
+			target_done = true;
+		} else {
+			if (current_drone_diff.norm() < 0.25) {
+				Eigen::Vector3d next_waypoint = {GMT_path[waypoint_num][0], GMT_path[waypoint_num][1], GMT_path[waypoint_num][2]+0.5};
+				Eigen::Vector3d waypoint_diff = next_waypoint - Target_Position;
+				if (waypoint_diff.norm() < 0.1) {
+					Target_Position[0] = GMT_path[waypoint_num][0];
+					Target_Position[1] = GMT_path[waypoint_num][1];
+					Target_Position[2] = GMT_path[waypoint_num][2] + 0.5;
+					Target_Velocity[0] = GMT_path[waypoint_num][3];
+					Target_Velocity[1] = GMT_path[waypoint_num][4];
+					Target_Velocity[2] = GMT_path[waypoint_num][5];
+					// RCLCPP_INFO(this->get_logger(), "Target Position: %f, %f, %f", Target_Position[0], Target_Position[1], Target_Position[2]);
+					// RCLCPP_INFO(this->get_logger(), "Target Velocity: %f, %f, %f", Target_Velocity[0], Target_Velocity[1], Target_Velocity[2]);
+					waypoint_num = waypoint_num;
+				} else {
+					waypoint_num = waypoint_num;
+				}
+			}
+		}
 	}
+
 	return;
 }
 
@@ -546,6 +569,28 @@ void RBsystem::RBsystem::contact_task_update() {
 					waypoint_num = waypoint_num + 1;
 				} else {
 					waypoint_num = waypoint_num + 1;
+				}
+			}
+		}
+	} else {
+		if (waypoint_num > (CT_path.size())) {
+			target_done = true;
+		} else {
+			if (current_drone_diff.norm() < 0.5) {
+				Eigen::Vector3d next_waypoint = {CT_path[waypoint_num][0], CT_path[waypoint_num][1], CT_path[waypoint_num][2]+0.5};
+				Eigen::Vector3d waypoint_diff = next_waypoint - Target_Position;
+				if (waypoint_diff.norm() < 0.1) {
+					Target_Position[0] = CT_path[waypoint_num][0];
+					Target_Position[1] = CT_path[waypoint_num][1];
+					Target_Position[2] = CT_path[waypoint_num][2] + 0.5;
+					Target_Velocity[0] = CT_path[waypoint_num][3];
+					Target_Velocity[1] = CT_path[waypoint_num][4];
+					Target_Velocity[2] = CT_path[waypoint_num][5];
+					// RCLCPP_INFO(this->get_logger(), "Target Position: %f, %f, %f", Target_Position[0], Target_Position[1], Target_Position[2]);
+					// RCLCPP_INFO(this->get_logger(), "Target Velocity: %f, %f, %f", Target_Velocity[0], Target_Velocity[1], Target_Velocity[2]);
+					waypoint_num = waypoint_num;
+				} else {
+					waypoint_num = waypoint_num;
 				}
 			}
 		}
